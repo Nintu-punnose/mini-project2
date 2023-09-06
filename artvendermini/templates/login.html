@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artvendor_login</title>
+    <link rel="stylesheet" href="{% static 'css\login.css'%}">
+    <!-- <script>
+        function login_submit()
+        {
+          
+            var a=document.getElementById("user_email").value;
+            var b=document.getElementById("user_password").value;
+            if(a == "" || b == "")
+            {
+            
+                document.getElementById("report_login").innerHTML="Enter username/password";
+            }
+            else
+            {
+                document.getElementById("report_login").innerHTML="Invalid username/password";
+            }
+        } 
+    </script> -->
+</head>
+<body>
+    <div id="project_login">
+        <div id="image_body">
+            <div id="image_content">
+                <img src="{% static 'images\bg.jpeg'%}" alt="" id="image"><br><br>
+                <p>"Make The World A Better Place With Gallery"</p>
+            </div>
+        </div>
+        <div class="login_body">
+            <fieldset id="login_fieldset">
+                <form id="login_box" method="POST"><br>
+                    {% csrf_token %}
+                    <center><h1>Login</h1></center>
+                    {% if messages %}
+                        <div class="messages" id="report_login">
+                            {% for message in messages %}
+                                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <br><br>
+                    <input type="text" placeholder="Username" class="input_txt_email" id="user_email" name="username"><br><br>
+                    <input type="password" placeholder="Password" class="input_txt_password" id="user_password" name="password"><br><br>
+                    <button type="submit" id="submit">Login</button><br><br>
+                    <center>-----Or-----</center><br>
+                    <button type="button" id="login_with_google">
+                        <img src="{% static 'images\Google-icon.png' %}" height="20px" width="20px" alt="">
+                        &emsp;Login With Google
+                    </button><br><br><br>
+                    <a href="{% url 'signup' %}" id="user_register">new user?</a>
+                    &emsp;&emsp;
+                    <a href="" id="forgot_password">forgot password?</a><br><br>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</body>
+</html>

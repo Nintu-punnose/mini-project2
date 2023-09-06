@@ -1,0 +1,129 @@
+/* Reset some default styles */
+body, html, h1, h2, h3, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f3f3;
+}
+
+#project_login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#image_body
+{
+  max-width: 100%;
+  width: 100%;
+  height: 500px;
+  padding: 20px;
+  border-right: solid 2px red;
+  border-right-color:2px red ;
+  
+}
+.login_body {
+  max-width: 100%;
+  width: 100%;
+  padding: 20px;
+  
+}
+
+#image_content {
+  text-align: center;
+}
+
+#image {
+  width: 551px;
+  height: auto;
+  border-radius: 10px;
+  padding-top: 120px;
+}
+
+#login_fieldset {
+  background-color: #fff;
+  width: 60%;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-left: 70px;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.input_txt_email,.input_txt_password {
+  width: 90%;
+  padding: 10px;
+  margin-left: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+#submit,
+#login_with_google {
+  width: 100%;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+#submit {
+  background-color: green;
+  color: white;
+  border: none;
+}
+
+#login_with_google {
+  color: black;
+  border: 1px solid blue;
+}
+
+#login_with_google:hover {
+  background-color: #3367d6;
+  color: white;
+}
+
+#user_register,
+#forgot_password {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 14px;
+}
+
+#user_register:hover,
+#forgot_password:hover {
+  text-decoration: underline;
+}
+#report_login
+{
+  height: 5px;
+  color:red;
+  margin-left: 30px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #image_body {
+    display: none;
+  }
+
+  #login_fieldset {
+    max-width: 100%;
+  }
+  
+  .login_body {
+    margin: 0;
+  }
+}

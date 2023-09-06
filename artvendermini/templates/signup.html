@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artvendor_login</title>
+    <link rel="stylesheet" href="{% static 'css\register.css'%}">
+    <script>
+        function register_submit()
+        {
+            var a=document.getElementById("user_name").value;
+            var b=document.getElementById("user_number").value;
+            var c=document.getElementById("user_email").value;
+            var e=document.getElementById("user_password").value;
+            var f=document.getElementById("user_cpassword").value;
+            if(a=="" || b=="" || c=="" || e=="" || f=="")
+            {
+                document.getElementById("report_register").innerHTML="Complete All Fields";
+            }
+            else
+            {
+                document.getElementById("report_register").innerHTML="";
+            }
+        }
+        function register_name() {
+                var name = document.getElementById("user_name").value;
+                var letters = /^[A-Z a-z]+$/;
+
+                if (!letters.test(name)) {
+                    document.getElementById("report_register").innerHTML = "Name field required alphabet character";
+                }
+                else {
+                    document.getElementById("report_register").innerHTML = "";
+                }
+            }
+
+            function register_number()
+            {
+                var number = document.getElementById("user_number").value;
+                var numberRegex = /^\d+$/; // Regular expression to allow only digits
+                
+                if (!numberRegex.test(number))
+                {
+                    document.getElementById("report_register").innerHTML = "Invalid number";
+                }
+                else if(number.length !== 10 || !['7', '8', '9'].includes(number.charAt(0)))
+                {
+                    document.getElementById("report_register").innerHTML = "use correct number";
+                }
+                else {
+                
+                document.getElementById("report_register").innerHTML = "";
+            }
+            }
+
+        function register_email() {
+            var mail = document.getElementById("user_email").value;
+            var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+            if (!filter.test(mail)) {
+                document.getElementById("report_register").innerHTML = "invalid Mail-id";
+            }
+            else {
+                document.getElementById("report_register").innerHTML = "";
+            }
+            }
+            
+        function register_password() {
+            var pass = document.getElementById("user_password").value;
+            var pwd_expression = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/;
+       
+            if (!pwd_expression.test(pass)) {
+                document.getElementById("report_register").innerHTML = "Upper case,Lower case,Special character and Numeric letter need";
+             }
+            else {
+                document.getElementById("report_register").innerHTML = "";
+            }
+            }
+
+            function register_cpassword() {
+                var pass = document.getElementById("user_password").value;
+                var cpass = document.getElementById("user_cpassword").value;
+       
+            if (pass!=cpass) {
+                document.getElementById("report_register").innerHTML = "Password not match";
+             }
+            else {
+                document.getElementById("report_register").innerHTML = "";
+            }
+            }
+    </script>
+</head>
+<body>
+    <div id="project_login">
+        <div id="image_body">
+            <div id="image_content">
+                <img src="{% static 'images\bg.jpeg'%}" alt="" id="image"><br><br>
+                <p>"Make The World A Better Place With Gallery"</p>
+            </div>
+        </div>
+        <div class="login_body">
+            <fieldset id="login_fieldset">
+                <form action="signup" id="login_box" method="post" action="{% url 'signup' %}"><br>
+                    {% csrf_token %}
+                    <center><h1>Register</h1></center>
+                    <p id="report_register"></p>
+                    {% if messages %}
+                    <div class="messages" id="report_login">
+                        {% for message in messages %}
+                            <p style="color: red; padding-left:120px" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <br>    
+                    <input type="text" placeholder="Name" class="input_txt_name" id="user_name" name="username" onkeyup="register_name()"><br>
+                    <input type="number" placeholder="Phone Number" class="input_txt_number" id="user_number" name="number" onkeyup="register_number()"><br>
+                    <input type="email" placeholder="Email id" class="input_txt_email" id="user_email" name="email" onkeyup="register_email()"><br>
+                    <select  class="input_txt_role" aria-placeholder="select role" id="user_role" name="role">
+                        <option value="select role">Select role</option>
+                        <option value="Artist">Artist</option>
+                        <option value="customer">Customer</option>
+                        <option value="shipping">Shipping Conpany</option>
+                    </select><br>
+                    <input type="password" placeholder="Password" class="input_txt_password" id="user_password" name="password1" onkeyup="register_password()"><br>
+                    <input type="password" placeholder="Confirm Password" class="input_txt_cpassword" id="user_cpassword" name="password2" onkeyup="register_cpassword()"><br>
+                    <input type="submit" value="Register" id="submit" onclick="register_submit()"><br><br>
+                    <button id="login_with_google"><img src="{% static 'images\Google-icon.png'%}" alt="" height="20px" width="20px">&emsp; Register With Google</button><br><br><br>
+                    <a href="{% url 'login'%}" id="user_register">already have account?</a>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</body>
+</html>
