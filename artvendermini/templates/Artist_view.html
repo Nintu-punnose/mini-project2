@@ -7,32 +7,112 @@
     <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
     <link rel="stylesheet" href="{% static 'css\artist_view1.css' %}">
     <title>Seller Page</title>
+    <style>
+        /* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    </style>
+    <script>
+        function validateArtForm() {
+            var name = document.getElementById("uploadArtist_name").value;
+            var type = document.getElementById("uploadArt_type").value;
+            var size = document.getElementById("uploadArt_size").value;
+            var price = document.getElementById("uploadArt_price").value;
+            var year = document.getElementById("uploadArt_year").value;
+            var image = document.getElementById("uploadArt_image").value;
+            var certificate = document.getElementById("uploadArt_certificate").value;
+            
+            // Check if any field is empty
+            if (name === "" || type === "" || size === "" || price === "" || year === "" || image === "" || certificate === "") {
+                alert("All fields are required.");
+                return false;
+            }
+        
+            // Check if price is 0 or negative
+            if (parseFloat(price) <= 0) {
+                document.getElementById("error_msg").innerHTML="Price cannot be 0 or negative"
+                return false;
+            }
+        
+            // Check if the year is in the future
+            var currentYear = new Date().getFullYear();
+            if (parseInt(year) < currentYear || parseInt(year) > currentYear) {
+                document.getElementById("error_msg").innerHTML="Year must be current year"
+                return false;
+            }
+        
+            return true;
+        }
+        function openEditModal(artId) {
+            var modal = document.getElementById("editModal");
+            modal.style.display = "block";
+        }
+        
+        // Function to close the edit modal
+        function closeEditModal() {
+            var modal = document.getElementById("editModal");
+            modal.style.display = "none";
+        }
+
+        </script>
 </head>
 <body>
     <div class="body">
+
+        <!-- head_section -->
+
         <div class="header">
             <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
 
             <ul class="user-menu">
-                {% if user.is_authenticated %}
                     <p style="color: green;">Welcome, {{ user.username }}!</p>
                     <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
-                {% else %}
-                    <p style="color: red; text-decoration:none">Please log in to access your account.</p>
-                    <a href="{% url 'login' %}" style="color: green;" text-decoration:none">Login</a>
-                    <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
-                {% endif %}
             </ul>
         </div>
+
+        <!-- side-pannel -->
+
         <div id="sidebar">
             <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
             <h1>&emsp;{{ user.username }}</h1>
-            <div class="sidebar-item" data-target="dashboard">Dashboard</div>
+            <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
             <div class="sidebar-item" data-target="users">Add Art</div>
-            <div class="sidebar-item" data-target="products">Payment</div>
+            <div class="sidebar-item" data-target="products">View Art</div>
             <div class="sidebar-item" data-target="orders">Profile</div>
-            <div class="sidebar-item" data-target="settings"><a href="{% url 'logout' %}" >Logout</a></div>
+            <div class="sidebar-item" data-target="settings"><a href="{% url 'logout_view' %}" >Logout</a></div>
+
         </div>
+
+        <!-- dashboard -->
+
         <div id="content">
             <div class="section dashboard">
                 <h1>Dashboard Content</h1>
@@ -40,31 +120,33 @@
                     <div class="one">
                         <div id="dashboard_detail1"><br>
                             <h1>Total Arts Uploaded:</h1>
-                            <p id="Art_detail1">5</p>
+                            <p id="Art_detail1">{{ total }}</p>
                         </div><br><br>
                         <div id="dashboard_detail1"><br>
                             <h1>Arts Approved:</h1>
-                            <p id="Art_detail1">5</p>
+                            <p id="Art_detail1">{{ art }}</p>
                         </div><br><br>
                     </div>
                     <div class="two">
                         <div id="dashboard_detail1"><br>
                             <h1>Art Sold:</h1>
-                            <p id="Art_detail1">5</p>
+                            <p id="Art_detail1">{{ arts_sold }}</p>
                         </div><br><br>
                         <div id="dashboard_detail1"><br>
                             <h1>Earned Income:</h1>
-                            <p id="Art_detail1">5</p>
+                            <p id="Art_detail1">${{ earned_income }}</p>
                         </div>
                     </div>
                 </div>
             </div>
+            
+
+            <!-- upload-art -->
+            
             <div class="section users">
                
 
     <center><button id="uploadButton" class="management_btn" onclick="showContent('upload')">Upload Art</button>
-    <button id="editButton" class="management_btn" onclick="showContent('edit')">Edit Art</button>
-    <button id="deleteButton" class="management_btn" onclick="showContent('delete')">Delete Art</button>
 </center>
     <div id="contentContainer">
         <!-- Content will be dynamically added here -->
@@ -72,68 +154,148 @@
 
     <div id="art-upload-form" class="art-form">
         <h1>Upload Art</h1>
-        <form action="#">
-            <input type="text" id="uploadArtist_name" placeholder="Name"><br><br>
-            <input type="text" id="uploadArt_type" placeholder="Art Type (e.g., oil paint)"><br><br>
-            <input type="text" id="uploadArt_size" placeholder="Art Size (e.g., 1500x1200)"><br><br>
-            <input type="number" id="uploadArt_price" placeholder="Art Price"><br><br>
-            <input type="number" id="uploadArt_year" placeholder="Year"><br><br>
+        <form method="POST" action="{% url 'upload_art' %}" enctype="multipart/form-data" onsubmit="return validateArtForm()">
+            {% csrf_token %}
+            <input type="text" id="uploadArtist_name" placeholder="Name" name="uploadArt_name" required><br><br>
+            <select id="uploadArt_type" name="uploadArt_type" required>
+                <option value="Painting">Painting</option>
+                <option value="Oil-painting">Oil Painting</option>
+                <option value="Pencil-drawing">Pencil Drawing</option>
+            </select><br><br>
+            <select id="uploadArt_size" name="uploadArt_size" required>
+                <option value="4 x 8">4 x 8</option>
+                <option value="5 x 7">5 x 7</option>
+                <option value="8 x 10">8 x 10</option>
+                <option value="9 x 12">9 x 12</option>
+                <option value="16 x 20">16 x 20</option>
+                <option value="18 x 24">18 x 24</option>
+            </select><br><br>
+            <input type="number" id="uploadArt_price" placeholder="Art Price" name="uploadArt_price" required><br><br>
+            <input type="number" id="uploadArt_year" placeholder="Year" name="uploadArt_year" required><br><br>
             <label for="uploadArt_image">Upload Images:</label>
-            <input type="file" id="uploadArt_image" accept="image/png"><br><br><br><br>
+            <input type="file" id="uploadArt_image" accept="image/png" name="uploadArt_image" required><br><br><br><br>
             <label for="uploadArt_certificate">Upload Certificate:</label>
-            <input type="file" id="uploadArt_certificate" accept="application/pdf"><br><br><br><br>
-            <textarea name="uploadArt_description" placeholder="Enter a description here..." id="uploadArt_summary"></textarea><br><br>
+            <input type="file" id="uploadArt_certificate" accept="application/pdf" name="uploadArt_certificate" required><br><br><br><br>
+            <textarea name="uploadArt_description" placeholder="Enter a description here..." id="uploadArt_summary" name="uploadArt_summary" required></textarea><br><br>
             <button type="submit" id="upload-art-submit">Upload</button>
         </form>
+        <p id="error_msg" style="color:red; font-size:15px"></p>
     </div>
+</div>
 
-    <div id="art-edit-form" class="art-form">
-        <h1 class="demo">Edit Art</h1>
-        <form action="#">
-            <input type="text" id="editArtist_id" placeholder="Art ID"><br>
-            <button type="submit" id="search-edit-art-submit">search</button><br><br>
-            <input type="text" id="editArtist_name" placeholder="Name"><br><br>
-            <input type="text" id="editArt_type" placeholder="Art Type (e.g., oil paint)"><br><br>
-            <input type="text" id="editArt_size" placeholder="Art Size (e.g., 1500x1200)"><br><br>
-            <input type="number" id="editArt_price" placeholder="Art Price"><br><br>
-            <input type="number" id="editArt_year" placeholder="Year"><br><br>
-            <textarea name="editArt_description" placeholder="Enter a description here..." id="editArt_summary"></textarea><br><br>
-            <button type="submit" id="edit-art-submit">Edit</button>
-        </form>
-    </div>
+    <!-- view art -->
 
-    <div id="art-delete-form" class="art-form">
-        <h1>Delete Art</h1>
-        <form action="#">
-            <input type="text" id="deleteArtist_id" placeholder="Art ID"><br>
-            <button type="submit" id="search-delete-art-submit">search</button><br><br>
-            <input type="text" id="deleteArtist_name" placeholder="Name"><br><br>
-            <input type="text" id="deleteArt_type" placeholder="Art Type (e.g., oil paint)"><br><br>
-            <input type="text" id="deleteArt_size" placeholder="Art Size (e.g., 1500x1200)"><br><br>
-            <input type="number" id="deleteArt_price" placeholder="Art Price"><br><br>
-            <input type="number" id="deleteArt_year" placeholder="Year"><br><br>
-            <textarea name="deleteArt_description" placeholder="Enter a description here..." id="deleteArt_summary"></textarea><br><br>
-            <button type="submit" id="delete-art-submit">Delete</button>
-        </form>
-    </div>
-            </div>
+    
             <div class="section products">
-                <h1>Products Content</h1>
+                <h1>Upload Arts</h1>
+                {% if messages %}
+                        <div class="messages" id="report_login">
+                            {% for message in messages %}
+                                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% for artdata in artdata %}
+                    <div class="art_body">
+                        <div class="art_img">
+                            <center><img src="{{ artdata.image.url }}" alt=""  class="view_img"></center>
+                        </div>
+                        <div class="art_details">
+                            <p class="art-detail">Art ID: {{ artdata.art_id }}</p>
+                            <p class="art-detail">Name: {{ artdata.name }}</p>
+                            <p class="art-detail">Type: {{ artdata.art_type }}</p>
+                            <p class="art-detail">Size: {{ artdata.size }}</p>
+                            <p class="art-detail">Price: {{ artdata.price }}</p>
+                            <p class="art-detail">Year: {{ artdata.year }}</p>
+                            <p class="art-detail" style="color: red;">Status: {{ artdata.approval_status }}</p>
+                            <p class="art-detail">Description: {{ artdata.description }}</p>
+                            <center>
+                                <button type="submit" class="edit-art-submit" onclick="openEditModal('{{ artdata.art_id }}')">Edit</button>
+                                <button type="submit" class="delete-art-submit" style="background-color: red;">Delete</button>
+                                
+                            </center><br>
+                        </div>
+                    </div><br><br>
+                    {% endfor %}
+
+                    <!-- update-art -->
+
+                    <div id="editModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeEditModal()">&times;</span>
+                            <h2>Update Art Here.....</h2>
+                            
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                {% for artdata in artdata %}
+                                <!-- {{ edit_form.as_p }}  Render the edit form here -->
+                                <input type="text" id="uploadArtist_name" placeholder="Name" name="uploadArt_name" value="{{ artdata.name }}" required><br><br>
+                                <select id="uploadArt_type" name="uploadArt_type" required>
+                                    <option value="Painting" {% if artdata.art_type == "Painting" %}selected{% endif %}>Painting</option>
+                                    <option value="Oil-painting" {% if artdata.art_type == "Oil-painting" %}selected{% endif %}>Oil Painting</option>
+                                    <option value="Pencil-drawing" {% if artdata.art_type == "Pencil-drawing" %}selected{% endif %}>Pencil Drawing</option>
+                                </select><br><br>
+                                <select id="uploadArt_size" name="uploadArt_size" required>
+                                    <option value="4 x 8" {% if artdata.size == "4 x 8" %}selected{% endif %}>4 x 8</option>
+                                    <option value="5 x 7" {% if artdata.size == "5 x 7" %}selected{% endif %}>5 x 7</option>
+                                    <option value="8 x 10" {% if artdata.size == "8 x 10" %}selected{% endif %}>8 x 10</option>
+                                    <option value="9 x 12" {% if artdata.size == "9 x 12" %}selected{% endif %}>9 x 12</option>
+                                    <option value="16 x 20" {% if artdata.size == "16 x 20" %}selected{% endif %}>16 x 20</option>
+                                    <option value="18 x 24" {% if artdata.size == "18 x 24" %}selected{% endif %}>18 x 24</option>
+                                </select><br><br>
+                                <input type="number" id="uploadArt_price" placeholder="Art Price" name="uploadArt_price" value="{{ artdata.price }}" required><br><br>
+                                <input type="number" id="uploadArt_year" placeholder="Year" name="uploadArt_year" value="{{ artdata.year }}" required><br><br>
+                                <label for="uploadArt_image">Upload Images:</label>
+                                <input type="file" id="uploadArt_image" accept="image/png" name="uploadArt_image" required><br><br><br><br>
+                                <label for="uploadArt_certificate">Upload Certificate:</label>
+                                <input type="file" id="uploadArt_certificate" accept="application/pdf" name="uploadArt_certificate" required><br><br><br><br>
+                                <button type="submit" id="upload-art-submit">Save</button>
+                                {% endfor %}
+                            </form>
+                            
+                        </div>
+                    </div>
             </div>
+            
+            
+            <!-- profile area -->
+                
+
             <div class="section orders">
-                <form action="#">
-                    <input type="text" id="name" placeholder="Art Name">
-                    <input type="text" id="arttype" placeholder="Art Type (e.g., oil paint)">
-                    <input type="text" id="artsize" placeholder="Art Size (e.g., 1500x1200)">
-                    <input type="number" id="artprice" placeholder="Art Price">
-                    <input type="number" id="artyear" placeholder="Year">
-                    <label for="artimage">Upload Images:</label>
-                    <input type="file" id="artimage"><br><br>
-                    <label for="artimage">Upload Certificate:</label>
-                    <input type="file" id="artimage"><br><br>
-                    <textarea name="description" placeholder="Enter a description here..." id="artsummary"></textarea>
-                    <button type="submit" id="upload-art-submit">Upload</button>
-                </form> 
+                <div class="container rounded bg-white mt-5">
+                    <div class="row">
+                        <div class="col-md-4 border-right">
+                            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" src="" width="90"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="p-3 py-5">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex flex-row align-items-center back"><i class="fa fa-long-arrow-left mr-1 mb-1"></i>
+                                        <h6>Back to home</h6>
+                                    </div>
+                                    <h6 class="text-right">Edit Profile</h6>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-6"><input type="text" class="form-control" placeholder="first name" value="John"></div>
+                                    <div class="col-md-6"><input type="text" class="form-control" value="Doe" placeholder="Doe"></div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6"><input type="text" class="form-control" placeholder="Email" value="john_doe12@bbb.com"></div>
+                                    <div class="col-md-6"><input type="text" class="form-control" value="+19685969668" placeholder="Phone number"></div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6"><input type="text" class="form-control" placeholder="address" value="D-113, right avenue block, CA,USA"></div>
+                                    <div class="col-md-6"><input type="text" class="form-control" value="USA" placeholder="Country"></div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6"><input type="text" class="form-control" placeholder="Bank Name" value="Bank of America"></div>
+                                    <div class="col-md-6"><input type="text" class="form-control" value="043958409584095" placeholder="Account Number"></div>
+                                </div>
+                                <div class="mt-5 text-right"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="section settings">
                 <h1>Settings Content</h1>

@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css\artist_view1.css' %}">
+    <title>Seller Page</title>
+    <style>
+        /* Add these styles to your existing CSS */
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-top: 20px;
+        }
+    
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #f2f2f2;
+        }
+    
+        td.image {
+            padding: 0;
+        }
+    
+        img {
+            max-width: 100px;
+            height: auto;
+        }
+    
+        .action-button {
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+    
+        .approve {
+            background-color: green;
+            color: white;
+        }
+    
+        .reject {
+            background-color: red;
+            color: white;
+        }
+    
+        /* Apply styles to alternate rows for better readability */
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    
+        /* Style the pop-up */
+        .image-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+    
+        .popup-content {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
+        }
+    
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    
+        #popupImage {
+            max-width: 90%;
+            max-height: 90%;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="body">
+
+        <!-- side-pannel -->
+
+        <div id="sidebar">
+            <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            <h1>&emsp;{{ user.username }}</h1>
+            <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
+            <div class="sidebar-item" data-target="users">Add Art</div>
+            <div class="sidebar-item" data-target="products">View Art</div>
+            <div class="sidebar-item" data-target="orders">Profile</div>
+            <div class="sidebar-item" data-target="settings"><a href="{% url 'logout_view' %}" >Logout</a></div>
+
+        </div>
+
+        <!-- dashboard -->
+
+        <div id="content">
+            <div class="section dashboard">
+                <h1>Dashboard Content</h1>
+                <div class="main">
+                    <div class="one">
+                        <div id="dashboard_detail1"><br>
+                            <h1>Total Arts Uploaded:</h1>
+                            <p id="Art_detail1">{{ total }}</p>
+                        </div><br><br>
+                        <div id="dashboard_detail1"><br>
+                            <h1>Arts Approved:</h1>
+                            <p id="Art_detail1">{{ art }}</p>
+                        </div><br><br>
+                    </div>
+                    <div class="two">
+                        <div id="dashboard_detail1"><br>
+                            <h1>Art Sold:</h1>
+                            <p id="Art_detail1">{{ arts_sold }}</p>
+                        </div><br><br>
+                        <div id="dashboard_detail1"><br>
+                            <h1>Earned Income:</h1>
+                            <p id="Art_detail1">${{ earned_income }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <!-- upload-art -->
+            
+        <div class="section users">
+               
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Year</th>
+                        <th>Certificate</th>
+                        <th>Image</th>
+                        <th>Approval Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for art in art_data %}
+                    <tr>
+                        <td>{{ art.name }}</td>
+                        <td>{{ art.art_type }}</td>
+                        <td>{{ art.size }}</td>
+                        <td>{{ art.year }}</td>
+                        <td class="certificate" ><a href="{{ art.certificate.url }}">{{ art.certificate }}</a></td>
+                        <td class="image">
+                            <img src="{{ art.image.url }}" alt="{{ art.name }}" width="100px" height="100px" onclick="openPopup('{{ art.image.url }}')">
+                        </td>
+                        <td>{{ art.approval_status }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'admin_pannel' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="art_id" value="{{ art.id }}">
+                                <input type="hidden" name="approval_status" value="{% if art.approval_status == 'approved' %}rejected{% else %}approved{% endif %}">
+                                <button type="submit" class="action-button {% if art.approval_status == 'approved' %}reject{% endif %}">
+                                    {% if art.approval_status == 'approved' %}
+                                    Reject
+                                    {% else %}
+                                    Approve
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="image-popup" id="imagePopup">
+                <div class="popup-content">
+                    <span class="close" onclick="closePopup()">&times;</span>
+                    <img id="popupImage" src="" alt="Popup Image">
+                </div>
+            </div>
+        </div>
+
+    <!-- view art -->
+
+    
+            <div class="section products">
+                <h1>Upload Arts</h1>
+                {% if messages %}
+                        <div class="messages" id="report_login">
+                            {% for message in messages %}
+                                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% for artdata in artdata %}
+                    <div class="art_body">
+                        <div class="art_img">
+                            <center><img src="{{ artdata.image.url }}" alt=""  class="view_img"></center>
+                        </div>
+                        <div class="art_details">
+                            <p class="art-detail">Art ID: {{ artdata.art_id }}</p>
+                            <p class="art-detail">Name: {{ artdata.name }}</p>
+                            <p class="art-detail">Type: {{ artdata.art_type }}</p>
+                            <p class="art-detail">Size: {{ artdata.size }}</p>
+                            <p class="art-detail">Price: {{ artdata.price }}</p>
+                            <p class="art-detail">Year: {{ artdata.year }}</p>
+                            <p class="art-detail" style="color: red;">Status: {{ artdata.approval_status }}</p>
+                            <p class="art-detail">Description: {{ artdata.description }}</p>
+                            <center>
+                                <button type="submit" class="edit-art-submit">Update</button>
+                                <button type="submit" class="delete-art-submit" style="background-color: red;">Delete</button>
+                            </center><br>
+                        </div>
+                    </div><br><br>
+                    {% endfor %}
+            </div>
+            
+            
+            <!-- profile area -->
+                
+
+            <div class="section orders">
+                <div class="art-body">
+                    <input type="text" id="name" placeholder="Art Name">
+                    <input type="text" id="arttype" placeholder="Art Type (e.g., oil paint)">
+                    <input type="text" id="artsize" placeholder="Art Size (e.g., 1500x1200)">
+                    <input type="number" id="artprice" placeholder="Art Price">
+                    <input type="number" id="artyear" placeholder="Year">
+                    <label for="artimage">Upload Images:</label>
+                    <input type="file" id="artimage"><br><br>
+                    <label for="artimage">Upload Certificate:</label>
+                    <input type="file" id="artimage"><br><br>
+                    <textarea name="description" placeholder="Enter a description here..." id="artsummary"></textarea>
+                    <button type="submit" id="upload-art-submit">Upload</button>
+                
+            </div>
+            <div class="section settings">
+                <h1>Settings Content</h1>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const target = item.getAttribute('data-target');
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    document.querySelector(`.${target}`).style.display = 'block';
+                });
+            });
+            
+            // Show the initial section (Dashboard)
+            document.querySelector('.dashboard').style.display = 'block';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+        
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const target = item.getAttribute('data-target');
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    document.querySelector(`.${target}`).style.display = 'block';
+                });
+            });
+        
+            // Show the initial section (Dashboard)
+            document.querySelector('.dashboard').style.display = 'block';
+        
+            // Hide all art forms initially
+            const artForms = document.querySelectorAll('.art-form');
+            artForms.forEach(form => {
+                form.style.display = 'none';
+            });
+        });
+
+            // Function to open the image pop-up
+    function openPopup(imageSrc) {
+        var popup = document.getElementById("imagePopup");
+        var popupImg = document.getElementById("popupImage");
+        popup.style.display = "block";
+        popupImg.src = imageSrc;
+    }
+    
+    // Function to close the image pop-up
+    function closePopup() {
+        var popup = document.getElementById("imagePopup");
+        popup.style.display = "none";
+    }
+        
+ </script>
+</body>
+</html>

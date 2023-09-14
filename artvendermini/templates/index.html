@@ -1,0 +1,163 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <title>ESTY_Index</title>
+</head>
+
+<body>
+    <div id="full_body">
+
+    <!--Head section-->
+    <div id="head_section">
+        <div id="head_details">
+            <div id="web_name">
+                ArtVendor
+            </div>
+            <div id="link">
+                <a href="index.html">Home</a>
+                <a href="index.html">Art</a>
+                <a href="index.html">Artist</a>
+                <a href="#Service_section">Our services</a>
+                <a href="contact.html">Contact</a>
+                <a href="login.html">Login</a>
+            </div>
+        </div>
+    </div><br><br>
+
+    <div id="aboutus_section">
+        <div class="aboutus">
+            <u><h2>About Us</h2></u><br>
+            <p>Masters Collection is over Two Decades old Indian Art Gallery based in Kolkata, India. The primary vision of the gallery is to procure, advice & promote an exclusive range of Indian Contemporary Art, Indian Modern Art & Indian Paintings by exploring and evaluating artists from across India.Over last few years Indian Art has gained fame not only at national but international level and it is with this aim that the gallery currently showcases some of the finest collection of Indian Artworks & Indian Paintings of eminent and famous artists of Bengal & rest of India.</p>
+        </div>
+        <div id="abtus_img">
+            <img src="{% static 'images/art_background.jpg' %}" alt="" id="aboutus_img">
+        </div>
+    </div><br><br>
+    
+
+    <!--services provided-->
+
+    <!-- <div id="Service_section">
+        <h2>
+            <center>--------------- OUR SERVICES ---------------</center>
+        </h2><br><br>
+        <div id="services">
+            <div id="service1" class="service">
+                <img src="semiar_hall.jpg" alt="" id="img"><br><br>
+                <h4>SEMINAR HALL</h4>
+            </div>
+            <div id="service2" class="service">
+                <img src="wedding_hall.jpg" alt="" id="img"><br><br>
+                <h4>WEDDING HALL</h4>
+            </div>
+            <div id="service3" class="service">
+                <img src="ground.jpg" alt="" id="img"><br><br>
+                <h4>OPEN GROUND HALL</h4>
+            </div>
+        </div>
+    </div><br><br>
+    <hr><br><br> -->
+
+
+    <!--wedding section-->
+
+    <h2>
+        <center>--------------- ARTS ---------------</center>
+    </h2><br><br>
+    <div id="wedding_section">
+        {% for artdata in artdata %}
+        {% if artdata.is_approved %}
+        <div class="card">
+            <img src="{{ artdata.image.url }}" alt="" style="height:350px;width:300px; ">
+            <div class="card__content">
+              <p class="card__title">Name: {{ artdata.name }}</p>
+              <p class="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+              <input type="button" id="wedding_showmore_button" value="show more">
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                            </div><div id="wedding_section">
+                        {% endif %}
+        {% endif %}
+          {% endfor %}
+       </div></div>
+        <br><br>
+    <br><br>
+    <hr><br><br>
+
+    <!--confrence section-->
+
+    
+
+    <!--working section-->
+    
+    <h2>
+        <center>--------------- HOW IT WORKS? ---------------</center>
+    </h2><br><br>
+    <div id="working_section">
+        <div id="search" class="working">
+                <img src="{% static 'images/search.webp' %}" alt="" id="working_img">
+                <p style="padding-top: 60px; font-size: 20px;">Find your ideal event venue, compare photos, and access special offers with our platform's tailored function packages.</p>
+        </div>
+        <div id="search" class="working" >
+                <img src="{% static 'images/rupee.webp' %}" alt="" id="working_img" >
+                <p style="padding-top: 27px; font-size: 20px;">"Receive custom quotes from your selected venues with just a click of the 'Get Free Quotes' button</p>
+        </div>
+        <div id="search" class="working" >
+                <img src="{% static 'images/calender.webp' %}" alt="" id="working_img">
+                 <p style="padding-top: 50px; font-size: 20px;">Effortlessly select and book your perfect venue in seconds, saving you both time and money.</p>
+        </div>
+    </div><br><br>
+    <hr><br><br>
+
+    <!--follow section-->
+
+    <div id="connection_section">
+        <h2>
+            <center>--------------- Follow Us On---------------</center>
+        </h2><br><br>
+        <img src="{% static 'images/connect.jpg' %}" alt="" id="img_follow">
+    </div><br><br><br><br>
+
+    <!--end section-->
+<footer>
+    <div id="end_section">
+        <div id="address" class="End_section"><br><br>
+            <h3>Address</h3>
+            <p>Esty Booking Center</p>
+            <p>Kanjirapally P O</p>
+            <p>Kottayam</p>
+        </div>
+        <div id="Link" class="End_section"><br><br>
+            <h3>Link</h3>
+            <ul>
+                <li>Home</li>
+                <li>About_us</li>
+                <li>Contact</li>
+                <li>Sign-in</li>
+            </ul>
+        </div>
+        <div id="follow" class="End_section"><br><br>
+            <h3>Follow_us</h3>
+            <ul>
+                <li>Facebook</li>
+                <li>Instagram</li>
+                <li>Twitter</li>
+            </ul>
+        </div>
+        <div id="mail" class="End_section"><br><br>
+            <input type="text" placeholder="Mail id" id="mail_text"><br><br>
+            <input type="button" value="Suscribe" id="mail_button">
+        </div>
+    </div><br>
+    <center>2022 All Rights Reserved Esty Booking Center</center><br>
+</div>
+</footer>
+    
+</body>
+
+</html>

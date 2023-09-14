@@ -1,0 +1,286 @@
+/* Default styles for larger screens */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: grey;
+}
+
+/* Header Section */
+#head_section {
+    background-image: url("../images/art_background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 620px;
+}
+
+#head_details {
+    background-color: rgba(0, 0, 0, 0.11);
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 850px;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
+#web_name {
+    font-size: 30px;
+    color: white;
+}
+
+#link {
+    margin-left: -145px;
+}
+
+a {
+    text-decoration: none;
+    padding: 10px 10px 10px 10px;
+    color: black;
+    font-size: 19px;
+    color: white;
+}
+
+h2 {
+    font-size: 30px;
+}
+
+/* Service Section */
+#services {
+    display: flex;
+    justify-content: space-between;
+}
+
+.service {
+    margin-left: 25px;
+    margin-right: 25px;
+    height: 275px;
+    width: 550px;
+    padding-left: 37px;
+    padding-top: 30px;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.service:hover {
+    background-color: rgba(128, 128, 128, 0.219);
+}
+
+h4 {
+    padding-left: 80px;
+    font-size: 20px;
+}
+
+#img {
+    height: 225px;
+    width: 325px;
+    margin-right: 100px;
+}
+
+/* About Us Section */
+#aboutus_section {
+    display: flex;
+}
+
+.aboutus {
+    margin-left: 79px;
+    margin-right: 159px;
+    font-size: 22px;
+    padding-top: 25px;
+}
+
+#aboutus_img {
+    height: 350px;
+    width: 350px;
+    margin-right: 120px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* Card Styles */
+.card {
+    position: relative;
+    width: 300px;
+    height: 350px;
+    background-color: #f2f2f2;
+    margin-left: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    perspective: 1000px;
+    box-shadow: 0 0 0 5px #ffffff80;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card svg {
+    width: 48px;
+    fill: #333;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+}
+
+.card__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f2f2f2;
+    transform: rotateX(-90deg);
+    transform-origin: bottom;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover .card__content {
+    transform: rotateX(0deg);
+}
+
+.card__title {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+    font-weight: 700;
+}
+
+.card:hover svg {
+    scale: 0;
+}
+
+.card__description {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #777;
+    line-height: 1.4;
+}
+
+/* Working Section */
+#working_section {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 140px;
+    margin-right: 140px;
+    gap: 20px;
+}
+
+.working {
+    border: solid;
+    border-color: wheat;
+    padding-left: 25px;
+    padding-right: 25px;
+    height: 270px;
+    width: 350px;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.working:hover {
+    background-color: rgba(128, 128, 128, 0.219);
+}
+
+#working_img {
+    padding-left: 95px;
+    padding-top: 25px;
+}
+
+#working_parra {
+    padding-top: 60px;
+    font-size: 20px;
+}
+
+/* Follow Section */
+#img_follow {
+    margin-left: 580px;
+    height: 70px;
+    width: 200px;
+    cursor: pointer;
+}
+#wedding_section{
+
+     display: flex;
+     margin-left: 150px;
+     margin-top: 25px;
+
+}
+
+/* End Section */
+#end_section {
+    height: 300px;
+    display: flex;
+    justify-content: space-between;
+    background-color: black;
+    color: white;
+}
+
+.end_section {
+    margin-top: 30px;
+    padding-left: 60px;
+    padding-right: 60px;
+    font-size: 20px;
+    padding-bottom: 30px;
+}
+
+#mail_text {
+    height: 40px;
+    width: 250px;
+    border: none;
+    padding: 15px 15px 15px 15px;
+    border-radius: 12px;
+}
+
+#mail_button {
+    height: 40px;
+    width: 100px;
+    border: none;
+    background-color: green;
+    cursor: pointer;
+    color: black;
+    border-radius: 12px;
+}
+
+#link {
+    margin-top: 27px;
+}
+
+hr {
+    margin-left: 250px;
+    margin-right: 250px;
+}
+
+#logout {
+    height: 70px;
+    width: 50px;
+    background-color: red;
+    position: absolute;
+    margin-left: 1200px;
+    margin-top: 70px;
+}
+#menu-icon {
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    display: none; /* Initially hide the icon */
+}
+
+
+
+
+

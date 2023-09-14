@@ -1,4 +1,5 @@
 from telnetlib import AUTHENTICATION
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import UserData
@@ -7,7 +8,10 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth import logout as django_logout
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import UploadArtDetail
+
 
 
 def signup(request):
@@ -39,7 +43,7 @@ def signup(request):
     
 
 
-def login_view(request):
+def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -60,68 +64,97 @@ def login_view(request):
     return render(request, 'login.html')
 
 
-def Artist_view(request):
-    return render(request,"Artist_view.html")
-    
-        
-   
+# def Artist_view(request):
+#     return render(request,"Artist_view.html")
 
+@login_required
 def logout_view(request):
-    logout(request)
+    auth.logout(request)
     return redirect('login')
 
 
-# def register_user(request):
-#     form = UserRegistrationForm()
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             # Process form data and create user
-#             name = form.cleaned_data['username']
-#             email = form.cleaned_data['useremail']
-#             mobile_number = form.cleaned_data['usernumber']
-#             role = form.cleaned_data['userrole']
-#             password = form.cleaned_data['userpassword']
-            
-#             user = User.objects.create_user(
-#                 username=email,
-#                 email=email,
-#                 password=password,
-#                 first_name=name
-#             )
-#             user = authenticate(username=email, password=password)
-#             if user is not None:
-#                 lg(request, user)
-#                 return redirect('login')  # Redirect to a success pageS               
-#             # Redirect to success page or perform other actions
-#             else:
-#                 messages.info(request,"email already exists")
-#         else:
-#             name = form.cleaned_data['username']
-#             email = form.cleaned_data['useremail']
-#             mobile_number = form.cleaned_data['usernumber']
-#             role = form.cleaned_data['userrole']
-#             password = form.cleaned_data['userpassword']
-#             print(name,email,mobile_number,role,password)
-#             form = UserRegistrationForm()
+def upload_art(request):
+    if request.method == 'POST':
+        name = request.POST.get('uploadArt_name')
+        art_type = request.POST.get('uploadArt_type')
+        size = request.POST.get('uploadArt_size')
+        price = request.POST.get('uploadArt_price')
+        year = request.POST.get('uploadArt_year')
+        image = request.FILES.get('uploadArt_image')
+        certificate = request.FILES.get('uploadArt_certificate')
+        description = request.POST.get('uploadArt_description')
+        
+        # Create and save the art detail to the database
+        art = UploadArtDetail(
+            name=name,
+            art_type=art_type,
+            size=size,
+            price=price,
+            year=year,
+            image=image,
+            certificate=certificate,
+            description=description,
+            user_id=request.user.id
+        )
+        art.save()
+        return redirect('Artist_view')
+
+        # return redirect('art_gallery')  # Redirect to a success page or gallery page
+    else:
+        messages.info(request, "Please fill all field.")
+
+    return render(request, 'Artist_view.html')  # Render the upload form page for GET request
+
+
+
+
+def Artist_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    # art1 =  UploadArtDetail.objects.filter(user_id=request.user.id)
+    total_arts_uploaded = UploadArtDetail.objects.filter(user_id=request.user.id).count()
+    arts_approved = UploadArtDetail.objects.filter(user_id=request.user.id,approval_status='approved').count()
+    artdata = UploadArtDetail.objects.filter(user_id=request.user.id )
+    return render(request, "Artist_view.html", {'artdata': artdata,'total':total_arts_uploaded,'art':arts_approved})
+
+
+def index(request):
+    artdata = UploadArtDetail.objects.filter(approval_status='approved')
+    return render(request, "index.html", {'artdata': artdata})
+
+
+def admin_pannel(request):
+    if request.method == 'POST':
+        art_id = request.POST.get('art_id')
+        approval_status = request.POST.get('approval_status')
+
+        try:
+            art = UploadArtDetail.objects.get(id=art_id)
+            art.approval_status = approval_status
+            art.is_approved = (approval_status == 'approved')  # Set is_approved based on approval_status
+            art.save()
+            return redirect('admin_pannel')
+        except UploadArtDetail.DoesNotExist:
+            return HttpResponse("Art not found.")
+
+    # Retrieve all art data for display in the table
+    art_data = UploadArtDetail.objects.all()
+    return render(request, 'admin_pannel.html', {'art_data': art_data})
+
+
+
+
+def edit_art(request):
+    return redirect('Artist_view')
+
+
+
+
+
+
     
-#     return render(request, 'signup.html', {'form': form})
 
 
-# def user_login(request):
-#     if request.method == 'POST':
-#         form = UserLoginForm(request.POST)
-#         if form.is_valid():
-#             email = form.cleaned_data['email']
-#             password = form.cleaned_data['password']
-#             user = authenticate(request, username=email, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 return redirect('Artist_view')  # Redirect to a success page
-#             else:
-#                 form.add_error('email', "Invalid credentials. Please try again.")  # Add error to the email field
-#     else:
-#         form = UserLoginForm()
 
-#     return render(request, 'login.html', {'form': form})
+
 
