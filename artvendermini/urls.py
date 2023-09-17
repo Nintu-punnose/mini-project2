@@ -12,6 +12,8 @@ urlpatterns = [
     path('upload_art/', views.upload_art, name='upload_art'),
     path('', views.index, name='index'),
     path('admin_pannel/', views.admin_pannel, name='admin_pannel'),
-   
-    # path('dashboard/', views.dashboard, name='dashboard'),
+    path('update_art/<int:art_id>/',views.update_art,name='update_art'),
+    path('delete_art/<int:art_id>/', views.delete_art, name='delete_art'),
+    path('seller_profile/',views.seller_profile,name="seller_profile"),
+    path('images/',views.images,name='images'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

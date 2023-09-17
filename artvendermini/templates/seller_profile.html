@@ -1,0 +1,85 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="{% static 'css\sellerprofile.css'%}">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div id="seller-profile">
+        
+        <div id="seller_image">
+            {% for i in seller %}
+              
+            
+            <center><img id="profile-image" src="{{i.image.url}}" alt="seller's Profile Image" height="300px" width="300px" style="margin-top:100px"></center>
+            {% endfor %}
+            {% if seller is None %}
+            <center><img id="profile-image" src="" alt="seller's Profile Image" height="300px" width="300px" style="margin-top:100px"></center>
+            {% endif %}
+              
+            
+        </div>
+     
+        <div id="seller_details">
+            <center><h1>User Profile</h1></center>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+        {% for i in user %}
+        <input type="text" id="seller-name" name="seller-name" value="{{i.username}}" required><br><br>
+        {% endfor %}
+        {% for i in userdata %}
+        <input type="number" id="seller-number" name="seller-number" value="{{i.number}}" required><br><br>
+        {% endfor %}
+        {% for i in user %}
+        <input type="text" id="seller-email" name="seller-email" value="{{i.email}}" required><br><br>
+        {% endfor %}
+        {% for seller in seller %}
+        <input type="text" id="seller-address" name="seller-address" value="{{seller.address}}" required><br><br>
+    
+       
+        <input type="text" id="seller-district" name="seller-district" value="{{seller.district}}" required><br><br>
+    
+        
+        <input type="text" id="seller-state" name="seller-state" value="{{seller.state}}" required><br><br>
+    
+        
+        <input type="text" id="seller-country" name="seller-country" value="{{seller.country}}" required><br><br>
+    
+        
+        <input type="text" id="seller-pincode" name="seller-pincode" value="{{seller.pincode}}" required><br><br>
+
+        <label for="seller-image" id="details">Select Image</label>
+        <input type="file" id="seller-image" name="seller-image"  required><br><br>
+        {% endfor %}
+        {% if seller is None %}
+        <input type="text" id="seller-address" name="seller-address" value="Address" required><br><br>
+    
+       
+        <input type="text" id="seller-district" name="seller-district" value="District" required><br><br>
+    
+        
+        <input type="text" id="seller-state" name="seller-state" value="State" required><br><br>
+    
+        
+        <input type="text" id="seller-country" name="seller-country" value="Country" required><br><br>
+    
+        
+        <input type="text" id="seller-pincode" name="seller-pincode" value="Pincode" required><br><br>
+
+        <label for="seller-image" id="details">Select Image</label>
+        <input type="file" id="seller-image" name="seller-image"  required><br><br>   
+        {% endif %}
+        <button type="submit" id="update-profile">Update Profile</button>
+    </form>
+        </div>
+
+        
+        
+        
+    </div>
+    
+</body>
+</html>

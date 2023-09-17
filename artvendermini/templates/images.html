@@ -1,0 +1,89 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css\images.css'%}">
+    <title>Document</title>
+</head>
+<body>
+   
+        <div id="head_details">
+            <div id="web_name">
+                ArtVendor
+            </div>
+            <div id="link">
+                <a href="index.html">Home</a>
+                <a href="index.html">Art</a>
+                <a href="index.html">Artist</a>
+                <a href="#Service_section">Our services</a>
+                <a href="contact.html">Contact</a>
+                {% if request.user.is_authenticated %}
+                    <span style="color:red">{{ request.user.username }}</span>
+                {% else %}
+                    <a href="">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    <br><br>
+    <div id="image_body">
+        <div id="img_category">
+            <details id="price_category">
+                <summary>Search by Price</summary><br>
+                <div class="align"> 
+                <input type="checkbox" id="" name="price" value="price">
+                <label for="Below INR 1000"> Below INR 1000</label><br>
+                <input type="checkbox" id="" name="price" value="price">
+                <label for=" INR 1000- INR 2500"> INR 1000- INR 2500</label><br>
+                <input type="checkbox" id="" name="price" value="price">
+                <label for="INR 2500- INR 4500"> INR 2500- INR 4500</label><br>
+                <input type="checkbox" id="" name="price" value="price">
+                <label for="INR 4500- INR 7000"> INR 4500- INR 7000</label><br>
+                <input type="checkbox" id="" name="price" value="price">
+                <label for="Above INR 7000"> Above INR 7000</label><br>
+                </div>
+            </details>
+            <details id="type_category">
+                <summary>Search by Type</summary><br>
+                <div class="align"> 
+                <input type="checkbox" id="" name="type" value="type">
+                <label for="Painting">Painting</label><br>
+                <input type="checkbox" id="" name="type" value="type">
+                <label for="oil-Painting">oil Painting</label><br>
+                <input type="checkbox" id="" name="type" value="type">
+                <label for="Pencil-drawing">pencil drawing</label><br>
+                </div>
+                
+            </details>
+            <details id="size_category">
+                <summary> Search by Size</summary><br>
+                <div class="align"> 
+                <input type="checkbox" id="" name="size" value="size">
+                <label for="4x8">4x8</label><br>
+                <input type="checkbox" id="" name="size" value="size">
+                <label for="5x7">5x7</label><br>
+                <input type="checkbox" id="" name="size" value="size">
+                <label for="8x10">8x10</label><br>
+                <input type="checkbox" id="" name="size" value="size">
+                <label for="9x12">9x12</label><br>
+                <input type="checkbox" id="" name="size" value="size">
+                <label for="16x20">16x20</label><br>
+                <input type="checkbox" id="" name="size" value="size">
+                <label for="18x24">18x24</label><br>
+                </div>
+            </details>
+        </div>
+        <div id="image_shown">
+            {% for images in images%}
+            <div id="card">
+                <img src="{{images.image.url}}" alt="" id="image"><br><br>
+                <center><p style="font-size: 20px;">{{images.name}}</p></center>
+                <center><p style="font-size: 20px;">{{images.price}}</p></center>
+                <center><p style="font-size: 20px;">{{images.art_type}}</p></center>
+                <center><p style="font-size: 20px;">{{images.size}}</p></center>  
+            </div>
+            {% endfor %}
+
+    </div>
+</body>
+</html>

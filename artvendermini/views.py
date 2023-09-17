@@ -1,6 +1,7 @@
 from telnetlib import AUTHENTICATION
+from urllib import request
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
 from .models import UserData
 from django.contrib import auth
@@ -10,7 +11,7 @@ from django.contrib.auth import logout
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import UploadArtDetail
+from .models import UploadArtDetail,SellerProfile
 
 
 
@@ -53,7 +54,13 @@ def login(request):
         
             if user is not None:
                 auth_login(request, user)
-                return redirect('Artist_view')  # Redirect to your artist view
+                to_role=UserData.objects.get(user_id=request.user.id)
+                if to_role.role=='Artist':
+                    return redirect('Artist_view')
+                elif to_role.role=='customer':
+                    return redirect('index')
+                else:
+                    return redirect('admin_pannel')
             else:
                 # Display error message using messages framework
                 messages.info(request, "Invalid credentials. Please try again.")
@@ -117,7 +124,7 @@ def Artist_view(request):
     artdata = UploadArtDetail.objects.filter(user_id=request.user.id )
     return render(request, "Artist_view.html", {'artdata': artdata,'total':total_arts_uploaded,'art':arts_approved})
 
-
+@login_required
 def index(request):
     artdata = UploadArtDetail.objects.filter(approval_status='approved')
     return render(request, "index.html", {'artdata': artdata})
@@ -142,11 +149,110 @@ def admin_pannel(request):
     return render(request, 'admin_pannel.html', {'art_data': art_data})
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import UploadArtDetail
+
+def update_art(request, art_id):
+    art = get_object_or_404(UploadArtDetail, id=art_id)
+
+    if request.method == 'POST':
+        # Retrieve data from the form
+        name = request.POST.get('uploadArt_name')
+        art_type = request.POST.get('uploadArt_type')
+        size = request.POST.get('uploadArt_size')
+        price = request.POST.get('uploadArt_price')
+        year = request.POST.get('uploadArt_year')
+        image = request.FILES.get('uploadArt_image')
+        certificate = request.FILES.get('uploadArt_certificate')
+        description = request.POST.get('uploadArt_description')
+
+        # Update the art object with the new data
+        art.name = name
+        art.art_type = art_type
+        art.size = size
+        art.price = price
+        art.year = year
+
+        if image:
+            art.image = image
+
+        if certificate:
+            art.certificate = certificate
+
+        art.description = description
+
+        # Save the updated art object
+        art.save()
+
+        # Redirect to the Artist view or any other page you prefer
+        return redirect('Artist_view')
+    else:
+        # Render the update form with the art details
+        return render(request, 'update_art.html', {'art': art, 'is_approved': art.is_approved})
+    
 
 
-def edit_art(request):
-    return redirect('Artist_view')
 
+def delete_art(request, art_id):
+    art = get_object_or_404(UploadArtDetail, id=art_id)
+
+    # Check if the user trying to delete the art is the owner (optional)
+    if request.user == art.user:
+        # Delete the art object from the database
+        art.delete()
+        return redirect('Artist_view')
+    else:
+        return HttpResponse("You don't have permission to delete this art")
+    
+
+def seller_profile(request):
+    user=User.objects.filter(id=request.user.id)
+    userdata=UserData.objects.filter(user_id=request.user.id)
+    userexists=SellerProfile.objects.filter(user_id=request.user.id).exists()
+    if userexists:
+        seller=SellerProfile.objects.filter(user_id=request.user.id)
+    else:
+        seller=None
+        print(seller)
+    if request.method=='POST':
+        phone=request.POST.get('seller-number')
+        userdata1=UserData.objects.get(user_id=request.user.id)
+        userdata1.number=phone
+        userdata1.save()
+        if userexists:
+            seller1=SellerProfile.objects.get(user_id=request.user.id)
+            seller1.district=request.POST.get('seller-district')
+            seller1.state=request.POST.get('seller-state')
+            seller1.country=request.POST.get('seller-country')
+            seller1.address=request.POST.get('seller-address')
+            seller1.pincode=request.POST.get('seller-pincode')
+            image=request.FILES.get('seller-image')
+            if image==None:
+                seller1.image=seller1.image
+            else:
+                seller1.image=image
+            seller1.save()
+            return redirect('seller_profile')
+        else:
+            user1=SellerProfile(
+            district=request.POST.get('seller-district'),
+            state=request.POST.get('seller-state'),
+            country=request.POST.get('seller-country'),
+            address=request.POST.get('seller-address'),
+            pincode=request.POST.get('seller-pincode'),
+            image=request.FILES.get('seller-image'),
+            user_id=request.user.id,
+            )
+            user1.save()
+            return redirect('seller_profile')
+    return render(request,'seller_profile.html',{'user':user,'userdata':userdata,'seller':seller})
+
+
+
+def images(request):
+    images=UploadArtDetail.objects.filter(approval_status='approved')
+   
+    return render(request,'images.html',{'images':images})
 
 
 

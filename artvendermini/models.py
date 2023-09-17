@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 import uuid
 
+from platformdirs import user_data_dir
+
 class UserData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userdata')
     role = models.CharField(max_length=20)
@@ -28,3 +30,17 @@ class UploadArtDetail(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class SellerProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    userdata = models.ForeignKey(UserData, on_delete=models.CASCADE, null=True)
+    district = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    address = models.TextField()
+    pincode = models.CharField(max_length=10)
+    image = models.ImageField(upload_to='seller_profile_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username

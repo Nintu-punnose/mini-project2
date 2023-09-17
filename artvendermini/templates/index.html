@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index1.css' %}">
     <title>ESTY_Index</title>
 </head>
 
@@ -23,7 +23,18 @@
                 <a href="index.html">Artist</a>
                 <a href="#Service_section">Our services</a>
                 <a href="contact.html">Contact</a>
-                <a href="login.html">Login</a>
+                {% if request.user.is_authenticated %}
+                {% if requestto_role.role == "customer" %}
+                    <span style="color:red">{{ request.user.username }}</span>
+                {% else %}
+                    <span style="color:blue">{{ request.user.username }}</span>
+                {% endif %}
+            {% else %}
+                <span style="color:blue">{{ request.user.username }}</span>
+            {% endif %}
+
+            
+            
             </div>
         </div>
     </div><br><br>
@@ -80,11 +91,13 @@
             </div>
         </div>
         {% if forloop.counter|divisibleby:3 and not forloop.last %}
-                            </div><div id="wedding_section">
+        </div><div id="wedding_section">
                         {% endif %}
         {% endif %}
           {% endfor %}
-       </div></div>
+          
+       </div></div><br><br><br>
+       <center><a href="{% url 'images'%}"><button type="submit" id="show_btn">Show more</button></a></center>
         <br><br>
     <br><br>
     <hr><br><br>

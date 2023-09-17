@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css\upload_art.css' %}">
+    <title>Update_art</title>
+    <script>
+        function validateArtForm() {
+            var name = document.getElementById("uploadArtist_name").value;
+            var type = document.getElementById("uploadArt_type").value;
+            var size = document.getElementById("uploadArt_size").value;
+            var price = document.getElementById("uploadArt_price").value;
+            var year = document.getElementById("uploadArt_year").value;
+            var image = document.getElementById("uploadArt_image").value;
+            var certificate = document.getElementById("uploadArt_certificate").value;
+
+            // Check if any field is empty
+            if (name === "" || type === "" || size === "" || price === "" || year === "" ) {
+                document.getElementById("error_msg").innerHTML = "All fields are required.";
+                return false;
+            }
+        
+            // Check if price is 0 or negative
+            if (parseFloat(price) <= 0) {
+                document.getElementById("error_msg").innerHTML = "Price cannot be 0 or negative";
+                return false;
+            }
+        
+            // Check if the year is in the future
+            var currentYear = new Date().getFullYear();
+            if (parseInt(year) !== currentYear) {
+                document.getElementById("error_msg").innerHTML = "Year must be the current year";
+                return false;
+            }
+        
+            // If all checks pass, clear any previous error message
+            document.getElementById("error_msg").innerHTML = "";
+        
+            return true;
+        }
+        
+    </script>
+<body>
+                    <!-- update-art -->
+    <div id="content">
+        <div id="update_content">
+             <h1>Update your art </h1>
+                    <form method="POST" action="" enctype="multipart/form-data" onsubmit="return validateArtForm()">
+                        {% csrf_token %}
+            <label for="" id="details">Art Name:</label>
+            <input type="text" id="uploadArtist_name" placeholder="Name" name="uploadArt_name" value="{{ art.name }}" required><br><br>
+            <label for="" id="details">Art Type:</label>
+            <select id="uploadArt_type" name="uploadArt_type" required>
+                <option value="Painting" {% if artdata.art_type == "Painting" %}selected{% endif %}>Painting</option>
+                <option value="Oil-painting" {% if artdata.art_type == "Oil-painting" %}selected{% endif %}>Oil Painting</option>
+                <option value="Pencil-drawing" {% if artdata.art_type == "Pencil-drawing" %}selected{% endif %}>Pencil Drawing</option>
+            </select><br><br>
+            <label for="" id="details">Art size"</label>
+            <select id="uploadArt_size" name="uploadArt_size" required>
+                <option value="4 x 8" {% if artdata.size == "4 x 8" %}selected{% endif %}>4 x 8</option>
+                <option value="5 x 7" {% if artdata.size == "5 x 7" %}selected{% endif %}>5 x 7</option>
+                <option value="8 x 10" {% if artdata.size == "8 x 10" %}selected{% endif %}>8 x 10</option>
+                <option value="9 x 12" {% if artdata.size == "9 x 12" %}selected{% endif %}>9 x 12</option>
+                <option value="16 x 20" {% if artdata.size == "16 x 20" %}selected{% endif %}>16 x 20</option>
+                <option value="18 x 24" {% if artdata.size == "18 x 24" %}selected{% endif %}>18 x 24</option>
+            </select><br><br>
+            <label for="" id="details">Art price:</label>
+            <input type="number" id="uploadArt_price" placeholder="Art Price" name="uploadArt_price" value="{{ art.price }}" required><br><br>
+            <label for="" id="details">Art Year:</label>
+            <input type="number" id="uploadArt_year" placeholder="Year" name="uploadArt_year" value="{{ art.year }}" required><br><br><br>
+           
+            <label for="uploadArt_imag"  id="details">Upload Images:</label>
+            <input type="file" id="uploadArt_image" accept="image/png" name="uploadArt_image" {% if is_approved %}disabled{% endif %} ><br><br><br><br>
+            
+            <label for="uploadArt_certificate" id="details">Upload Certificate:</label>
+            <input type="file" id="uploadArt_certificate" accept="application/pdf" name="uploadArt_certificate" {% if is_approved %}disabled{% endif %} ><br><br><br><br>
+            <label for="" id="details">Art description:</label> <br><br>
+            <textarea name="uploadArt_description" id="uploadArt_summary" name="uploadArt_summary" required>{{ art.description }}</textarea><br>
+            <p id="error_msg" ></p><br>
+            <button type="submit" id="upload-art-submit">Save</button>
+                    </form><br><br>
+                    <br><br>
+        </div>
+        </div>
+</body>
+</html>
