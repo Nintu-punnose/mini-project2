@@ -103,11 +103,10 @@
 
         <div id="sidebar">
             <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
-            <h1>&emsp;{{ user.username }}</h1>
+            <h1>{{ user.username }}</h1>
             <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
-            <div class="sidebar-item" data-target="users">Add Art</div>
+            <div class="sidebar-item" data-target="users">Art Approval</div>
             <div class="sidebar-item" data-target="products">View Art</div>
-            <div class="sidebar-item" data-target="orders">Profile</div>
             <div class="sidebar-item" data-target="settings"><a href="{% url 'logout_view' %}" >Logout</a></div>
 
         </div>
@@ -120,22 +119,22 @@
                 <div class="main">
                     <div class="one">
                         <div id="dashboard_detail1"><br>
-                            <h1>Total Arts Uploaded:</h1>
-                            <p id="Art_detail1">{{ total }}</p>
+                            <h1>Users</h1>
+                            <p id="Art_detail1">{{ total_users }}</p>
                         </div><br><br>
                         <div id="dashboard_detail1"><br>
-                            <h1>Arts Approved:</h1>
+                            <h1>Artist</h1>
                             <p id="Art_detail1">{{ art }}</p>
                         </div><br><br>
                     </div>
                     <div class="two">
                         <div id="dashboard_detail1"><br>
-                            <h1>Art Sold:</h1>
-                            <p id="Art_detail1">{{ arts_sold }}</p>
+                            <h1>Total Arts Uploaded:</h1>
+                            <p id="Art_detail1">{{ total_arts_uploaded }}</p>
                         </div><br><br>
                         <div id="dashboard_detail1"><br>
-                            <h1>Earned Income:</h1>
-                            <p id="Art_detail1">${{ earned_income }}</p>
+                            <h1>Arts Approved:</h1>
+                            <p id="Art_detail1">{{ approved_arts_count }}</p>
                         </div>
                     </div>
                 </div>

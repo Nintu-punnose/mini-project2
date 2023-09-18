@@ -64,7 +64,7 @@
         
             // Check if the year is in the future
             var currentYear = new Date().getFullYear();
-            if (parseInt(year) < currentYear || parseInt(year) > currentYear) {
+            if (parseInt(year) > currentYear) {
                 document.getElementById("error_msg").innerHTML="Year must be current year"
                 return false;
             }

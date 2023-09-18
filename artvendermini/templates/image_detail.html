@@ -1,0 +1,98 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/image_detail.css' %}">
+    <style>
+        /* Add CSS for the magnification effect */
+        #select_image {
+            position: relative;
+        }
+        #magnifier {
+            position: absolute;
+            border: 1px solid #ccc;
+            background: white;
+            display: none;
+            overflow: hidden;
+        }
+        #magnifier img {
+            width: 400px; /* Adjust the magnification level as needed */
+            height: auto;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
+        </div>
+        <div id="link">
+            <a href="index.html">Home</a>
+            <a href="index.html">Art</a>
+            <a href="index.html">Artist</a>
+            <a href="#Service_section">Our services</a>
+            <a href="contact.html">Contact</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+            {% else %}
+                <a href="">Login</a>
+            {% endif %}
+        </div>
+    </div><br><br><br>
+    <div id="detail_img_body">
+        <div id="select_image">
+            <div id="magnifier"></div>
+            <img src="{{img_id.image.url}}" alt="" id="img">
+        </div>
+        <div id="select_details"><br>
+                <p id="details">Art Id: {{img_id.art_id}} </p>
+                <p id="details">Art Name: {{img_id.name}}</p>
+                <p id="details">Art Type: {{img_id.art_type}}</p>
+                <p id="details">Art size: {{img_id.size}}</p>
+                <p id="details">Art Price: {{img_id.price}}</p>
+                <p id="details">Year: {{img_id.year}}</p>
+                <p id="details">Description: {{img_id.description}}</p>
+                <button type="submit" id="enquire_btn" style="background-color: rgb(245, 58, 33);">Enquire</button>
+                <button type="submit" id="cart_btn" style="background-color: rgb(62, 184, 233);">Cart</button><br>
+                <button type="submit" id="buy_btn" style="background-color: rgb(50, 238, 33); width:560px">Buy</button>
+        </div>
+    </div>
+    <script>
+        // Add JavaScript for the magnification effect
+        const selectImage = document.getElementById("select_image");
+        const img = document.getElementById("img");
+        const magnifier = document.getElementById("magnifier");
+
+        selectImage.addEventListener("mousemove", (e) => {
+            const imgRect = img.getBoundingClientRect();
+            const x = e.clientX - imgRect.left;
+            const y = e.clientY - imgRect.top;
+
+            const imgWidth = img.width;
+            const imgHeight = img.height;
+            const magnifierWidth = magnifier.clientWidth;
+            const magnifierHeight = magnifier.clientHeight;
+
+            const backgroundX = (x / imgWidth) * (imgWidth - magnifierWidth);
+            const backgroundY = (y / imgHeight) * (imgHeight - magnifierHeight);
+
+            magnifier.style.backgroundImage = `url('${img.src}')`;
+            magnifier.style.backgroundSize = `${imgWidth}px ${imgHeight}px`;
+            magnifier.style.backgroundPosition = `-${backgroundX}px -${backgroundY}px`;
+
+            magnifier.style.left = e.clientX + 10 + "px"; // Adjust the position as needed
+            magnifier.style.top = e.clientY + 10 + "px"; // Adjust the position as needed
+        });
+
+        selectImage.addEventListener("mouseenter", () => {
+            magnifier.style.display = "block";
+        });
+
+        selectImage.addEventListener("mouseleave", () => {
+            magnifier.style.display = "none";
+        });
+    </script>
+</body>
+</html>

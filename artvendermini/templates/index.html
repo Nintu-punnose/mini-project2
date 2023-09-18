@@ -19,18 +19,21 @@
             </div>
             <div id="link">
                 <a href="index.html">Home</a>
-                <a href="index.html">Art</a>
+                <a href="{% url 'images' %}">Art</a>
                 <a href="index.html">Artist</a>
                 <a href="#Service_section">Our services</a>
                 <a href="contact.html">Contact</a>
                 {% if request.user.is_authenticated %}
                 {% if requestto_role.role == "customer" %}
                     <span style="color:red">{{ request.user.username }}</span>
+                    <a href="{% url 'logout_view' %}" >Logout</a>
                 {% else %}
                     <span style="color:blue">{{ request.user.username }}</span>
+                    <a href="{% url 'logout_view' %}" >Logout</a>
                 {% endif %}
             {% else %}
                 <span style="color:blue">{{ request.user.username }}</span>
+                <span style="color:blue"><a href="{% url 'logout_view' %}" >Logout</a></span>
             {% endif %}
 
             

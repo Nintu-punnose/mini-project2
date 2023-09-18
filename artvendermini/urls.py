@@ -16,4 +16,6 @@ urlpatterns = [
     path('delete_art/<int:art_id>/', views.delete_art, name='delete_art'),
     path('seller_profile/',views.seller_profile,name="seller_profile"),
     path('images/',views.images,name='images'),
+    path('image_detail/<int:id>/',views.image_detail,name='image_detail'),
+    path('admin_dashboard/',views.admin_dashboard,name='admin_dashboard'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

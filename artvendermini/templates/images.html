@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css\images.css'%}">
     <title>Document</title>
+    
 </head>
 <body>
    
@@ -77,10 +78,8 @@
             {% for images in images%}
             <div id="card">
                 <img src="{{images.image.url}}" alt="" id="image"><br><br>
-                <center><p style="font-size: 20px;">{{images.name}}</p></center>
-                <center><p style="font-size: 20px;">{{images.price}}</p></center>
-                <center><p style="font-size: 20px;">{{images.art_type}}</p></center>
-                <center><p style="font-size: 20px;">{{images.size}}</p></center>  
+                <center><p style="font-size: 20px;">{{images.name}}</p></center><br><br>
+                <a href="{% url 'image_detail' images.id %}"><center><button type="submit" id="submit">more</button></center></a>
             </div>
             {% endfor %}
 

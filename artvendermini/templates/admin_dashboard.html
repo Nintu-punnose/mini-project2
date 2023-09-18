@@ -1,0 +1,47 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="section_name">
+        <div id="dashboard_section">
+        <h3>DASHBOARD</h3>
+    </div>
+        <div id="Approve_section">
+        <h3>Approval</h3>
+    </div>
+        <div id="user_section">
+        <h3>Users</h3>
+        </div>
+    </div> <br><br><br>
+
+    
+        <div class="main">
+            <div class="one">
+                <div id="dashboard_detail1"><br>
+                    <h1>Total Arts Uploaded:</h1>
+                    <p id="Art_detail1">{{ total }}</p>
+                </div><br><br>
+                <div id="dashboard_detail1"><br>
+                    <h1>Arts Approved:</h1>
+                    <p id="Art_detail1">{{ art }}</p>
+                </div><br><br>
+            </div>
+            <div class="two">
+                <div id="dashboard_detail1"><br>
+                    <h1>Art Sold:</h1>
+                    <p id="Art_detail1">{{ arts_sold }}</p>
+                </div><br><br>
+                <div id="dashboard_detail1"><br>
+                    <h1>Earned Income:</h1>
+                    <p id="Art_detail1">${{ earned_income }}</p>
+                </div>
+            </div>
+        </div>
+    
+</body>
+</html>

@@ -130,6 +130,27 @@ def index(request):
     return render(request, "index.html", {'artdata': artdata})
 
 
+# def admin_pannel(request):
+#     if request.method == 'POST':
+#         art_id = request.POST.get('art_id')
+#         approval_status = request.POST.get('approval_status')
+
+#         try:
+#             art = UploadArtDetail.objects.get(id=art_id)
+#             art.approval_status = approval_status
+#             art.is_approved = (approval_status == 'approved')  # Set is_approved based on approval_status
+#             art.save()
+#             return redirect('admin_pannel')
+#         except UploadArtDetail.DoesNotExist:
+#             return HttpResponse("Art not found.")
+
+#     # Retrieve all art data for display in the table
+#     art_data = UploadArtDetail.objects.all()
+#     return render(request, 'admin_pannel.html', {'art_data': art_data})
+
+
+from django.db.models import Count
+
 def admin_pannel(request):
     if request.method == 'POST':
         art_id = request.POST.get('art_id')
@@ -138,7 +159,7 @@ def admin_pannel(request):
         try:
             art = UploadArtDetail.objects.get(id=art_id)
             art.approval_status = approval_status
-            art.is_approved = (approval_status == 'approved')  # Set is_approved based on approval_status
+            art.is_approved = (approval_status == 'approved')
             art.save()
             return redirect('admin_pannel')
         except UploadArtDetail.DoesNotExist:
@@ -146,7 +167,26 @@ def admin_pannel(request):
 
     # Retrieve all art data for display in the table
     art_data = UploadArtDetail.objects.all()
-    return render(request, 'admin_pannel.html', {'art_data': art_data})
+
+    # Count the total number of arts uploaded
+    total_arts_uploaded = art_data.count()
+
+    # Count the number of approved arts
+    approved_arts_count = art_data.filter(approval_status='approved').count()
+
+    # Count the total number of users
+    total_users = User.objects.count()
+
+    # Count the number of artists
+  
+    return render(request, 'admin_pannel.html', {
+        'art_data': art_data,
+        'total_arts_uploaded': total_arts_uploaded,
+        'approved_arts_count': approved_arts_count,
+        'total_users': total_users,
+      
+    })
+
 
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -251,8 +291,16 @@ def seller_profile(request):
 
 def images(request):
     images=UploadArtDetail.objects.filter(approval_status='approved')
-   
     return render(request,'images.html',{'images':images})
+
+
+def image_detail(request,id):
+    img_id = get_object_or_404(UploadArtDetail, id=id)
+    return render(request,'image_detail.html',{'img_id':img_id})
+
+
+def admin_dashboard(request):
+    return render(request,'admin_dashboard.html')
 
 
 
