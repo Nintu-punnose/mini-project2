@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
     <link rel="stylesheet" href="{% static 'css\artist_view1.css' %}">
-    <title>Seller Page</title>
+    <title>Seller_artvendor</title>
     <style>
       
 .modal {
@@ -71,6 +71,16 @@
         
             return true;
         }
+        if (!validateExtension(image, ['png', 'jpg', 'jpeg'])) {
+            document.getElementById("error_msg").innerHTML = "Invalid image format. Please upload a PNG or JPEG file.";
+            return false;
+        }
+
+        // Check if the certificate file has a valid extension
+        if (!validateExtension(certificate, ['pdf'])) {
+            document.getElementById("error_msg").innerHTML = "Invalid certificate format. Please upload a PDF file.";
+            return false;
+        }
         function openEditModal(artId) {
             var modal = document.getElementById("editModal");
             modal.style.display = "block";
@@ -86,9 +96,7 @@
 </head>
 <body>
     <div class="body">
-
         <!-- head_section -->
-
         <div class="header">
             <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
 
@@ -101,15 +109,17 @@
         <!-- side-pannel -->
 
         <div id="sidebar">
-            <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% for img in img %}
+                <img src="{{img.image.url}}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% empty %}
+                <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% endfor %}
             <h1>&emsp;{{ user.username }}</h1>
             <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
-            <div class="sidebar-item" data-target="users">Add Art</div>
-            <div class="sidebar-item" data-target="products">View Art</div>
-            <a href="{% url 'seller_profile' %}"><div class="sidebar-item" data-target="orders">Profile</div></a>
-            
-            <div class="sidebar-item" data-target="settings"><a href="{% url 'logout_view' %}" >Logout</a></div>
-
+            <div class="sidebar-item" data-target="users" id="addart">Add Art</div>
+            <div class="sidebar-item" data-target="products" id="viewart">View Art</div>
+            <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a> 
+            <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
         </div>
 
         <!-- dashboard -->
@@ -159,22 +169,20 @@
             {% csrf_token %}
             <input type="text" id="uploadArtist_name" placeholder="Name" name="uploadArt_name" required><br><br>
             <select id="uploadArt_type" name="uploadArt_type" required>
-                <option value="Painting">Painting</option>
-                <option value="Oil-painting">Oil Painting</option>
-                <option value="Pencil-drawing">Pencil Drawing</option>
-            </select><br><br>
+                {% for type in arttype %}
+                <option value="{{type.nametype}}">{{type.nametype}}</option>
+                {% endfor %}
+            </select>
+            <br><br>
             <select id="uploadArt_size" name="uploadArt_size" required>
-                <option value="4 x 8">4 x 8</option>
-                <option value="5 x 7">5 x 7</option>
-                <option value="8 x 10">8 x 10</option>
-                <option value="9 x 12">9 x 12</option>
-                <option value="16 x 20">16 x 20</option>
-                <option value="18 x 24">18 x 24</option>
+                {% for size in artsize %}
+                <option value="{{size.namesize}}">{{size.namesize}}</option>
+                {% endfor %}
             </select><br><br>
             <input type="number" id="uploadArt_price" placeholder="Art Price" name="uploadArt_price" required><br><br>
             <input type="number" id="uploadArt_year" placeholder="Year" name="uploadArt_year" required><br><br>
             <label for="uploadArt_image">Upload Images:</label>
-            <input type="file" id="uploadArt_image" accept="image/png" name="uploadArt_image" required><br><br><br><br>
+            <input type="file" id="uploadArt_image" accept="image/png, image/jpeg" name="uploadArt_image" required><br><br><br><br>
             <label for="uploadArt_certificate">Upload Certificate:</label>
             <input type="file" id="uploadArt_certificate" accept="application/pdf" name="uploadArt_certificate" required><br><br><br><br>
             <textarea name="uploadArt_description" placeholder="Enter a description here..." id="uploadArt_summary" name="uploadArt_summary" required></textarea><br><br>
@@ -186,7 +194,6 @@
 
     <!-- view art -->
 
-    
             <div class="section products">
                 <h1>Upload Arts</h1>
                 {% if messages %}
@@ -202,14 +209,21 @@
                             <center><img src="{{ artdata.image.url }}" alt=""  class="view_img"></center>
                         </div>
                         <div class="art_details">
-                            <p class="art-detail">Art ID: {{ artdata.art_id }}</p>
-                            <p class="art-detail">Name: {{ artdata.name }}</p>
-                            <p class="art-detail">Type: {{ artdata.art_type }}</p>
-                            <p class="art-detail">Size: {{ artdata.size }}</p>
-                            <p class="art-detail">Price: {{ artdata.price }}</p>
-                            <p class="art-detail">Year: {{ artdata.year }}</p>
-                            <p class="art-detail" style="color: red;">Status: {{ artdata.approval_status }}</p>
-                            <p class="art-detail">Description: {{ artdata.description }}</p>
+                            <p class="art-detail"> <b>Art ID: </b>{{ artdata.art_id }}</p>
+                            <p class="art-detail"><b>Name:</b> {{ artdata.name }}</p>
+                            <p class="art-detail"><b>Type:</b> {{ artdata.art_type }}</p>
+                            <p class="art-detail"><b>Size:</b> {{ artdata.size }}</p>
+                            <p class="art-detail"><b>Price:</b> {{ artdata.price }}</p>
+                            <p class="art-detail"><b>Year:</b> {{ artdata.year }}</p>
+                            {% comment %} <p class="art-detail" style="color: red;"><b>Status:</b> {{ artdata.approval_status }}</p> {% endcomment %}
+                            {% if artdata.approval_status == "approved" %}
+                                <p class="art-detail" style="color:green"><b>Status:Approval</b></p>
+                            {% elif artdata.approval_status == "rejected" %}
+                                <p class="art-detail" style="color:red"><b>Status:Reject</b></p>
+                            {% elif artdata.approval_status == "pending" %}
+                                <p class="art-detail" style="color:red"><b>Status:Pending</b></p>
+                            {% endif %}
+                            <p class="art-detail"><b>Description:</b> {{ artdata.description }}</p>
                             <center>
                                 <a href="{% url 'update_art' artdata.id %}"><button type="submit" class="edit-art-submit" >Edit</button></a>
                                 <a href="{% url 'delete_art' artdata.id %}" onclick="return confirm('Are you sure you want to delete this art?')"><button type="button" class="delete-art-submit" style="background-color: red;">Delete</button></a>
@@ -218,14 +232,7 @@
                     </div><br><br>
                     {% endfor %}
                 </div>
-          
 
-
-                    
-            
-                
-            
-            <!-- profile area -->
         </div>
     </div>
     
@@ -297,6 +304,7 @@
     // Show the selected art form
     document.getElementById('art-' + contentType + '-form').style.display = 'block';
 }
+
     </script>
 </body>
 </html>

@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css\order.css'%}">
+    <title>Order Details</title>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
+        </div>
+        <div id="link">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'orders' %}">Orders</a>
+            <a href="{% url 'cart' %}">Cart</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
+            {% else %}
+                <a href="">Login</a>
+            {% endif %}
+        </div>
+    </div><br><br><br>
+    {% for order in orders %}
+    <div class="order-container">
+        
+        <div class="order-details">
+            <h2>Order Details</h2><br>
+            
+                        <p><b>Order Date:</b>{{ order.order_date }}</p>
+                        <p><b>Product Names:</b>{{ order.product_names }}</p>
+                        <p><b>Total Cost:</b>{{ order.total_cost }}</p>
+                        <p><b>Shipping Charge:</b>{{ order.shipping_charge }}</p>
+                        <p><b>Total Amount:</b>{{ order.total_amount }}</p>
+                    
+                
+        </div>
+        <button class="cancel-button">Cancel Order</button>
+    </div>{% endfor %}
+</body>
+</html>

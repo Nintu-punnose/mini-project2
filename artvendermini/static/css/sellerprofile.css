@@ -4,10 +4,63 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
 }
+#sidebar {
+    position: fixed;
+    width: 250px;
+    top: 0%;
+    height: 100vh;
+    background-color: black;
+    color: #fff;
+    padding-top: 50px;
+}
+#content {
+    margin-left: 250px;
+    padding: 20px;
+}
+.sidebar-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+.sidebar-item:hover {
+    background-color: #ffffff;
+    color: #e74c3c;
+}
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+.section {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+.header{
+    background-color: #ffffff;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+h1
+{
+    margin-left: 50px;
+}
+.user-menu {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    margin-right: 20px;
+    }
+
+
+
 #seller-profile{
     display: flex;
-    margin-left: 130px;
-    margin-right: 200px;
+    margin-left: 300px;
+    margin-right: 20px;
     margin-top: 40px;
     border: 1px solid #ccc;
     padding: 20px;
@@ -17,12 +70,13 @@ body {
 }
 
 #seller_image{
-    background-color: blue;
+    border-right: 2px solid green;
     height: 550px;
     width: 400px;
 }
 #seller_details{
     width: 550px;
+    
 }
 #details{
     margin-left: 80px;

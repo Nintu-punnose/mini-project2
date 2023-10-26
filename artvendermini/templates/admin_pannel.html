@@ -5,11 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
-    <link rel="stylesheet" href="{% static 'css\artist_view1.css' %}">
-    <title>Seller Page</title>
+    <link rel="stylesheet" href="{% static 'css\admin.css' %}">
+    <title>admin_artvendor</title>
     <style>
         /* Add these styles to your existing CSS */
-    
+        .table-container {
+        max-height: 400px; /* Set the maximum height for the container */
+        overflow-y: auto; /* Add vertical scrollbar if content exceeds max height */
+        border: 1px solid #ddd; /* Optional: Add a border around the container */
+    }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -19,8 +23,9 @@
     
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 15px;
             text-align: left;
+            
         }
     
         th {
@@ -43,13 +48,16 @@
         }
     
         .approve {
-            background-color: green;
+            background-color: rgb(69, 235, 69);
             color: white;
+            border-radius: 5px;
+            
         }
     
         .reject {
             background-color: red;
             color: white;
+            border-radius: 5px;
         }
     
         /* Apply styles to alternate rows for better readability */
@@ -105,9 +113,10 @@
             <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
             <h1>{{ user.username }}</h1>
             <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
-            <div class="sidebar-item" data-target="users">Art Approval</div>
-            <div class="sidebar-item" data-target="products">View Art</div>
-            <div class="sidebar-item" data-target="settings"><a href="{% url 'logout_view' %}" >Logout</a></div>
+            <div class="sidebar-item" data-target="users" id="artapprove">Art Approval</div>
+            <div class="sidebar-item" data-target="products">Add Type/Size</div>
+            <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item">Users</div></a>
+            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
 
         </div>
 
@@ -119,12 +128,12 @@
                 <div class="main">
                     <div class="one">
                         <div id="dashboard_detail1"><br>
-                            <h1>Users</h1>
+                            <h1>Users:</h1>
                             <p id="Art_detail1">{{ total_users }}</p>
                         </div><br><br>
                         <div id="dashboard_detail1"><br>
-                            <h1>Artist</h1>
-                            <p id="Art_detail1">{{ art }}</p>
+                            <h1>Artist:</h1>
+                            <p id="Art_detail1">{{ totalArtist }}</p>
                         </div><br><br>
                     </div>
                     <div class="two">
@@ -141,14 +150,15 @@
             </div>
             
 
-            <!-- upload-art -->
+            <!-- art-approval -->
             
         <div class="section users">
-               
+            <div class="table-container"> 
             <table>
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Artist</th>
                         <th>Type</th>
                         <th>Size</th>
                         <th>Year</th>
@@ -162,10 +172,11 @@
                     {% for art in art_data %}
                     <tr>
                         <td>{{ art.name }}</td>
+                        <td>{{ art.user.username }}</td>
                         <td>{{ art.art_type }}</td>
                         <td>{{ art.size }}</td>
                         <td>{{ art.year }}</td>
-                        <td class="certificate" ><a href="{{ art.certificate.url }}">{{ art.certificate }}</a></td>
+                        <td class="certificate" ><a href="{{ art.certificate.url }}">View</a></td>
                         <td class="image">
                             <img src="{{ art.image.url }}" alt="{{ art.name }}" width="100px" height="100px" onclick="openPopup('{{ art.image.url }}')">
                         </td>
@@ -175,7 +186,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="art_id" value="{{ art.id }}">
                                 <input type="hidden" name="approval_status" value="{% if art.approval_status == 'approved' %}rejected{% else %}approved{% endif %}">
-                                <button type="submit" class="action-button {% if art.approval_status == 'approved' %}reject{% endif %}">
+                                <button type="submit" class="action-button {% if art.approval_status == 'approved' %}reject{% else %}approve{% endif %}">
                                     {% if art.approval_status == 'approved' %}
                                     Reject
                                     {% else %}
@@ -183,11 +194,34 @@
                                     {% endif %}
                                 </button>
                             </form>
+                            {% comment %} <form method="POST" action="{% url 'admin_pannel' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="art_id" value="{{ art.id }}">
+                                {% if art.approval_status == 'approved' %}
+                                    <button type="submit" class="action-button reject" name="action" value="reject">
+                                        Reject
+                                    </button>
+                                {% elif art.approval_status == 'rejected' %}
+                                    <button type="submit" class="action-button approve" name="action" value="approve">
+                                        Approve
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="action-button approve" name="action" value="approve">
+                                        Approve
+                                    </button>
+                                    <button type="submit" class="action-button reject" name="action" value="reject">
+                                        Reject
+                                    </button>
+                                {% endif %}
+                            </form> {% endcomment %}
+                            
+                            
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            </div>
             <div class="image-popup" id="imagePopup">
                 <div class="popup-content">
                     <span class="close" onclick="closePopup()">&times;</span>
@@ -200,60 +234,64 @@
 
     
             <div class="section products">
-                <h1>Upload Arts</h1>
-                {% if messages %}
-                        <div class="messages" id="report_login">
-                            {% for message in messages %}
-                                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                
+                <form action="{% url 'addtype' %}" method="post">
+                    {% csrf_token %}
+                    <h1>Add Type</h1>
+                    <input type="text" name="nametype" id="typebox" placeholder="Enter Type" required>
+                    <button type="submit" id="typebtn"><img src="{% static 'images\add.png' %}" alt="" height="18px" width="18px"></button><br><br>
+                </form>
+                <form action="{% url 'addsize' %}" method="post">
+                    {% csrf_token %}
+                    <h1>Add Size</h1>
+                    <input type="text" name="namesize" id="typebox" placeholder="Enter Size" required>
+                    <button type="submit" id="typebtn"><img src="{% static 'images\add.png' %}" alt="" height="18px" width="18px"></button>
+                </form>
+                <div class="type_size">
+                    <div class="type">
+                        <table id="type_table">
+                            <tr>
+                                <th>Art Type</th>
+                                <th>Action</th>
+                            </tr>
+                            {% for art in arttype %}
+                            <tr>
+                                <td>{{ art.nametype }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'delete_art_type' art.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" id="delete_type"><img src="{% static 'images\delete.png' %}" alt="" height="18px" width="18px"></button>
+                                    </form>
+                                </td>
+                            </tr>
                             {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% for artdata in artdata %}
-                    <div class="art_body">
-                        <div class="art_img">
-                            <center><img src="{{ artdata.image.url }}" alt=""  class="view_img"></center>
-                        </div>
-                        <div class="art_details">
-                            <p class="art-detail">Art ID: {{ artdata.art_id }}</p>
-                            <p class="art-detail">Name: {{ artdata.name }}</p>
-                            <p class="art-detail">Type: {{ artdata.art_type }}</p>
-                            <p class="art-detail">Size: {{ artdata.size }}</p>
-                            <p class="art-detail">Price: {{ artdata.price }}</p>
-                            <p class="art-detail">Year: {{ artdata.year }}</p>
-                            <p class="art-detail" style="color: red;">Status: {{ artdata.approval_status }}</p>
-                            <p class="art-detail">Description: {{ artdata.description }}</p>
-                            <center>
-                                <button type="submit" class="edit-art-submit">Update</button>
-                                <button type="submit" class="delete-art-submit" style="background-color: red;">Delete</button>
-                            </center><br>
-                        </div>
-                    </div><br><br>
-                    {% endfor %}
-            </div>
-            
-            
-            <!-- profile area -->
-                
-
-            <div class="section orders">
-                <div class="art-body">
-                    <input type="text" id="name" placeholder="Art Name">
-                    <input type="text" id="arttype" placeholder="Art Type (e.g., oil paint)">
-                    <input type="text" id="artsize" placeholder="Art Size (e.g., 1500x1200)">
-                    <input type="number" id="artprice" placeholder="Art Price">
-                    <input type="number" id="artyear" placeholder="Year">
-                    <label for="artimage">Upload Images:</label>
-                    <input type="file" id="artimage"><br><br>
-                    <label for="artimage">Upload Certificate:</label>
-                    <input type="file" id="artimage"><br><br>
-                    <textarea name="description" placeholder="Enter a description here..." id="artsummary"></textarea>
-                    <button type="submit" id="upload-art-submit">Upload</button>
+                        </table>
+                    </div>
+                    <div class="size">
+                        <table id="type_table">
+                            <tr>
+                                <th>Art Size</th>
+                               
+                                <th>Action</th>
+                            </tr>
+                            {% for art in artsize %}
+                            <tr>
+                                <td>{{ art.namesize }}</td>
+                               
+                                <td>
+                                    <form method="post" action="{% url 'delete_art_size' art.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" id="delete_size"><img src="{% static 'images\delete.png' %}" alt="" height="18px" width="18px"></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    
+                </div>
                 
             </div>
-            <div class="section settings">
-                <h1>Settings Content</h1>
-            </div>
-        </div>
     </div>
     
     <script>

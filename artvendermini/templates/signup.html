@@ -123,7 +123,7 @@
                     </select><br>
                     <input type="password" placeholder="Password" class="input_txt_password" id="user_password" name="password1" onkeyup="register_password()"><br>
                     <input type="password" placeholder="Confirm Password" class="input_txt_cpassword" id="user_cpassword" name="password2" onkeyup="register_cpassword()"><br>
-                    <input type="submit" value="Register" id="submit"><br><br>
+                    <Button type="submit" id="submit">Register</button><br><br>
                     <button id="login_with_google"><img src="{% static 'images\Google-icon.png'%}" alt="" height="20px" width="20px">&emsp; Register With Google</button><br><br><br>
                     <a href="{% url 'login'%}" id="user_register">already have an account?</a>
                 </form>

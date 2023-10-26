@@ -4,24 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/image_detail.css' %}">
-    <style>
-        /* Add CSS for the magnification effect */
-        #select_image {
-            position: relative;
-        }
-        #magnifier {
-            position: absolute;
-            border: 1px solid #ccc;
-            background: white;
-            display: none;
-            overflow: hidden;
-        }
-        #magnifier img {
-            width: 400px; /* Adjust the magnification level as needed */
-            height: auto;
-        }
-    </style>
-    <title>Document</title>
+    <title>{{img_id.name}}_details</title>
 </head>
 <body>
     <div id="head_details">
@@ -29,15 +12,16 @@
             ArtVendor
         </div>
         <div id="link">
-            <a href="index.html">Home</a>
-            <a href="index.html">Art</a>
-            <a href="index.html">Artist</a>
-            <a href="#Service_section">Our services</a>
-            <a href="contact.html">Contact</a>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'index' %}">Our services</a>
+            <a href="{% url 'cart' %}">Cart</a>
             {% if request.user.is_authenticated %}
                 <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
             {% else %}
-                <a href="">Login</a>
+                <a href="{% url 'login' %}">Login</a>
             {% endif %}
         </div>
     </div><br><br><br>
@@ -47,52 +31,23 @@
             <img src="{{img_id.image.url}}" alt="" id="img">
         </div>
         <div id="select_details"><br>
-                <p id="details">Art Id: {{img_id.art_id}} </p>
-                <p id="details">Art Name: {{img_id.name}}</p>
-                <p id="details">Art Type: {{img_id.art_type}}</p>
-                <p id="details">Art size: {{img_id.size}}</p>
-                <p id="details">Art Price: {{img_id.price}}</p>
-                <p id="details">Year: {{img_id.year}}</p>
-                <p id="details">Description: {{img_id.description}}</p>
-                <button type="submit" id="enquire_btn" style="background-color: rgb(245, 58, 33);">Enquire</button>
-                <button type="submit" id="cart_btn" style="background-color: rgb(62, 184, 233);">Cart</button><br>
-                <button type="submit" id="buy_btn" style="background-color: rgb(50, 238, 33); width:560px">Buy</button>
+            <p id="details"><strong>Art Id:</strong> {{img_id.art_id}} </p>
+            <p id="details"><strong>Art Name:</strong> {{img_id.name}}</p>
+            <p id="details"><strong>Artist:</strong><a href="{% url 'Artist_detail' img_id.user.id %}" style="color:black">{{img_id.user.username}}</a></p>
+            <p id="details"><strong>Art Type:</strong> {{img_id.art_type}}</p>
+            <p id="details"><strong>Art size:</strong> {{img_id.size}}</p>
+            <p id="details"><strong>Art Price:</strong> {{img_id.price}}</p>
+            <p id="details"><strong>Year:</strong> {{img_id.year}}</p>
+            <p id="details"><strong>Description:</strong> {{img_id.description}}</p><br>
+            <img src="{% static 'images\authentic-pic.png' %}" alt="" height="45px" width="45px" style="margin-left: 30px;"><p style="margin-left: 90px; margin-top: -25px;">This is an Original Indian Artwork accompanied with Authenticity Certificate</p><br>
+            <a href="https://wa.me/+918547003297?text=I'm%20interested%20in%20your%20art%20{{img_id.name}}"><button type="submit" id="enquire_btn" style="background-color: rgb(20, 231, 37);">whatsapp</button></a>
+            {% comment %} <a href="{% url 'email' %}"><button type="submit" id="cart_btn" style="background-color: rgb(62, 184, 233);">Email</button></a> {% endcomment %}
+            <a href="mailto:{{ img_id.user.email }}?subject=Art%20Inquiry&body=I%20am%20interested%20in%20purchasing%20your%20artwork%20name%20{{img_id.name}}%20with%20id%20{{img_id.art_id}}">
+                <button type="submit" id="cart_btn" style="background-color: rgb(62, 184, 233);">Email</button>
+            </a>            
+            <button type="submit" id="cart_btn" style="background-color: rgb(213, 233, 32);" onclick="location.href='{% url 'add_to_cart' img_id.id %}'">Add to Cart</button><br>
+            {% comment %} <button type="submit" id="pay-btn"  style="background-color: rgb(231, 133, 21); margin-left:50px; width:590px">Buy</button> {% endcomment %}
         </div>
     </div>
-    <script>
-        // Add JavaScript for the magnification effect
-        const selectImage = document.getElementById("select_image");
-        const img = document.getElementById("img");
-        const magnifier = document.getElementById("magnifier");
-
-        selectImage.addEventListener("mousemove", (e) => {
-            const imgRect = img.getBoundingClientRect();
-            const x = e.clientX - imgRect.left;
-            const y = e.clientY - imgRect.top;
-
-            const imgWidth = img.width;
-            const imgHeight = img.height;
-            const magnifierWidth = magnifier.clientWidth;
-            const magnifierHeight = magnifier.clientHeight;
-
-            const backgroundX = (x / imgWidth) * (imgWidth - magnifierWidth);
-            const backgroundY = (y / imgHeight) * (imgHeight - magnifierHeight);
-
-            magnifier.style.backgroundImage = `url('${img.src}')`;
-            magnifier.style.backgroundSize = `${imgWidth}px ${imgHeight}px`;
-            magnifier.style.backgroundPosition = `-${backgroundX}px -${backgroundY}px`;
-
-            magnifier.style.left = e.clientX + 10 + "px"; // Adjust the position as needed
-            magnifier.style.top = e.clientY + 10 + "px"; // Adjust the position as needed
-        });
-
-        selectImage.addEventListener("mouseenter", () => {
-            magnifier.style.display = "block";
-        });
-
-        selectImage.addEventListener("mouseleave", () => {
-            magnifier.style.display = "none";
-        });
-    </script>
 </body>
 </html>

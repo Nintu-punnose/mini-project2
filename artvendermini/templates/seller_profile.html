@@ -1,85 +1,171 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="{% static 'css\sellerprofile.css'%}">
-    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css\sellerprofile.css'%}">
+    {% for i in user %}
+    <title>{{ i.username }}_details</title>
+    {% endfor %}
 </head>
 <body>
-    
-    <div id="seller-profile">
+    <div class="body">
+        <!-- head_section -->
+        <div class="header">
+            <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
+            <ul class="user-menu">
+                {% for i in user %}
+                    <p style="color: green;">Welcome, {{ i.username }}!</p>
+                {% endfor %}
+                    <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
+            </ul>
+        </div>
+        <!-- side-pannel -->
+
+        <div id="sidebar">
+            {% for img in seller %}
+                <img src="{{img.image.url}}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% empty %}
+                <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% endfor %}
+            {% for i in user %}
+            <h1>&emsp;{{ i.username }}</h1>
+            {% endfor %}
+            <a href="{% url 'Artist_view' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="dashboard">Dashboard</div></a>
+            <a href="{% url 'Artist_view' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="users">Add Art</div></a>
+            <a href="{% url 'Artist_view' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="products">View Art</div></a>
+            <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a> 
+            <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
+        </div>
+        <div id="seller-profile">
         
-        <div id="seller_image">
-            {% for i in seller %}
-              
+            <div id="seller_image">
+                {% for i in seller %}
+                <center><img id="profile-image" src="{{i.image.url}}" alt="seller's Profile Image" height="300px" width="300px" style="margin-top:120px"></center>
+                {% endfor %}
+                {% if seller is None %}
+                <center><img id="profile-image" src="" alt="seller's Profile Image" height="300px" width="300px" style="margin-top:120px;"></center>
+                {% endif %}
+                  
+                
+            </div>
+         
+            <div id="seller_details">
+                <center><h1>Seller Profile</h1></center>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+            {% for i in user %}
+            <input type="text" id="seller-name" name="seller-name" value="{{i.username}}" required disabled><br><br>
+            {% endfor %}
+            {% for i in userdata %}
+            <input type="number" id="seller-number" name="seller-number" value="{{i.number}}" required disabled><br><br>
+            {% endfor %}
+            {% for i in user %}
+            <input type="text" id="seller-email" name="seller-email" value="{{i.email}}" required disabled><br><br>
+            {% endfor %}
+            {% for seller in seller %}
+            <input type="text" id="seller-address" name="seller-address" value="{{seller.address}}" required><br><br>
+        
+           
+            <input type="text" id="seller-district" name="seller-district" value="{{seller.district}}" required><br><br>
+        
             
-            <center><img id="profile-image" src="{{i.image.url}}" alt="seller's Profile Image" height="300px" width="300px" style="margin-top:100px"></center>
+            <input type="text" id="seller-state" name="seller-state" value="{{seller.state}}" required><br><br>
+        
+            
+            <input type="text" id="seller-country" name="seller-country" value="{{seller.country}}" required><br><br>
+        
+            
+            <input type="text" id="seller-pincode" name="seller-pincode" value="{{seller.pincode}}" required><br><br>
+    
+            <label for="seller-image" id="details">Select Image</label>
+            <input type="file" id="seller-image" name="seller-image"  required><br><br>
             {% endfor %}
             {% if seller is None %}
-            <center><img id="profile-image" src="" alt="seller's Profile Image" height="300px" width="300px" style="margin-top:100px"></center>
+            <input type="text" id="seller-address" name="seller-address" placeholder="Address" required><br><br>
+        
+           
+            <input type="text" id="seller-district" name="seller-district" placeholder="District" required><br><br>
+        
+            
+            <input type="text" id="seller-state" name="seller-state" placeholder="State" required><br><br>
+        
+            
+            <input type="text" id="seller-country" name="seller-country" placeholder="Country" required><br><br>
+        
+            
+            <input type="text" id="seller-pincode" name="seller-pincode" placeholder="Pincode" required><br><br>
+    
+            <label for="seller-image" id="details">Select Image</label>
+            <input type="file" id="seller-image" name="seller-image"  required><br><br>   
             {% endif %}
-              
+            <button type="submit" id="update-profile">Update Profile</button>
+        </form>
+            </div>
+    
+            
+            
             
         </div>
-     
-        <div id="seller_details">
-            <center><h1>User Profile</h1></center>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-        {% for i in user %}
-        <input type="text" id="seller-name" name="seller-name" value="{{i.username}}" required><br><br>
-        {% endfor %}
-        {% for i in userdata %}
-        <input type="number" id="seller-number" name="seller-number" value="{{i.number}}" required><br><br>
-        {% endfor %}
-        {% for i in user %}
-        <input type="text" id="seller-email" name="seller-email" value="{{i.email}}" required><br><br>
-        {% endfor %}
-        {% for seller in seller %}
-        <input type="text" id="seller-address" name="seller-address" value="{{seller.address}}" required><br><br>
-    
-       
-        <input type="text" id="seller-district" name="seller-district" value="{{seller.district}}" required><br><br>
-    
-        
-        <input type="text" id="seller-state" name="seller-state" value="{{seller.state}}" required><br><br>
-    
-        
-        <input type="text" id="seller-country" name="seller-country" value="{{seller.country}}" required><br><br>
-    
-        
-        <input type="text" id="seller-pincode" name="seller-pincode" value="{{seller.pincode}}" required><br><br>
+        <p id="error-message" style="color: red;"></p>
+        <!-- Include this JavaScript code inside a <script> tag in your HTML file -->
+<script>
+    // Function to validate alphabetic input
+    function validateAlphabeticInput(inputField) {
+        var regex = /^[A-Za-z]+$/;
+        return regex.test(inputField.value);
+    }
 
-        <label for="seller-image" id="details">Select Image</label>
-        <input type="file" id="seller-image" name="seller-image"  required><br><br>
-        {% endfor %}
-        {% if seller is None %}
-        <input type="text" id="seller-address" name="seller-address" value="Address" required><br><br>
-    
-       
-        <input type="text" id="seller-district" name="seller-district" value="District" required><br><br>
-    
-        
-        <input type="text" id="seller-state" name="seller-state" value="State" required><br><br>
-    
-        
-        <input type="text" id="seller-country" name="seller-country" value="Country" required><br><br>
-    
-        
-        <input type="text" id="seller-pincode" name="seller-pincode" value="Pincode" required><br><br>
+    // Function to validate numeric input with 6 digits
+    function validatePincode(inputField) {
+        var regex = /^\d{6}$/;
+        return regex.test(inputField.value);
+    }
 
-        <label for="seller-image" id="details">Select Image</label>
-        <input type="file" id="seller-image" name="seller-image"  required><br><br>   
-        {% endif %}
-        <button type="submit" id="update-profile">Update Profile</button>
-    </form>
-        </div>
+    // Function to validate the form
+    function validateForm() {
+        var stateInput = document.getElementById('seller-state');
+        var districtInput = document.getElementById('seller-district');
+        var countryInput = document.getElementById('seller-country');
+        var pincodeInput = document.getElementById('seller-pincode');
 
-        
-        
-        
-    </div>
-    
+        if (!validateAlphabeticInput(stateInput)) {
+            alert('State should contain only alphabetic characters.');
+            return false;
+        }
+
+        if (!validateAlphabeticInput(districtInput)) {
+            alert('District should contain only alphabetic characters.');
+            return false;
+        }
+
+        if (!validateAlphabeticInput(countryInput)) {
+            alert('Country should contain only alphabetic characters.');
+            return false;
+        }
+
+        if (!validatePincode(pincodeInput)) {
+            alert('Pincode should be a 6-digit number.');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Add an event listener to the form to trigger validation on submit
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.querySelector('form');
+        form.addEventListener('submit', function (e) {
+            if (!validateForm()) {
+                e.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    });
+</script>
 </body>
 </html>
+
+
+
+

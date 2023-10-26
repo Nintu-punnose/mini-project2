@@ -1,14 +1,16 @@
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 import uuid
+from django.utils import timezone
 
 from platformdirs import user_data_dir
 
 class UserData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userdata')
     role = models.CharField(max_length=20)
-    number = models.CharField(max_length=20)
+    number = models.CharField(max_length=20,null=True)
 
     def __str__(self):
         return self.user.username
@@ -44,3 +46,64 @@ class SellerProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+
+class ProductType(models.Model):
+    nametype = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+    
+class ProductSize(models.Model):
+    namesize = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+    
+
+# cart
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(UploadArtDetail, through='CartItem')
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    art = models.ForeignKey(UploadArtDetail, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+
+
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_date = models.DateTimeField()
+    product_names = models.CharField(max_length=200)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_charge = models.DecimalField(max_digits=10, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_id = models.CharField(max_length=100, default='your_default_value_here')
+    razorpay_order_id = models.CharField(max_length=100, default='your_default_value_here')
+
+
+
+
+
+class artOrder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_date = models.DateTimeField()
+    product_names = models.CharField(max_length=200)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_charge = models.DecimalField(max_digits=10, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_id = models.CharField(max_length=100, default='your_default_value_here')
+    razorpay_order_id = models.CharField(max_length=100, default='your_default_value_here')
+
+
+
+
+
+
+
+
+
+

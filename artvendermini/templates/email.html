@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form</title>
+    <style>
+        #head_details {
+            background-color: rgba(0, 0, 0, 0.5);
+            display: grid;
+            grid-template-columns: auto auto;
+            column-gap: 850px;
+            padding-top: 10px;
+            padding-left: 20px;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        #web_name {
+            font-size: 30px;
+            color: white;
+        }
+        
+        #link {
+            margin-left: -145px;
+        }
+        
+        a {
+            text-decoration: none;
+            padding: 10px 10px 10px 10px;
+            color: black;
+            font-size: 19px;
+            color: white;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        button[type="button"] {
+            width: 90%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* CSS for error messages */
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+    <script>
+        // Function to validate the name field
+        function validateName() {
+            const nameInput = document.getElementById("name");
+            const nameValue = nameInput.value.trim();
+            const namePattern = /^[A-Za-z\s]+$/; // Regular expression for characters and spaces
+            const errorName = document.getElementById("error-name");
+
+            if (!namePattern.test(nameValue)) {
+                errorName.textContent = "Please enter a valid name with only letters and spaces.";
+                return false;
+            } else {
+                errorName.textContent = "";
+                return true;
+            }
+        }
+
+        // Function to validate the email field
+        function validateEmail() {
+            const emailInput = document.getElementById("email");
+            const emailValue = emailInput.value.trim();
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; // Basic email pattern
+            const errorEmail = document.getElementById("error-email");
+
+            if (!emailPattern.test(emailValue)) {
+                errorEmail.textContent = "Please enter a valid email address.";
+                return false;
+            } else {
+                errorEmail.textContent = "";
+                return true;
+            }
+        }
+
+        // Function to validate the mobile field
+        function validateMobile() {
+            const mobileInput = document.getElementById("mobile");
+            const mobileValue = mobileInput.value.trim();
+            const mobilePattern = /^[89]\d{9}$/; // 10-digit number starting with 8 or 9
+            const errorMobile = document.getElementById("error-mobile");
+
+            if (!mobilePattern.test(mobileValue)) {
+                errorMobile.textContent = "Please enter a valid 10-digit mobile number starting with 8 or 9.";
+                return false;
+            } else {
+                errorMobile.textContent = "";
+                return true;
+            }
+        }
+
+        // Function to validate the query field
+        function validateQuery() {
+            const queryInput = document.getElementById("query");
+            const queryValue = queryInput.value.trim();
+            const errorQuery = document.getElementById("error-query");
+
+            if (queryValue === "") {
+                errorQuery.textContent = "Please enter your query.";
+                return false;
+            } else {
+                errorQuery.textContent = "";
+                return true;
+            }
+        }
+
+        // Function to validate the entire form
+        function validateForm() {
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isMobileValid = validateMobile();
+            const isQueryValid = validateQuery();
+
+            if (isNameValid && isEmailValid && isMobileValid && isQueryValid) {
+                // Submit the form if all fields are valid
+                document.forms["contact-form"].submit();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
+        </div>
+        <div id="link">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'index' %}">Our services</a>
+            <a href="{% url 'cart' %}">Cart</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div><br><br><br>
+    <h2>Contact Us</h2>
+    <form name="contact-form" action="" method="post">
+        {% csrf_token %}
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" oninput="validateName()" required>
+            <div id="error-name" class="error"></div>
+        </div>
+        <div>
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" name="email" oninput="validateEmail()" required>
+            <div id="error-email" class="error"></div>
+        </div>
+        <div>
+            <label for="mobile">Mobile Number:</label>
+            <input type="tel" id="mobile" name="mobile" oninput="validateMobile()" required>
+            <div id="error-mobile" class="error"></div>
+        </div>
+        <div>
+            <label for="query">Query:</label>
+            <textarea id="query" name="query" rows="4" oninput="validateQuery()" required></textarea>
+            <div id="error-query" class="error"></div>
+        </div>
+        <div>
+            <a href="mailto:'artvendor8@gmail.com'"><button type="button" onclick="validateForm()">Send</button></a>
+        </div>
+    </form>
+</body>
+</html>

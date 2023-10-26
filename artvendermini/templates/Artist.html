@@ -1,0 +1,64 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css\Artist.css'%}">
+    <title>Artist_artvendor</title>
+</head>
+<body>
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
+        </div>
+        <div id="link">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'index' %}">Our services</a>
+            <a href="{% url 'cart' %}">Cart</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
+            {% else %}
+                <a href="">Login</a>
+            {% endif %}
+        </div>
+    </div>
+    <br><br><br>
+    <h1 style="margin-left:40px;"><u>Our Artists</u></h1>
+    <input type="search" placeholder="Search Artist" id="search_artist">
+    <div class="artist-container">
+        {% for a in artistdata2 %}
+            <div class="artist-details">
+                <img src="{{a.image.url}}" alt="" class="img-artist">
+                <p><b>Name: </b>{{a.user.username}}</p>
+                <p><b>PhNo: </b>{{a.user.userdata.number}}</p><br>
+                <a href="{% url 'Artist_detail' a.user.id %}"><button type="submit" class="artist-moreinfo">More</button></a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Listen for changes in the search input
+            $('#search_artist').on('input', function() {
+                var searchText = $(this).val().toLowerCase(); // Get the entered text
+
+                // Loop through each artist detail and hide/show based on the search
+                $('.artist-details').each(function() {
+                    var artistName = $(this).find('p:eq(0)').text().toLowerCase(); // Get artist name
+
+                    // Check if the artist name contains the search text
+                    if (artistName.includes(searchText)) {
+                        $(this).show(); // Show if it matches
+                    } else {
+                        $(this).hide(); // Hide if it doesn't match
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

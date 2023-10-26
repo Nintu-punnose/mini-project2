@@ -1,0 +1,63 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/Artist_details.css' %}">
+    <title>{{profile.user.username}}_details</title>
+</head>
+<body>
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
+        </div>
+        <div id="link">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'index' %}">Our services</a>
+            <a href="{% url 'cart' %}">Cart</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div><br><br><br>
+    <div id="detail_img_body">
+        <div id="select_image">
+            
+            <img src="{{profile.image.url}}" alt="" id="img">
+           
+        </div>
+        <div id="Artist_details"><br>
+          
+            <h1 style="margin-left:35px;">{{profile.user.username}}</h1>
+            <p id="details"><strong>Phone number:</strong> {{profile.user.userdata.number}}</p>
+            <p id="details"><strong>Email:</strong><a href="mailto:{{profile.user.email}}" style="color: black;"><u>{{profile.user.email}}</u></a></p>
+            <p id="details"><strong>Address:</strong> {{profile.address}}</p>
+            <p id="details"><strong>Pincode:</strong> {{profile.pincode}}</p>
+            <p id="details"><strong>City:</strong> {{profile.district}}</p>
+            <p id="details"><strong>State:</strong> {{profile.state}}</p>
+            <p id="details"><strong>country:</strong> {{profile.country}}</p><br>
+    </div>
+</div><br><br>
+<div>
+    <h1><u>Arts of {{profile.user.username}}</u></h1>
+    <div id="arts_container">
+        {% for artist_image in artist_images %}
+            <a href="{% url 'image_detail' artist_image.id %}">
+                <div class="art">
+                    <img src="{{ artist_image.image.url }}" alt="" height="250px" width="250px" id="img_wrapper">
+                    <p style="color: black;">{{ artist_image.name }}</p><br>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    
+    
+   
+</div>
+</body>
+</html>

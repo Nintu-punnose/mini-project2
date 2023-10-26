@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css\images.css'%}">
-    <title>Document</title>
-    
+    <link rel="stylesheet" href="{% static 'css/image.css' %}">
+    <title>Arts_artvendor</title>
 </head>
 <body>
-   
-        <div id="head_details">
-            <div id="web_name">
-                ArtVendor
-            </div>
-            <div id="link">
-                <a href="index.html">Home</a>
-                <a href="index.html">Art</a>
-                <a href="index.html">Artist</a>
-                <a href="#Service_section">Our services</a>
-                <a href="contact.html">Contact</a>
-                {% if request.user.is_authenticated %}
-                    <span style="color:red">{{ request.user.username }}</span>
-                {% else %}
-                    <a href="">Login</a>
-                {% endif %}
-            </div>
+    <!-- Your existing HTML content here -->
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
         </div>
+        <div id="link">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'index' %}">Our services</a>
+            <a href="{% url 'cart' %}">Cart</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
+            {% else %}
+                <a href="">Login</a>
+            {% endif %}
+        </div>
+    </div>
     <br><br>
     <div id="image_body">
+        <input type="search" placeholder="Search Image" id="search_image">
         <div id="img_category">
             <details id="price_category">
                 <summary>Search by Price</summary><br>
@@ -75,14 +76,34 @@
             </details>
         </div>
         <div id="image_shown">
-            {% for images in images%}
-            <div id="card">
-                <img src="{{images.image.url}}" alt="" id="image"><br><br>
-                <center><p style="font-size: 20px;">{{images.name}}</p></center><br><br>
-                <a href="{% url 'image_detail' images.id %}"><center><button type="submit" id="submit">more</button></center></a>
-            </div>
+            {% for images in images %}
+                <div id="card">
+                    <img src="{{images.image.url}}" alt="" id="image"><br><br>
+                    <center><p style="font-size: 20px;" ><b>Name:</b> {{images.name}}</p></center><br>
+                    <center><p style="font-size: 20px; margin-top:-10px"><b>Size:</b> {{images.size}}</p></center><br>
+                    <center><p style="font-size: 20px; margin-top:-10px"><b>Type:</b> {{images.art_type}}</p></center><br>
+                    <center><p style="font-size: 20px; margin-top:-10px"><b>Rs:</b> {{images.price}}</p></center>
+                    <a href="{% url 'image_detail' images.id %}"><center><button type="submit" id="submit">more</button></center></a>
+                </div>
             {% endfor %}
-
+        </div>
     </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery library -->
+<script>
+    $(document).ready(function () {
+        // Function to handle image search
+        $("#search_image").on("keyup", function () {
+            var searchText = $(this).val().toLowerCase();
+            $("#image_shown > div").each(function () {
+                var imageText = $(this).text().toLowerCase();
+                if (imageText.indexOf(searchText) === -1) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+    });
+</script>
 </html>

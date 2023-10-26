@@ -1,0 +1,101 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f3f3f3;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: grey;
+}
+
+/* Header Section */
+#head_details {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 850px;
+    padding-top: 10px;
+    padding-left: 20px;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+
+#web_name {
+    font-size: 30px;
+    color: white;
+}
+
+#link {
+    margin-left: -145px;
+}
+
+a {
+    text-decoration: none;
+    padding: 10px 10px 10px 10px;
+    color: black;
+    font-size: 19px;
+    color: white;
+}
+.artist-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 30px;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.artist-details {
+    height: 370px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.img-artist {
+    height: 200px;
+    width: 200px;
+    margin-top: 20px;
+}
+
+p {
+    margin-top: 20px;
+}
+
+.artist-moreinfo {
+    margin-top: auto;
+    font-size: 17px;
+    padding: 5px;
+    width: 90px;
+    background-color: rgb(40, 230, 40);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+#search_artist{
+    width: 600px;
+    height: 40px;
+    margin-left: 400px;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid black;
+}

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/index1.css' %}">
-    <title>ESTY_Index</title>
+    <title>ARTVENDOR_artselling</title>
 </head>
 
 <body>
@@ -18,26 +18,23 @@
                 ArtVendor
             </div>
             <div id="link">
-                <a href="index.html">Home</a>
-                <a href="{% url 'images' %}">Art</a>
-                <a href="index.html">Artist</a>
-                <a href="#Service_section">Our services</a>
-                <a href="contact.html">Contact</a>
+                <a href="{% url 'index' %}">Home</a>
+                <a href="{% url 'images' %}" id="art">Art</a>
+                <a href="{% url 'Artist' %}">Artist</a>
+                <a href="{% url 'orders' %}">Orders</a>
+                <a href="{% url 'cart' %}" id="cart">Cart</a>
                 {% if request.user.is_authenticated %}
-                {% if requestto_role.role == "customer" %}
-                    <span style="color:red">{{ request.user.username }}</span>
-                    <a href="{% url 'logout_view' %}" >Logout</a>
+                    {% if request.user.role == "customer" %}
+                        <span style="color:red">{{ request.user.username }}</span>
+                        <a href="{% url 'logout_view' %}">Logout</a>
+                    {% else %}
+                        <span style="color:blue">{{ request.user.username }}</span>
+                        <a href="{% url 'logout_view' %}">Logout</a>
+                    {% endif %}
                 {% else %}
-                    <span style="color:blue">{{ request.user.username }}</span>
-                    <a href="{% url 'logout_view' %}" >Logout</a>
+                    <a href="{% url 'login_view' %}">Login</a>
                 {% endif %}
-            {% else %}
-                <span style="color:blue">{{ request.user.username }}</span>
-                <span style="color:blue"><a href="{% url 'logout_view' %}" >Logout</a></span>
-            {% endif %}
 
-            
-            
             </div>
         </div>
     </div><br><br>
@@ -88,14 +85,13 @@
         <div class="card">
             <img src="{{ artdata.image.url }}" alt="" style="height:350px;width:300px; ">
             <div class="card__content">
-              <p class="card__title">Name: {{ artdata.name }}</p>
-              <p class="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
-              <input type="button" id="wedding_showmore_button" value="show more">
+              <p class="card__title"><strong>Name:</strong> {{ artdata.name }}</p>
+              <p class="card__description"><strong>Description:</strong> {{artdata.description}}</p>
             </div>
         </div>
         {% if forloop.counter|divisibleby:3 and not forloop.last %}
         </div><div id="wedding_section">
-                        {% endif %}
+        {% endif %}
         {% endif %}
           {% endfor %}
           
@@ -144,7 +140,7 @@
     <div id="end_section">
         <div id="address" class="End_section"><br><br>
             <h3>Address</h3>
-            <p>Esty Booking Center</p>
+            <p>ART VENDOR</p>
             <p>Kanjirapally P O</p>
             <p>Kottayam</p>
         </div>
@@ -170,10 +166,8 @@
             <input type="button" value="Suscribe" id="mail_button">
         </div>
     </div><br>
-    <center>2022 All Rights Reserved Esty Booking Center</center><br>
+    <center>2022 All Rights Reserved Art Vendor</center><br>
 </div>
 </footer>
-    
 </body>
-
 </html>
