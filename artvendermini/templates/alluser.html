@@ -53,7 +53,55 @@
             background-color: #0056b3;
         }
     </style>
-    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Listen for changes in the search input
+            $('#search_user').on('input', function() {
+                var searchText = $(this).val().toLowerCase(); // Get the entered text
+        
+                // Loop through each user details row and hide/show based on the search
+                $('.user-details table tr:gt(0)').each(function() {
+                    var userName = $(this).find('td:eq(0)').text().toLowerCase(); // Get user name
+                    var userNumber = $(this).find('td:eq(2)').text().toLowerCase(); // Get user number
+                    var userEmail = $(this).find('td:eq(3)').text().toLowerCase();
+        
+                    // Check if the user name or number contains the search text
+                    if (userName.includes(searchText) || userNumber.includes(searchText) || userEmail.includes(searchText)) {
+                        $(this).show(); // Show if it matches
+                    } else {
+                        $(this).hide(); // Hide if it doesn't match
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Listen for changes in the search input
+                $('#search_artist').on('input', function() {
+                    var searchText = $(this).val().toLowerCase(); // Get the entered text
+            
+                    // Loop through each user details row and hide/show based on the search
+                    $('.user_artist table tr:gt(0)').each(function() {
+                        var userName = $(this).find('td:eq(0)').text().toLowerCase(); // Get user name
+                        var userNumber = $(this).find('td:eq(2)').text().toLowerCase(); // Get user number
+                        var userEmail = $(this).find('td:eq(3)').text().toLowerCase();
+            
+                        // Check if the user name or number contains the search text
+                        if (userName.includes(searchText) || userNumber.includes(searchText) || userEmail.includes(searchText)) {
+                            $(this).show(); // Show if it matches
+                        } else {
+                            $(this).hide(); // Hide if it doesn't match
+                        }
+                    });
+                });
+            });
+            
+            
+        
+    </script>
 </head>
 <body>
     <div class="body">
@@ -62,8 +110,8 @@
 
         <div id="sidebar">
             <img src="{% static 'images\gallery_logo.png' %}" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
-                <h2 style="margin-left: 40px;">admin1</h2>
-             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
+            <h2 style="margin-left: 40px;">admin1</h2>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
             <div class="sidebar-item" data-target="products">Users</div>
@@ -71,9 +119,9 @@
         </div>
 
         <!-- dashboard -->
-
-        <div id="content">
+        <div id="content" class="user-details">
             <h1>User Information-Customer</h1>
+            <input type="search" name="" id="search_user" placeholder="Enter name,number" style="padding: 5px; width:200px">
         <table>
             <tr>
                 <th>Name</th>
@@ -97,8 +145,9 @@
             {% endfor %}
         </table>
     </div>
-    <div id="content">
+    <div id="content" class="user_artist">
         <h1>User Information-Artist</h1>
+        <input type="search" name="" id="search_artist" placeholder="Enter name,number" style="padding: 5px; width:200px">
         <table>
     <tr>
         <th>Name</th>

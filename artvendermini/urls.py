@@ -52,8 +52,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('orders', views.orders, name='orders'),
 
+    #auction
+    path('auction',views.auction,name='auction'),
+    path('auction_uploadform',views.auction_uploadform,name='auction_uploadform'),
+    path('auction_bid/<int:auction_id>/', views.auction_bid, name='auction_bid'),
 
-    
+    path('get_latest_bid/<int:auction_id>/', views.get_latest_bid, name='get_latest_bid'),
+
+
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

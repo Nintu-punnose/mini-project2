@@ -31,7 +31,6 @@
     </div><br><br><br>
     {% for order in orders %}
     <div class="order-container">
-        
         <div class="order-details">
             <h2>Order Details</h2><br>
             
@@ -39,9 +38,7 @@
                         <p><b>Product Names:</b>{{ order.product_names }}</p>
                         <p><b>Total Cost:</b>{{ order.total_cost }}</p>
                         <p><b>Shipping Charge:</b>{{ order.shipping_charge }}</p>
-                        <p><b>Total Amount:</b>{{ order.total_amount }}</p>
-                    
-                
+                        <p><b>Total Amount:</b>{{ order.total_amount }}</p>      
         </div>
         <button class="cancel-button">Cancel Order</button>
     </div>{% endfor %}

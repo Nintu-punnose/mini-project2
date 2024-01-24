@@ -151,6 +151,7 @@
                 <li>About_us</li>
                 <li>Contact</li>
                 <li>Sign-in</li>
+                <li><a href="{% url 'auction' %}" id="auction">Auction</a></li>
             </ul>
         </div>
         <div id="follow" class="End_section"><br><br>
@@ -169,5 +170,19 @@
     <center>2022 All Rights Reserved Art Vendor</center><br>
 </div>
 </footer>
+<div class="alan-btn"></div>
+<script type="text/javascript"
+ src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
+<script>
+  var alanBtnInstance = alanBtn({
+    key: "81bd21822109a290c491689d842f4fb82e956eca572e1d8b807a3e2338fdd0dc/stage",
+    onCommand: function (commandData) {
+      if (commandData.command === "go:back") {
+        //call client code that will react on the received command
+      }
+    },
+    rootEl: document.getElementById("alan-btn"),
+  });
+</script>
 </body>
 </html>

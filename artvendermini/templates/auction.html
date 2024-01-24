@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Auction Website</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .auction-item {
+            transition: transform 0.2s;
+        }
+
+        .auction-item:hover {
+            transform: scale(1.05);
+        }
+        .col-md-4{
+            padding-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Auction Site</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Auctions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Contact</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="text-center mb-4">Featured Auction</h1>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card auction-item">
+                <img src="https://via.placeholder.com/600" class="card-img-top" alt="Featured Auction Item">
+                <div class="card-body">
+                    <h5 class="card-title">Vintage Collectible</h5>
+                    <p class="card-text">A rare vintage collectible item up for auction. Place your bid now!</p>
+                    <a href="#" class="btn btn-primary">Bid Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="text-center mt-5 mb-4">Upcoming Auctions</h2>
+    {% for auction in auction_items %}
+    <div class="row">
+    <div class="col-md-4">
+      <div class="card auction-item">
+        <img src="{{auction.image.url}}" class="card-img-top" alt="Upcoming Auction 1">
+        <div class="card-body">
+          <h5 class="card-title">{{auction.name}}</h5>
+          <p class="card-text">{{auction.start_date}}</p>
+          <p class="card-text">{{auction.end_date}}</p>
+          <span id="countdown_{{ auction.id }}" style="color: red;"></span> <!-- Timer display --><br><br>
+          <a href="{% url 'auction_bid' auction.id %}"><button id="auctionBtn_{{ auction.id }}" class="btn btn-primary" disabled onclick="bidNow({{ auction.id }})">View Auction</button></a>
+        </div>
+      </div>
+    </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    function startCountdown(startTime, auctionId) {
+        var x = setInterval(function () {
+            var now = new Date().getTime();
+            var distance = startTime - now;
+
+            if (distance <= 0) {
+                clearInterval(x);
+                document.getElementById("countdown_" + auctionId).innerHTML = "Auction has started!";
+                document.getElementById("auctionBtn_" + auctionId).disabled = false; // Enable the button
+            } else {
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                var timerDisplay = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+                document.getElementById("countdown_" + auctionId).innerHTML = timerDisplay;
+            }
+        }, 1000);
+    }
+
+    // Call startCountdown for each auction item
+    {% for auction in auction_items %}
+      var startTime_{{ auction.id }} = new Date("{{ auction.start_date|date:'Y-m-d H:i:s' }}").getTime();
+      startCountdown(startTime_{{ auction.id }}, {{ auction.id }});
+    {% endfor %}
+</script>
+
+  
+</body>
+</html>

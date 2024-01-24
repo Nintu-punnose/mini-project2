@@ -3,7 +3,7 @@ from urllib import request
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from .models import UserData, artOrder
+from .models import User_Bid, UserData, artOrder,AuctionItem
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -12,6 +12,7 @@ from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import UploadArtDetail,SellerProfile
+
 
 
 
@@ -62,6 +63,8 @@ def login(request):
                     return redirect('Artist_view')
                 elif to_role.role=='customer':
                     return redirect('index')
+                elif to_role.role=='shipping':
+                    return redirect('shipping')
                 else:
                     return redirect('admin_pannel')
             else:
@@ -81,8 +84,9 @@ from django.views.decorators.cache import never_cache
 from django.contrib import auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-@login_required
-@never_cache
+from django.views.decorators.cache import cache_control
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logout_view(request):
     auth.logout(request)
     return redirect('login')
@@ -254,10 +258,6 @@ def admin_pannel(request):
 
 
 
-
-
-
-
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import UploadArtDetail
 
@@ -372,17 +372,7 @@ def image_detail(request,id):
 def admin_dashboard(request):
     return render(request,'admin_dashboard.html')
 
-# def Artist(request):
-#     artistdata1=User.objects.all()
-#     # artistdata2=UserData.objects.filter(role='Artist')
-#     artistdata3=SellerProfile.objects.all()
-#     # context={'artistdata1':artistdata1,'artistdata2':artistdata2,'artistdata3':artistdata3 }
-#     data=UserData.objects.filter(role='Artist')
-#     l=[]
-#     for i in data:
-#         l+=SellerProfile.objects.filter(user=i.user)
-    
-#     return render(request,'Artist.html',{'artist':l})
+
 
 def Artist(request):
     artistdata1=User.objects.all()
@@ -486,8 +476,6 @@ def delete_art_size(request, size_id):
     return redirect('admin_pannel')
 
 
-
-
 #email
 from django.core.mail import send_mail
 from django.conf import settings
@@ -519,91 +507,6 @@ def alluser(request):
 
 
 
-
-
-# from django.shortcuts import render
-# import razorpay
-# from django.conf import settings
-# from django.views.decorators.csrf import csrf_exempt
-# from django.http import HttpResponseBadRequest
-
-
-# # authorize razorpay client with API Keys.
-# razorpay_client = razorpay.Client(
-# 	auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-
-
-# def payment(request):
-# 	currency = 'INR'
-# 	amount = 20000 # Rs. 200
-
-# 	# Create a Razorpay Order
-# 	razorpay_order = razorpay_client.order.create(dict(amount=amount,
-# 													currency=currency,
-# 													payment_capture='0'))
-
-# 	# order id of newly created order.
-# 	razorpay_order_id = razorpay_order['id']
-# 	callback_url = 'paymenthandler/'
-
-# 	# we need to pass these details to frontend.
-# 	context = {}
-# 	context['razorpay_order_id'] = razorpay_order_id
-# 	context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
-# 	context['razorpay_amount'] = amount
-# 	context['currency'] = currency
-# 	context['callback_url'] = callback_url
-
-# 	return render(request, 'payment.html', context=context)
-
-
-# # we need to csrf_exempt this url as
-# # POST request will be made by Razorpay
-# # and it won't have the csrf token.
-# @csrf_exempt
-# def paymenthandler(request):
-
-# 	# only accept POST request.
-# 	if request.method == "POST":
-# 		try:
-		
-# 			# get the required parameters from post request.
-# 			payment_id = request.POST.get('razorpay_payment_id', '')
-# 			razorpay_order_id = request.POST.get('razorpay_order_id', '')
-# 			signature = request.POST.get('razorpay_signature', '')
-# 			params_dict = {
-# 				'razorpay_order_id': razorpay_order_id,
-# 				'razorpay_payment_id': payment_id,
-# 				'razorpay_signature': signature
-# 			}
-
-# 			# verify the payment signature.
-# 			result = razorpay_client.utility.verify_payment_signature(
-# 				params_dict)
-# 			if result is not None:
-# 				amount = 20000 # Rs. 200
-# 				try:
-
-# 					# capture the payemt
-# 					razorpay_client.payment.capture(payment_id, amount)
-
-# 					# render success page on successful caputre of payment
-# 					return render(request, 'payment.html')
-# 				except:
-
-# 					# if there is an error while capturing payment.
-# 					return render(request, 'paymentfail.html')
-# 			else:
-
-# 				# if signature verification fails.
-# 				return render(request, 'paymentfail.html')
-# 		except:
-
-# 			# if we don't find the required parameters in POST data
-# 			return HttpResponseBadRequest()
-# 	else:
-# 	# if other than POST request is made.
-# 		return HttpResponseBadRequest()
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseBadRequest
 from .models import Order, Cart, CartItem
@@ -671,7 +574,7 @@ def paymenthandler(request):
             payment_id=payment_id,  # Store the payment ID
             razorpay_order_id=razorpay_order_id  # Store the Razorpay order ID
         )
-
+ 
         order.save()
 
         cart_items.delete()
@@ -680,9 +583,6 @@ def paymenthandler(request):
         return render(request, 'cart.html', {'orders': order})  # Render the success page on successful capture of payment
     return HttpResponseBadRequest("Invalid Request")
 
-
-
-
 from .models import Order
 
 def orders(request):
@@ -690,13 +590,105 @@ def orders(request):
     return render(request, "orders.html", {'orders': orders})
 
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def auction_uploadform(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        price_range_min = request.POST.get('priceRangeMin')
+        description = request.POST.get('description')
+        image = request.FILES.get('image')
+        start_date = request.POST.get('startDate')
+        end_date = request.POST.get('endDate')
+
+        # Set the user field with the current user
+        auction = AuctionItem(
+            user=request.user,
+            name=name,
+            price_range_min=price_range_min,
+            description=description,
+            image=image,
+            start_date=start_date,
+            end_date=end_date
+        )
+        auction.save()
+        return redirect('auction_uploadform')
+
+    return render(request, 'auction_uploadform.html')
+
+
+from django.shortcuts import render
+from django.utils import timezone
+from .models import AuctionItem
+
+def auction(request):
+    # Get all auction items
+    auction_items = AuctionItem.objects.all()
+
+    # Check and update is_active for auctions that have ended
+    for auction_item in auction_items:
+    # Convert end_date to the local timezone
+        end_date_local = timezone.localtime(auction_item.end_date)
+        end_time_local = end_date_local.time()
+        
+
+    # Check if end_date is in the past
+        print(end_time_local,datetime.now().time())
+        if end_time_local < datetime.now().time():
+            auction_item.is_active = False
+            auction_item.save() 
+
+    # Get the remaining active auction items
+    updated_auction_items = AuctionItem.objects.filter(is_active=True)
+
+    return render(request, 'auction.html', {'auction_items': updated_auction_items})
+
+
+from django.contrib.auth.decorators import login_required
+from django.db.models import Max
+
+@login_required
+
+def auction_bid(request, auction_id):
+    auction_details = get_object_or_404(AuctionItem, id=auction_id)
+
+    # Set default values for seller and buyer
+    seller = request.user
+    buyer = None
+
+    if request.method == 'POST':
+        # Get the bid_price from the form
+        bid_price = request.POST.get('bid_price')
+
+        # Set buyer to the logged-in user
+        buyer = request.user
+
+        bid = User_Bid(
+            seller=seller,
+            buyer=buyer,
+            auction_item=auction_details,
+            bid_price=bid_price
+        )
+
+        bid.save()
+
+       
+
+        return redirect('auction_bid', auction_id=auction_id)
+    
+    highest_bid = User_Bid.objects.filter(auction_item=auction_details).aggregate(Max('bid_price'))['bid_price__max']
+
+    # Render the template without 'name' when it's not defined
+    return render(request, 'auction_bid.html', {'auction_details': auction_details, 'seller': seller, 'buyer': buyer, 'highest_bid': highest_bid})
 
 
 
+from django.http import JsonResponse
 
-
-
-
-
+def get_latest_bid(request, auction_id):
+    auction_details = get_object_or_404(AuctionItem, id=auction_id)
+    highest_bid = User_Bid.objects.filter(auction_item=auction_details).aggregate(Max('bid_price'))['bid_price__max']
+    return JsonResponse({'latest_bid': highest_bid})
 
 

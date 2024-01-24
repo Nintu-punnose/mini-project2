@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 import uuid
 from django.utils import timezone
-
 from platformdirs import user_data_dir
 
 class UserData(models.Model):
@@ -70,6 +69,9 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     art = models.ForeignKey(UploadArtDetail, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    shipping_charge = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+
+# views.py
 
 
 
@@ -84,10 +86,6 @@ class Order(models.Model):
     payment_id = models.CharField(max_length=100, default='your_default_value_here')
     razorpay_order_id = models.CharField(max_length=100, default='your_default_value_here')
 
-
-
-
-
 class artOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order_date = models.DateTimeField()
@@ -97,6 +95,37 @@ class artOrder(models.Model):
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_id = models.CharField(max_length=100, default='your_default_value_here')
     razorpay_order_id = models.CharField(max_length=100, default='your_default_value_here')
+
+
+
+
+from django.db import models
+
+class AuctionItem(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    name = models.CharField(max_length=255)
+    price_range_min = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+    image = models.ImageField(upload_to='images/')
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+
+class User_Bid(models.Model):
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_auctions')
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer_auctions', null=True, blank=True)
+    auction_item = models.ForeignKey(AuctionItem, on_delete=models.CASCADE, related_name='bids')  # Corrected this line
+    bid_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Bid for {self.auction_item.name}"
+
+
+
 
 
 

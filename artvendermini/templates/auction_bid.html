@@ -1,0 +1,79 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/auction_bid.css' %}">
+    <title>{{img_id.name}}_details</title>
+</head>
+<body>
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
+        </div>
+        <div id="link">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'index' %}">Our services</a>
+            <a href="{% url 'cart' %}">Cart</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div><br><br><br>
+    <script>updateFormContent()</script>
+    <div id="detail_img_body">
+        <div id="select_image">
+            <div id="magnifier"></div>
+            <img src="{{auction_details.image.url}}" alt="" id="img">
+        </div>
+        <div id="select_details"><br>
+            <form action="" method="post">
+            {% csrf_token %}
+            <p id="details" name="name"><strong>Art Name:</strong> {{auction_details.name}}</p>  
+            <p id="details" name="id"><strong>Art Id:</strong> {{auction_details.id}}</p>
+            <p id="details" name="starting_bid"><strong>Starting Bid:</strong>{{auction_details.price_range_min}}</p>
+            <p id="details" name="ending_bid"><strong>Description:</strong> {{auction_details.price_range_max}}</p>
+            <p id="details" name="start_date"><strong>Start Date</strong> {{auction_details.start_date}}</p>
+            <p id="details" name="end_date"><strong>End Date</strong> {{auction_details.end_date}}</p><br>
+            <input type="text" id="bid-price" name="bid_price" placeholder="Enter Price to bid" required style="width: 300px;margin-left:30px"><br><br>
+            <p id="latest_bid" style="background-color: rgb(163, 197, 11); width: 200px; border-radius: 5px; color: red">
+                <strong>Latest Bid:</strong> {{ highest_bid|default:"No bids yet" }}
+            </p>
+            
+            <button type="submit" id="cart_btn" style="background-color: green" onclick="showBidForm()">Submit a bid</button><br>
+            </form>
+           
+    </div>
+    <script>
+        function updateLatestBid() {
+            $.ajax({
+                url: '{% url "get_latest_bid" auction_details.id %}',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('#latest_bid').html('<strong>Latest Bid:</strong> ' + (data.latest_bid || 'No bids yet'));
+                },
+                error: function (error) {
+                    console.log('Error fetching latest bid:', error);
+                }
+            });
+        }
+    
+        // Call updateLatestBid when the page loads
+        $(document).ready(function () {
+            updateLatestBid();
+        });
+    
+        // Call updateLatestBid when a bid is submitted
+        function showBidForm() {
+            updateLatestBid();
+            // Additional code for showing bid form
+        }
+    </script>    
+</body>
+</html>

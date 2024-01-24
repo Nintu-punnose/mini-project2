@@ -28,6 +28,7 @@
     <div id="project_login">
         <div id="image_body">
             <div id="image_content">
+                
                 <img src="{% static 'images\bg.jpeg'%}" alt="" id="image"><br><br>
                 <p>"Make The World A Better Place With Gallery"</p>
             </div>
@@ -36,7 +37,8 @@
             <fieldset id="login_fieldset">
                 <form id="login_box" method="POST"><br>
                     {% csrf_token %}
-                    <center><h1>Login</h1></center>
+                    <center><h1>ART VENDOR</h1></center>
+                    <center><h2>Login</h2></center>
                     {% if messages %}
                         <div class="messages" id="report_login">
                             {% for message in messages %}
