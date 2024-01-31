@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css\Artist.css'%}">
     <title>Artist_artvendor</title>
+
+    </style>
 </head>
 <body>
     <div id="head_details">
@@ -34,6 +36,7 @@
                 <img src="{{a.image.url}}" alt="" class="img-artist">
                 <p><b>Name: </b>{{a.user.username}}</p>
                 <p><b>PhNo: </b>{{a.user.userdata.number}}</p><br>
+                
                 <a href="{% url 'Artist_detail' a.user.id %}"><button type="submit" class="artist-moreinfo">More</button></a>
             </div>
         {% endfor %}

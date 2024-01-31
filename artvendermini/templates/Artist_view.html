@@ -226,12 +226,26 @@
                             {% endif %}
                             <p class="art-detail"><b>Description:</b> {{ artdata.description }}</p>
                             <center>
-                                <a href="{% url 'update_art' artdata.id %}"><button type="submit" class="edit-art-submit" >Edit</button></a>
-                                <a href="{% url 'delete_art' artdata.id %}" onclick="return confirm('Are you sure you want to delete this art?')"><button type="button" class="delete-art-submit" style="background-color: red;">Delete</button></a>
+                                <a href="{% url 'update_art' artdata.id %}">
+                                    <button type="submit" class="edit-art-submit">Edit</button>
+                                </a>
+                                <a href="#" onclick="openDeleteModal('{{ artdata.id }}')">
+                                    <button type="button" class="delete-art-submit" style="background-color: red;">Delete</button>
+                                </a>
                             </center><br>
                         </div>
                     </div><br><br>
                     {% endfor %}
+                </div>
+                <div id="deleteModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeDeleteModal()">&times;</span>
+                        <p>Are you sure you want to delete this art?</p>
+                        <a id="deleteArtLink" href="#">
+                            <button type="button" class="delete-art-submit" style="background-color: red;">Delete</button>
+                        </a>
+                        <button type="button" class="delete-art-submit" style="background-color: rgb(33, 30, 207);" onclick="closeDeleteModal()">Cancel</button>
+                    </div>
                 </div>
 
         </div>
@@ -306,6 +320,22 @@
     document.getElementById('art-' + contentType + '-form').style.display = 'block';
 }
 
+    </script>
+
+    <!-- delete modular -->
+    <script>
+        function openDeleteModal(artId) {
+            var modal = document.getElementById("deleteModal");
+            modal.style.display = "block";
+    
+            // Set the href attribute of the delete link with the specific art_id
+            document.getElementById("deleteArtLink").setAttribute("href", "{% url 'delete_art' 0 %}".replace("0", artId));
+        }
+    
+        function closeDeleteModal() {
+            var modal = document.getElementById("deleteModal");
+            modal.style.display = "none";
+        }
     </script>
 </body>
 </html>

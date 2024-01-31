@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css\artist_view1.css' %}">
+    <title>Seller_artvendor</title>
+    <style>
+      
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#upload_auction_view{
+  margin-left: 260px;
+  height: 570px;
+  width: 1050px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.approve-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer;
+    
+}
+</style>
+<style>
+  
+</style>   
+</head>
+<body>
+    <div class="body">
+        <!-- head_section -->
+        <div class="header">
+            <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
+
+            <ul class="user-menu">
+                    <p style="color: green;">Welcome, {{ user.username }}!</p>
+                    <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
+            </ul>
+        </div><>br
+
+        <!-- side-pannel -->
+
+        <div id="sidebar">
+            {% for img in img %}
+                <img src="{{img.image.url}}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% empty %}
+                <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% endfor %}
+            <h1>&emsp;{{ user.username }}</h1>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
+            <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
+            <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
+            <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
+        </div>
+        <div id="upload_auction_view">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Art Name</th>
+                        <th>Buyer Name</th>
+                        <th>Seller Name</th>
+                        <th>Latest Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bid in admin_buyer_shown %}
+                        <tr>
+                            <td>{{ bid.id }}</td>
+                            <td>{{ bid.auction_item.name }}</td>
+                            <td>{{ bid.buyer.username }}</td>
+                            <td>{{ bid.seller.username }}</td>
+                            <td>{{ bid.bid_price }}</td>
+                            <td><button class="approve-btn">Approve</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    <p style="text-align: right;"><a href="{% url 'artist_auction_view_all' %}" style="text-decoration: none;">View all</a></p>
+</div>
+    </div>
+</body>
+</html>

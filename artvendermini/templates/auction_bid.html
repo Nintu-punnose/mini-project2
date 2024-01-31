@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/auction_bid.css' %}">
-    <title>{{img_id.name}}_details</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <title>{{auction_details.name}}_details</title>
 </head>
 <body>
     <div id="head_details">
@@ -25,7 +26,7 @@
             {% endif %}
         </div>
     </div><br><br><br>
-    <script>updateFormContent()</script>
+ 
     <div id="detail_img_body">
         <div id="select_image">
             <div id="magnifier"></div>
@@ -41,39 +42,31 @@
             <p id="details" name="start_date"><strong>Start Date</strong> {{auction_details.start_date}}</p>
             <p id="details" name="end_date"><strong>End Date</strong> {{auction_details.end_date}}</p><br>
             <input type="text" id="bid-price" name="bid_price" placeholder="Enter Price to bid" required style="width: 300px;margin-left:30px"><br><br>
-            <p id="latest_bid" style="background-color: rgb(163, 197, 11); width: 200px; border-radius: 5px; color: red">
-                <strong>Latest Bid:</strong> {{ highest_bid|default:"No bids yet" }}
-            </p>
+            <p id="details" style="background-color:rgb(163, 197, 11); width:240px;border-radius:5px;color:red" name="latest_price"><strong>Latest Bid:</strong>  {{ highest_bid|default:"No bids yet" }}</p><br><br>
             
             <button type="submit" id="cart_btn" style="background-color: green" onclick="showBidForm()">Submit a bid</button><br>
             </form>
            
-    </div>
+    </div>  
     <script>
-        function updateLatestBid() {
+        // Function to make AJAX request and update content
+        function refreshPage() {
+            var auctionId = "{{ auction_details.id }}";
+            var url = '/auction_bid_ajax/' + auctionId + '/';
+            
             $.ajax({
-                url: '{% url "get_latest_bid" auction_details.id %}',
-                method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    $('#latest_bid').html('<strong>Latest Bid:</strong> ' + (data.latest_bid || 'No bids yet'));
-                },
-                error: function (error) {
-                    console.log('Error fetching latest bid:', error);
+                url: "{% url 'auction_bid' auction_details.id %}",
+                type: 'GET',
+                success: function(data) {
+                    console.log(data)
+                    // Update the content with the new highest bid value
+                    $('#details[name="latest_price"]').html('<strong>Latest Bid:</strong> ' + (data.highest_bid || 'No bids yet'));
                 }
             });
         }
     
-        // Call updateLatestBid when the page loads
-        $(document).ready(function () {
-            updateLatestBid();
-        });
-    
-        // Call updateLatestBid when a bid is submitted
-        function showBidForm() {
-            updateLatestBid();
-            // Additional code for showing bid form
-        }
-    </script>    
+        // Auto-refresh every 5 seconds (5000 milliseconds)
+        setInterval(refreshPage, 5000);
+    </script>
 </body>
 </html>

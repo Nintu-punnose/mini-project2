@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css\artist_view1.css' %}">
+    <title>Seller_artvendor</title>
+    <style>
+      /* Add this to your existing styles or create a new CSS file */
+.auction-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+    gap: 20px;
+    margin: 20px;
+}
+
+.auction-item {
+    border: 1px solid #31e421;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.auction-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.auction-details {
+    margin-top: 10px;
+}
+
+.auction-actions {
+    margin-top: 10px;
+}
+
+.edit-btn, .delete-btn, .view-bid-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+#view_auction{
+margin-left: 250px;
+}
+
+</style>
+<style>
+  
+</style>   
+</head>
+<body>
+    <div class="body">
+        <!-- head_section -->
+        <div class="header">
+            <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
+
+            <ul class="user-menu">
+                    <p style="color: green;">Welcome, {{ user.username }}!</p>
+                    <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
+            </ul>
+        </div><>br
+
+        <!-- side-pannel -->
+
+        <div id="sidebar">
+            {% for img in img %}
+                <img src="{{img.image.url}}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% empty %}
+                <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% endfor %}
+            <h1>&emsp;{{ user.username }}</h1>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
+            <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
+            <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
+            <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
+        </div>
+        <div id="view_auction">
+           
+<div class="auction-container">
+    {% for i in auction_details %}
+      <div class="auction-item">
+            <img src="{{ i.image.url }}" alt="Art Image" class="auction-image" style="height:200px;width:2704px">
+            <div class="auction-details">
+                <p>ID: {{ i.id }}</p>
+                <p>Name: {{ i.name }}</p>
+                <p>End Date: {{ i.end_date }}</p>
+            </div>
+            <div class="auction-actions">
+                <button class="edit-btn">Edit</button>
+                <button class="delete-btn">Delete</button>
+                <a href="{% url 'artist_auction_view' bid_id=i.id %}" class="view-bid-btn">View Bid</a>
+            </div>
+        </div>
+    {% endfor %}
+        
+  
+</div>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -56,8 +56,17 @@ urlpatterns = [
     path('auction',views.auction,name='auction'),
     path('auction_uploadform',views.auction_uploadform,name='auction_uploadform'),
     path('auction_bid/<int:auction_id>/', views.auction_bid, name='auction_bid'),
+    path('artist_uploaded_auction/', views.artist_uploaded_auction, name='artist_uploaded_auction'),
+    path('artist_auction_view/<int:bid_id>/',views.artist_auction_view,name='artist_auction_view'),
+    path('artist_auction_view_all',views.artist_auction_view_all,name='artist_auction_view_all'),
+    
 
-    path('get_latest_bid/<int:auction_id>/', views.get_latest_bid, name='get_latest_bid'),
+
+   
+
+    
+
+    
 
 
 

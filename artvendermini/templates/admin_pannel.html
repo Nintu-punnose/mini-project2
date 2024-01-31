@@ -101,6 +101,53 @@
             max-width: 90%;
             max-height: 90%;
         }
+
+        {% comment %} rejection modular {% endcomment %}
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+    
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
+        }
+    
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+    
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+    
+        .reject-button, .cancel-button {
+            margin-top: 10px;
+        }
     </style>
     
 </head>
@@ -194,28 +241,9 @@
                                     {% endif %}
                                 </button>
                             </form>
-                            {% comment %} <form method="POST" action="{% url 'admin_pannel' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="art_id" value="{{ art.id }}">
-                                {% if art.approval_status == 'approved' %}
-                                    <button type="submit" class="action-button reject" name="action" value="reject">
-                                        Reject
-                                    </button>
-                                {% elif art.approval_status == 'rejected' %}
-                                    <button type="submit" class="action-button approve" name="action" value="approve">
-                                        Approve
-                                    </button>
-                                {% else %}
-                                    <button type="submit" class="action-button approve" name="action" value="approve">
-                                        Approve
-                                    </button>
-                                    <button type="submit" class="action-button reject" name="action" value="reject">
-                                        Reject
-                                    </button>
-                                {% endif %}
-                            </form> {% endcomment %}
-                            
-                            
+                            <button type="button" class="action-button reject" onclick="openRejectModal('{{ art.id }}')">
+                                Reject
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -230,6 +258,21 @@
             </div>
         </div>
 
+        <div id="rejectModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeRejectModal()">&times;</span>
+                <h2>Reject Art</h2>
+                <form id="rejectForm" method="POST" action="{% url 'admin_pannel' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="art_id" value="" id="rejectArtId">
+                    <label for="rejectionReason">Reason for Rejection:</label>
+                    <textarea name="rejection_reason" id="rejectionReason" required></textarea>
+                    <button type="submit" class="reject-button">Reject</button>
+                </form>
+                <button type="button" class="cancel-button" onclick="closeRejectModal()">Cancel</button>
+            </div>
+        </div>
+        
     <!-- view art -->
 
     
@@ -356,7 +399,18 @@
         var popup = document.getElementById("imagePopup");
         popup.style.display = "none";
     }
-        
- </script>
+</script>
+<script>
+    function openRejectModal(artId) {
+        var modal = document.getElementById("rejectModal");
+        modal.style.display = "block";
+        document.getElementById("rejectArtId").value = artId;
+    }
+
+    function closeRejectModal() {
+        var modal = document.getElementById("rejectModal");
+        modal.style.display = "none";
+    }
+</script>
 </body>
 </html>

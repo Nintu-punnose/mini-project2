@@ -15,7 +15,6 @@ from .models import UploadArtDetail,SellerProfile
 
 
 
-
 def signup(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -645,10 +644,10 @@ def auction(request):
     return render(request, 'auction.html', {'auction_items': updated_auction_items})
 
 
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Max
-
-@login_required
+from .models import AuctionItem, User_Bid
 
 def auction_bid(request, auction_id):
     auction_details = get_object_or_404(AuctionItem, id=auction_id)
@@ -673,9 +672,14 @@ def auction_bid(request, auction_id):
 
         bid.save()
 
-       
-
         return redirect('auction_bid', auction_id=auction_id)
+
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        highest_bid = User_Bid.objects.filter(auction_item=auction_details).aggregate(Max('bid_price'))['bid_price__max']
+        data = {
+            'highest_bid': highest_bid,
+        }
+        return JsonResponse(data)
     
     highest_bid = User_Bid.objects.filter(auction_item=auction_details).aggregate(Max('bid_price'))['bid_price__max']
 
@@ -683,12 +687,27 @@ def auction_bid(request, auction_id):
     return render(request, 'auction_bid.html', {'auction_details': auction_details, 'seller': seller, 'buyer': buyer, 'highest_bid': highest_bid})
 
 
+def artist_uploaded_auction(request):
+    auction_details = AuctionItem.objects.filter(user_id=request.user.id)
+    return render(request,'artist_uploaded_auction.html',{'auction_details':auction_details})
 
-from django.http import JsonResponse
+def artist_auction_view(request, bid_id):
+    bid_object = User_Bid.objects.filter(pk=bid_id)
+    admin_buyer_shown = User_Bid.objects.filter(id=bid_id).order_by('-bid_price')[:1]
+    return render(request, 'artist_auction_view.html', {'admin_buyer_shown': admin_buyer_shown, 'bid_id': bid_object})
 
-def get_latest_bid(request, auction_id):
-    auction_details = get_object_or_404(AuctionItem, id=auction_id)
-    highest_bid = User_Bid.objects.filter(auction_item=auction_details).aggregate(Max('bid_price'))['bid_price__max']
-    return JsonResponse({'latest_bid': highest_bid})
+
+
+def artist_auction_view_all(request, bid_id):
+    admin_buyer_shown = User_Bid.objects.all()
+    return render(request,'artist_auction_view_all.html',{'admin_buyer_shown':admin_buyer_shown, 'bid_id': bid_object})
+
+
+
+
+
+
+
+
 
 

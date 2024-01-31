@@ -1,45 +1,104 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auction Form</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css\artist_view1.css' %}">
+    <title>Seller_artvendor</title>
+    <style>
+      
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#upload_form{
+  margin-left: 300px;
+}
+</style>
+<style>
+  
+</style>   
 </head>
 <body>
-<div class="container mt-5">
-  <h2 class="mb-4">{{ request.user.username }}</h2>
-  <h2 class="mb-4">Auction Form</h2>
-  <form method="post" enctype="multipart/form-data" action="">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="name" class="form-label">Name</label>
-      <input type="text" class="form-control" id="name" name="name" required>
-    </div>
-    <div class="mb-3">
-      <label for="priceRange" class="form-label">Price Range</label>
-      <input type="number" class="form-control" id="priceRangeMin" name="priceRangeMin" required>
-    </div>
-    <div class="mb-3">
-      <label for="description" class="form-label">Description</label>
-      <input type="text" class="form-control mt-2" id="description" name="description" required>
-    </div>
-    <div class="mb-3">
-      <label for="image" class="form-label">Image</label>
-      <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-    </div>
-    <div class="mb-3">
-      <label for="startDate" class="form-label">Auction Start Date and Time</label>
-      <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
-    </div>
-    <div class="mb-3">
-      <label for="endDate" class="form-label">Auction End Date and Time</label>
-      <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-</div>
+    <div class="body">
+        <!-- head_section -->
+        <div class="header">
+            <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <ul class="user-menu">
+                    <p style="color: green;">Welcome, {{ user.username }}!</p>
+                    <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
+            </ul>
+        </div>
+
+        <!-- side-pannel -->
+
+        <div id="sidebar">
+            {% for img in img %}
+                <img src="{{img.image.url}}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% empty %}
+                <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% endfor %}
+            <h1>&emsp;{{ user.username }}</h1>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
+            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
+            <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
+            <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
+            <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
+        </div>
+
+        <div id="upload_form">
+          <form method="post" enctype="multipart/form-data" action=""><br><br>
+            {% csrf_token %}
+           
+              <label for="name" >Name:</label><br>
+              <input type="text" id="name" name="name" required><br><br>
+           
+              <label for="priceRange">Price Range:</label><br>
+              <input type="number"  id="priceRangeMin" name="priceRangeMin" required><br><br>
+            
+              <label for="description" >Description:</label><br>
+              <input type="text"  id="description" name="description" required><br><br>
+          
+              <label for="image" >Image:</label>
+              <input type="file"  id="image" name="image" accept="image/*" required><br><br>
+            
+              <label for="startDate" >Auction Start Date and Time:</label>
+              <input type="datetime-local"  id="startDate" name="startDate" required><br><br>
+            
+              <label for="endDate" >Auction End Date and Time:</label>
+              <input type="datetime-local"  id="endDate" name="endDate" required><br><br>
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
 </body>
 </html>
