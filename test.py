@@ -27,6 +27,9 @@ class Hosttest(TestCase):
         driver.maximize_window()
         time.sleep(1)
 
+
+        
+
         Register = driver.find_element(By.CSS_SELECTOR, "a#user_register")
         Register.click()
         time.sleep(2)
