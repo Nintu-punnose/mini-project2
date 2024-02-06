@@ -133,3 +133,15 @@ class AuctionListing(models.Model):
 
     def __str__(self):
         return f"Auction Listing for {self.auction_item.name}"
+    
+
+class AuctionOrder(models.Model):
+    auction_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer_orders')
+    order_date = models.DateTimeField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    buyer_address = models.TextField()
+    buyer_pincode = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f"Auction Order for {self.auction_listing.auction_item.name}"

@@ -319,6 +319,7 @@ def delete_art(request, art_id):
 def seller_profile(request):
     user=User.objects.filter(id=request.user.id)
     userdata=UserData.objects.filter(user_id=request.user.id)
+    img=SellerProfile.objects.filter(user_id=request.user.id)
     userexists=SellerProfile.objects.filter(user_id=request.user.id).exists()
     if userexists:
         seller=SellerProfile.objects.filter(user_id=request.user.id)
@@ -356,7 +357,7 @@ def seller_profile(request):
             )
             user1.save()
             return redirect('seller_profile')
-    return render(request,'seller_profile.html',{'user':user,'userdata':userdata,'seller':seller})
+    return render(request,'seller_profile.html',{'user':user,'userdata':userdata,'seller':seller,'img':img})
 
 
 
@@ -593,6 +594,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def auction_uploadform(request):
+    img = SellerProfile.objects.filter(user_id=request.user.id)
     if request.method == 'POST':
         name = request.POST.get('name')
         price_range_min = request.POST.get('priceRangeMin')
@@ -614,7 +616,7 @@ def auction_uploadform(request):
         auction.save()
         return redirect('auction_uploadform')
 
-    return render(request, 'auction_uploadform.html')
+    return render(request, 'auction_uploadform.html',{'img':img})
 
 
 from django.shortcuts import render
@@ -691,20 +693,22 @@ def artist_uploaded_auction(request):
     current_utc_date = timezone.now()
     current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
     auction_details = AuctionItem.objects.filter(user_id=request.user.id)
-    
-    return render(request, 'artist_uploaded_auction.html', {'auction_details': auction_details, 'current_date': current_date_ist})
+    img = SellerProfile.objects.filter(user_id=request.user.id)
+    return render(request, 'artist_uploaded_auction.html', {'auction_details': auction_details, 'current_date': current_date_ist,'img':img})
 
 
 def artist_auction_view(request, art_id):
     current_utc_date = timezone.now()
     current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
     admin_buyer_shown = User_Bid.objects.filter(auction_item_id=art_id).order_by('-bid_price')[:1]
-    return render(request, 'artist_auction_view.html', {'admin_buyer_shown': admin_buyer_shown, 'art_id': art_id,'current_date_ist':current_date_ist})
+    img = SellerProfile.objects.filter(user_id=request.user.id)
+    return render(request, 'artist_auction_view.html', {'admin_buyer_shown': admin_buyer_shown, 'art_id': art_id,'current_date_ist':current_date_ist,'img':img})
 
 
-def artist_auction_view_all(request):
-    admin_buyer_shown = User_Bid.objects.all()
-    return render(request,'artist_auction_view_all.html',{'admin_buyer_shown':admin_buyer_shown})
+def artist_auction_view_all(request,bid_id):
+    admin_buyer_shown = User_Bid.objects.filter(auction_item_id=bid_id)
+    img = SellerProfile.objects.filter(user_id=request.user.id)
+    return render(request, 'artist_auction_view_all.html', {'admin_buyer_shown': admin_buyer_shown,'img':img})
 
 
 def notification(request):

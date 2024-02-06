@@ -108,9 +108,11 @@ th {
                 <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
             {% endfor %}
             <h1>&emsp;{{ user.username }}</h1>
-            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
-            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
-            <a href="{% url 'Artist_view' %}"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
+            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
+            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
+            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
+            <a href="{% url 'auction_uploadform' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction Upload</div></a>
+            <a href="{% url 'artist_uploaded_auction' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction View</div></a>
             <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
             <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
             <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
@@ -119,11 +121,11 @@ th {
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Art-ID</th>
                         <th>Art Name</th>
                         <th>Buyer Name</th>
                         <th>Seller Name</th>
-                        <th>Latest Price</th>
+                        <th>Higest Price</th>
                         <th>End Date</th>
                         <th>Action</th>
                     </tr>
@@ -138,20 +140,50 @@ th {
                             <td>{{ bid.bid_price }}</td>
                             <td>{{ bid.auction_item.end_date }}</td>
                             {% if current_date_ist > bid.auction_item.end_date %}
-                            <td><a href="{% url 'approve_bid' art_id=bid.auction_item.id %}" class="approve-btn">Approve</a></td>
+                            <!-- Add an id to the button -->
+                            <td><a href="{% url 'approve_bid' art_id=bid.auction_item.id %}" id="approve-btn" data-art-id="{{ bid.auction_item.id }}" class="approve-btn">Approve</a></td>
                             {% else %}
                             <td><button  disabled class="disable-btn" >time not meet</button></td>
                             {% endif %}
+                            
                         </tr>
+                        <p style="text-align: right;"><a href="{% url 'artist_auction_view_all' bid_id=bid.auction_item.id %}" style="text-decoration:none";>View all</a></p>
                     {% endfor %}
                 </tbody>                
             </table>
-            <p style="text-align: right;"><a href="{% url 'artist_auction_view_all' %}" style="text-decoration: none;">View all</a></p>
         </div> 
 </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to handle button click
+            function handleButtonClick(event) {
+                event.preventDefault();
     
-
-  
+                // Get the art_id from the data attribute
+                const artId = event.target.dataset.artId;
+    
+                // Disable the button
+                event.target.removeEventListener('click', handleButtonClick);
+                event.target.classList.add('disabled');
+                
+                // Add your logic to perform the approval action (e.g., make an AJAX request)
+                // ...
+    
+                // Show an error message
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = 'Button can only be clicked once.';
+                errorMessage.style.color = 'red';
+                event.target.parentNode.appendChild(errorMessage);
+            }
+    
+            // Attach the event listener to the button
+            const approveBtn = document.getElementById('approve-btn');
+            if (approveBtn) {
+                approveBtn.addEventListener('click', handleButtonClick);
+            }
+        });
+    </script>
+    
 </body>
 </html>
