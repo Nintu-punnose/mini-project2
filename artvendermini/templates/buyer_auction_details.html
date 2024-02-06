@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Details</title>
+    <!-- Add your CSS links or stylesheets here -->
+</head>
+<body>
+    <h1>Auction Details</h1>
+    
+    <!-- Display auction details here -->
+    <p>Auction ID: {{ auction.id }}</p>
+    <p>Art Name: {{ auction.auction_item.name }}</p>
+    <p>Buyer Name: {{ auction.buyer.username }}</p>
+    <p>Seller Name: {{ auction.seller.username }}</p>
+    <p>Latest Price: {{ auction.bid_price }}</p>
+    <p>End Date: {{ auction.auction_item.end_date }}</p>
+
+    <!-- Add more details or customize as needed -->
+
+    <!-- Add your JavaScript for any interactivity or additional functionality -->
+</body>
+</html>

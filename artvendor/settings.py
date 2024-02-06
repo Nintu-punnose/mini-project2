@@ -154,3 +154,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 RAZOR_KEY_ID = 'rzp_test_CTz2qWPmuuMc3T'
 RAZOR_KEY_SECRET = 'Pq0fbLjQz0RtVNim8wo12gh0'
 
+
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+

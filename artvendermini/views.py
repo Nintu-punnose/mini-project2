@@ -653,7 +653,7 @@ def auction_bid(request, auction_id):
     auction_details = get_object_or_404(AuctionItem, id=auction_id)
 
     # Set default values for seller and buyer
-    seller = request.user
+    seller = User.objects.get(id=auction_details.user_id)
     buyer = None
 
     if request.method == 'POST':
@@ -662,8 +662,8 @@ def auction_bid(request, auction_id):
 
         # Set buyer to the logged-in user
         buyer = request.user
-
-        bid = User_Bid(
+       
+        bid = User_Bid( 
             seller=seller,
             buyer=buyer,
             auction_item=auction_details,
@@ -686,21 +686,124 @@ def auction_bid(request, auction_id):
     # Render the template without 'name' when it's not defined
     return render(request, 'auction_bid.html', {'auction_details': auction_details, 'seller': seller, 'buyer': buyer, 'highest_bid': highest_bid})
 
-
+import pytz
 def artist_uploaded_auction(request):
+    current_utc_date = timezone.now()
+    current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
     auction_details = AuctionItem.objects.filter(user_id=request.user.id)
-    return render(request,'artist_uploaded_auction.html',{'auction_details':auction_details})
-
-def artist_auction_view(request, bid_id):
-    bid_object = User_Bid.objects.filter(pk=bid_id)
-    admin_buyer_shown = User_Bid.objects.filter(id=bid_id).order_by('-bid_price')[:1]
-    return render(request, 'artist_auction_view.html', {'admin_buyer_shown': admin_buyer_shown, 'bid_id': bid_object})
+    
+    return render(request, 'artist_uploaded_auction.html', {'auction_details': auction_details, 'current_date': current_date_ist})
 
 
+def artist_auction_view(request, art_id):
+    current_utc_date = timezone.now()
+    current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
+    admin_buyer_shown = User_Bid.objects.filter(auction_item_id=art_id).order_by('-bid_price')[:1]
+    return render(request, 'artist_auction_view.html', {'admin_buyer_shown': admin_buyer_shown, 'art_id': art_id,'current_date_ist':current_date_ist})
 
-def artist_auction_view_all(request, bid_id):
+
+def artist_auction_view_all(request):
     admin_buyer_shown = User_Bid.objects.all()
-    return render(request,'artist_auction_view_all.html',{'admin_buyer_shown':admin_buyer_shown, 'bid_id': bid_object})
+    return render(request,'artist_auction_view_all.html',{'admin_buyer_shown':admin_buyer_shown})
+
+
+def notification(request):
+    return render(request,'notification.html') 
+
+
+
+# views.py
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import AuctionItem
+
+def update_auction(request):
+    if request.method == "POST":
+        auction_id = request.POST.get("editAuctionId")
+        auction_name = request.POST.get("editAuctionName")
+        end_date = request.POST.get("editEndDate")
+        price = request.POST.get("editPrice")
+
+        # Update the auction item in the database
+        try:
+            auction = AuctionItem.objects.get(pk=auction_id)
+            auction.name = auction_name
+            auction.end_date = end_date
+            auction.price_range_min = price
+            auction.save()
+            return redirect('artist_uploaded_auction')
+        except AuctionItem.DoesNotExist:
+            return HttpResponse("Auction item not found", status=404)
+
+    return HttpResponse("Invalid request method", status=400)
+
+
+# views.py
+
+def delete_auction(request):
+    if request.method == 'GET':
+        auction_id = request.GET.get('auction_id')
+        auction = get_object_or_404(AuctionItem, pk=auction_id)
+        auction.delete()
+        return redirect('artist_uploaded_auction') 
+    return HttpResponseBadRequest("Invalid request method")
+
+from django.shortcuts import render, redirect
+from .models import User_Bid, AuctionListing
+
+def approve_bid(request, art_id):
+    try:
+        bid = User_Bid.objects.get(auction_item__id=art_id)
+        
+        # Print debug information
+        print(f"Found bid: {bid}")
+        
+        # Create an instance of AuctionListing and update its fields
+        auction_listing = AuctionListing.objects.create(
+            auction_item=bid.auction_item,
+            buyer=bid.buyer,
+            seller=bid.seller,
+            latest_price=bid.bid_price,
+            end_date=bid.auction_item.end_date,
+        )
+        
+        # Additional logic (if needed) before saving to the database
+        auction_listing.save()
+        
+        # Redirect or render a response as needed
+        return redirect('artist_uploaded_auction')
+    except User_Bid.DoesNotExist:
+        # Handle the case where the bid does not exist
+        print(f"Bid with art_id {art_id} does not exist.")
+        return render(request, 'bid_not_found.html')  # Create a template for displaying a custom error message
+    
+
+from django.shortcuts import render
+from .models import AuctionListing
+
+def notification(request):
+    final_winners = AuctionListing.objects.filter(buyer=request.user)
+    print(final_winners)
+    return render(request, 'notification.html', {'final_winners': final_winners})
+
+
+from django.shortcuts import get_object_or_404
+
+def notification_view(request, art_id):
+    notification = get_object_or_404(AuctionListing, auction_item_id=art_id)
+    return render(request, 'notification_view.html', {'notification': notification})
+
+
+ 
+
+
+    
+
+
+
+
+
 
 
 

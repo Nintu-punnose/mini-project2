@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ notification.auction_item.name }} - Terms and Conditions</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background: linear-gradient(to right, #ff9a9e, #fecfef);
+            color: #333;
+        }
+        #head_details {
+            background-color: rgba(0, 0, 0, 0.5);
+            display: grid;
+            grid-template-columns: auto auto;
+            column-gap: 850px;
+            padding-top: 10px;
+            padding-left: 20px;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        #web_name {
+            font-size: 30px;
+            color: white;
+        }
+        
+        #link {
+            margin-left: -185px;
+        }
+        
+        a {
+            text-decoration: none;
+            padding: 10px 10px 10px 10px;
+            color: black;
+            font-size: 19px;
+            color: white;
+        }
+        
+        a:hover {
+            color: #d33a0d;
+        }
+
+        .container {
+            background: linear-gradient(to bottom, #ffffff, #f8f8f8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .art-details {
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to right, #fff, #e6e6e6);
+            text-align: center;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            margin-top: 20px;
+        }
+
+        .art-details:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .art-details h2 {
+            color: #e8491d;
+            margin-bottom: 10px;
+        }
+
+        .art-details p {
+            color: #555;
+            margin: 0;
+        }
+
+        .art-details input[type="submit"] {
+            background-color: #e8491d;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .art-details input[type="submit"]:hover {
+            background-color: #d33a0d;
+        }
+
+        .terms-conditions {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to right, #fff, #e6e6e6);
+        }
+
+        .terms-conditions h2 {
+            color: #e8491d;
+            margin-bottom: 10px;
+        }
+
+        .terms-conditions p {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .auction_image {
+            height: 300px;
+            width: 300px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="head_details">
+        <div id="web_name">
+            ArtVendor
+        </div>
+        <div id="link">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'images' %}">Art</a>
+            <a href="{% url 'Artist' %}">Artist</a>
+            <a href="{% url 'index' %}">Our services</a>
+            <a href="{% url 'cart' %}">Cart</a>
+            {% if request.user.is_authenticated %}
+                <span style="color:red">{{ request.user.username }}</span>
+                <a href="{% url 'logout_view' %}" >Logout</a>
+            {% else %}
+                <a href="">Login</a>
+            {% endif %}
+        </div>
+    </div><br><br><br>
+    <div class="container">
+        <h1 class="text-center">{{ notification.auction_item.name }} - Terms and Conditions</h1>
+        <div class="art-details">
+            <h2>{{ notification.auction_item.name }}</h2>
+            <img src="{{notification.auction_item.image.url}}" alt="" class="auction_image"><br><br>
+            <h5>Winning Bid: {{ notification.latest_price }}</h5>
+            <h5>Seller: {{ notification.seller.username }}</h5>
+            <input type="submit" value="Pay {{ notification.latest_price }}">
+        </div>
+        <div class="terms-conditions">
+            <h2>Terms and Conditions</h2>
+            <p><li>All artworks listed in the auction are subject to a competitive bidding process.</p>
+            <p><li>The highest bid at the end of the auction period will be considered the winning bid.</li></p>
+            <p><li>The winning bidder is required to make the full payment within three days of the auction's conclusion.</li></p>
+            <p><li>Failure to make payment within the specified <strong>3 days</strong> may result in the artwork being offered to the next highest bidder.</li></p>
+            <p><li>Ownership of the artwork will only be transferred to the winning bidder upon receipt of the full payment.</li></p>
+            <p><li>If payment is not received within the stipulated timeframe, the gallery reserves the right to transfer ownership to the next highest bidder.</li></p>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

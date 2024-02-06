@@ -71,6 +71,17 @@ th {
     cursor: pointer;
     
 }
+.disable-btn{
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: no-drop;
+}
 </style>
 <style>
   
@@ -86,7 +97,7 @@ th {
                     <p style="color: green;">Welcome, {{ user.username }}!</p>
                     <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
             </ul>
-        </div><>br
+        </div>
 
         <!-- side-pannel -->
 
@@ -113,6 +124,7 @@ th {
                         <th>Buyer Name</th>
                         <th>Seller Name</th>
                         <th>Latest Price</th>
+                        <th>End Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -124,15 +136,22 @@ th {
                             <td>{{ bid.buyer.username }}</td>
                             <td>{{ bid.seller.username }}</td>
                             <td>{{ bid.bid_price }}</td>
-                            <td><button class="approve-btn">Approve</button></td>
+                            <td>{{ bid.auction_item.end_date }}</td>
+                            {% if current_date_ist > bid.auction_item.end_date %}
+                            <td><a href="{% url 'approve_bid' art_id=bid.auction_item.id %}" class="approve-btn">Approve</a></td>
+                            {% else %}
+                            <td><button  disabled class="disable-btn" >time not meet</button></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
-                </tbody>
+                </tbody>                
             </table>
-        </div>
-        
-    <p style="text-align: right;"><a href="{% url 'artist_auction_view_all' %}" style="text-decoration: none;">View all</a></p>
+            <p style="text-align: right;"><a href="{% url 'artist_auction_view_all' %}" style="text-decoration: none;">View all</a></p>
+        </div> 
 </div>
     </div>
+    
+
+  
 </body>
 </html>

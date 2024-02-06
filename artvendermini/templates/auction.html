@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Auction Website</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <!-- Custom CSS -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            margin-top: 50px;
-        }
-
-        .auction-item {
-            transition: transform 0.2s;
-        }
-
-        .auction-item:hover {
-            transform: scale(1.05);
-        }
-        .col-md-4{
-            padding-bottom: 15px;
-        }
-    </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Auction Website</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <!-- Font Awesome CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha384-GLhlTQ8i6NDU1fN1N+8p6Zlf5+eL4UqDkPZ5LEFg5u6I5/lmM0UZ46dPDAa4f5K" crossorigin="anonymous">
+        <!-- Custom CSS -->
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+    
+            .container {
+                margin-top: 50px;
+            }
+    
+            .auction-item {
+                transition: transform 0.2s;
+            }
+    
+            .auction-item:hover {
+                transform: scale(1.05);
+            }
+    
+            .col-md-4 {
+                padding-bottom: 15px;
+            }
+        </style>
+    </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -38,21 +41,28 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home</a>
+                <a href="{% url 'index' %}" class="nav-link">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Auctions</a>
+                <a href="{% url 'images' %}" class="nav-link">Art</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">About Us</a>
+                <a href="{% url 'Artist' %}" class="nav-link">Artist</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Contact</a>
+                <a href="{% url 'cart' %}" class="nav-link">Cart</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'notification'%}">notification</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                     <!-- Assuming you're using Font Awesome for icons -->
+                </a>
             </li>
         </ul>
     </div>
 </nav>
-
 <div class="container">
     <h1 class="text-center mb-4">Featured Auction</h1>
 
