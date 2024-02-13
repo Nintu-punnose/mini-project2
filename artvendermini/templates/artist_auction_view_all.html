@@ -82,13 +82,13 @@ th {
     <div class="body">
         <!-- head_section -->
         <div class="header">
-            <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
+                <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
 
             <ul class="user-menu">
                     <p style="color: green;">Welcome, {{ user.username }}!</p>
                     <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
             </ul>
-        </div><>br
+        </div>
 
         <!-- side-pannel -->
 
@@ -109,6 +109,7 @@ th {
             <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
         </div>
 <div id="upload_auction_view">
+    <h2>All Bid</h2>
     {% comment %} <p style="text-align: right;"><a href="{% url 'artist_auction_view' %}" style="text-decoration: none;">Back</a></p> {% endcomment %}
     <table>
         <thead>
@@ -116,7 +117,8 @@ th {
                 <th>No.</th>
                 <th>Art Name</th>
                 <th>Buyer Name</th>
-                <th>Higest Price</th>
+                <th>Time</th>
+                <th>Price</th>
                 </tr>
             </thead>
             <tbody>
@@ -126,12 +128,10 @@ th {
                         <td>{{ forloop.counter }}</td>
                         <td>{{ buyer_shown.auction_item.name }}</td>
                         <td>{{ buyer_shown.buyer.username }}</td>
+                        <td>{{ buyer_shown.current_time }}</td>
                         <td>{{ buyer_shown.bid_price }}</td>
                     </tr>
             {% endfor %}
-                    
-            
-                <!-- Add more rows as needed -->
             </tbody>
     </table>
     

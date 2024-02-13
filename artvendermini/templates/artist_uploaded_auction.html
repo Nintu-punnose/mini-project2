@@ -123,7 +123,6 @@ margin-left: 250px;
         text-decoration: none;
         cursor: pointer;
     }
-
 </style>
 <style>
   
@@ -150,18 +149,22 @@ margin-left: 250px;
                 <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
             {% endfor %}
             <h1>&emsp;{{ user.username }}</h1>
-            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
-            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
-            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
-            <a href="{% url 'auction_uploadform' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction Upload</div></a>
-            <a href="{% url 'artist_uploaded_auction' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction View</div></a>
-            <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
-            <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
-            <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
+            <div class="options">
+                <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
+                <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
+                <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
+                <a href="{% url 'auction_uploadform' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction Upload</div></a>
+                <a href="{% url 'artist_uploaded_auction' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction View</div></a>
+                <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
+                <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
+                <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
+            </div>
+            
         </div>
         <div id="view_auction">
-           
+            &emsp;<h2>Uploaded Auction</h2>     
 <div class="auction-container">
+    
     {% for i in auction_details %}
       <div class="auction-item">
             <img src="{{ i.image.url }}" alt="Art Image" class="auction-image" style="height:200px;width:2704px">
@@ -172,7 +175,6 @@ margin-left: 250px;
             </div>
             <div class="auction-actions">
                 {% if current_date < i.start_date %} 
-                    <p style="color: red;">current: {{ current_date }}</p> 
                     <button class="edit-btn" style="background-color:rgba(0, 0, 255, 0.63)" onclick="openEditModal('{{ i.id }}', '{{ i.name }}', '{{ i.end_date }}')">Edit</button>
                     <button class="delete-btn" style="background-color:rgba(255, 0, 0, 0.644)" onclick="openDeleteModal('{{ i.id }}', '{{ i.name }}')">Delete</button>
                 {% elif current_date < i.end_date %}  
@@ -259,6 +261,7 @@ margin-left: 250px;
         
         function closeDeleteModal() {
             // Hide the delete modal
+       
             document.getElementById("deleteModal").classList.remove("show-modal");
         }
     </script>

@@ -118,6 +118,7 @@ th {
             <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
         </div>
         <div id="upload_auction_view">
+            <h2>Higest Bid</h2>
             <table>
                 <thead>
                     <tr>
@@ -151,10 +152,11 @@ th {
                     {% endfor %}
                 </tbody>                
             </table>
+
         </div> 
 </div>
     </div>
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Function to handle button click
             function handleButtonClick(event) {
@@ -183,7 +185,7 @@ th {
                 approveBtn.addEventListener('click', handleButtonClick);
             }
         });
-    </script>
+    </script> -->
     
 </body>
 </html>

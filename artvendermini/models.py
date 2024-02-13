@@ -120,6 +120,8 @@ class User_Bid(models.Model):
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer_auctions', null=True, blank=True)
     auction_item = models.ForeignKey(AuctionItem, on_delete=models.CASCADE, related_name='bids')  # Corrected this line
     bid_price = models.DecimalField(max_digits=10, decimal_places=2)
+    current_time=models.DateTimeField()
+    
 
     def __str__(self):
         return f"Bid for {self.auction_item.name}"

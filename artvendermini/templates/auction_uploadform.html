@@ -78,6 +78,7 @@
         </div>
 
         <div id="upload_form">
+            <h2>Upload Auction</h2>
           <form method="post" enctype="multipart/form-data" action=""><br><br>
             {% csrf_token %}
            
@@ -102,5 +103,12 @@
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var currentDateTime = new Date().toISOString().slice(0, 16); // Get current date and time in "yyyy-MM-ddTHH:mm" format
+                document.getElementById("startDate").min = currentDateTime;
+                document.getElementById("endDate").min = currentDateTime;
+            });
+        </script>
 </body>
 </html>

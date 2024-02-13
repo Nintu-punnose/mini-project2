@@ -35,10 +35,11 @@
         <div id="select_details"><br>
             <form action="" method="post">
             {% csrf_token %}
-            <p id="details" name="name"><strong>Art Name:</strong> {{auction_details.name}}</p>  
             <p id="details" name="id"><strong>Art Id:</strong> {{auction_details.id}}</p>
+            <p id="details" name="name"><strong>Art Name:</strong> {{auction_details.name}}</p>
+            <p id="details" name="name"><strong>Seller:</strong> {{auction_details.user.username}}</p>    
             <p id="details" name="starting_bid"><strong>Starting Bid:</strong>{{auction_details.price_range_min}}</p>
-            <p id="details" name="ending_bid"><strong>Description:</strong> {{auction_details.price_range_max}}</p>
+            <p id="details" name="ending_bid"><strong>Description:</strong> {{auction_details.description}}</p>
             <p id="details" name="start_date"><strong>Start Date</strong> {{auction_details.start_date}}</p>
             <p id="details" name="end_date"><strong>End Date</strong> {{auction_details.end_date}}</p><br>
             <input type="text" id="bid-price" name="bid_price" placeholder="Enter Price to bid" required style="width: 300px;margin-left:30px"><br><br>
@@ -67,6 +68,26 @@
     
         // Auto-refresh every 5 seconds (5000 milliseconds)
         setInterval(refreshPage, 5000);
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var startingBid = parseFloat("{{ auction_details.price_range_min }}");
+    
+            document.getElementById("bid-price").addEventListener("input", function() {
+                var bidPrice = parseFloat(this.value);
+    
+                // Check if the entered bid is greater than the starting bid
+                if (bidPrice <= startingBid) {
+                    this.setCustomValidity("Bid must be greater than the starting bid");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+        });
+    
+        function showBidForm() {
+            // Your existing showBidForm() function logic, if any
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+            padding: 0%;
+            margin: 0%;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #555;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+           
+            max-width: 750px;
+            margin-top: 50px;
+            margin-left: 30px;
+           
+        }
+        .invoice_header{
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: solid 1px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            border: solid 1px black;
+        }
+
+        th {
+            background-color: #2e11ce;
+            color: white;
+        }
+
+        .total {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 18px;
+        }
+
+        .total span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .print-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .print-btn:hover {
+            background-color: #45a049;
+        }
+        @media print{
+            .print-btn {
+               display: none;
+            }
+            header {
+                background-color: #2e11ce;
+                color: white;
+                text-align: center;
+                padding: 1em;
+            }
+        }
+    </style>
+    <title>Bill Page</title>
+</head>
+<body>
+    <header>
+        <h1>Invoice</h1>
+    </header>
+
+    <div class="container">
+        <div class="invoice_header">
+            <h2>Bill To:</h2><br>
+            <p>Customer Name</p>
+            <p>Address Line 1</p>
+            <p>City, Country</p>
+        </div>
+        
+
+        <h2>Invoice Details:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="">Item</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Product A</td>
+                    <td>2</td>
+                    <td>$10.00</td>
+                    <td>$20.00</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Product B</td>
+                    <td>1</td>
+                    <td>$15.00</td>
+                    <td>$15.00</td>
+                </tr>
+           
+            </tbody>
+        </table>
+
+        <div class="total">
+            <p>Total Amount: <span>$35.00</span></p>
+            <button type="button" class="print-btn" onclick="printInvoice()">Print</button>
+        </div>
+    </div>
+    <script>
+        function printInvoice() {
+            print();
+        }
+    </script>
+</body>
+</html> 
