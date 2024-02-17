@@ -10,9 +10,10 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
-            background: linear-gradient(to right, #ff9a9e, #fecfef);
+           
             color: #333;
         }
+
         #head_details {
             background-color: rgba(0, 0, 0, 0.5);
             display: grid;
@@ -24,16 +25,16 @@
             width: 100%;
             z-index: 100;
         }
-        
+
         #web_name {
             font-size: 30px;
             color: white;
         }
-        
+
         #link {
             margin-left: -185px;
         }
-        
+
         a {
             text-decoration: none;
             padding: 10px 10px 10px 10px;
@@ -41,32 +42,27 @@
             font-size: 19px;
             color: white;
         }
-        
+
         a:hover {
             color: #d33a0d;
         }
 
         .container {
-            background: linear-gradient(to bottom, #ffffff, #f8f8f8);
+            background: #fff;
             border-radius: 15px;
             padding: 20px;
             margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            
         }
 
         .art-details {
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(to right, #fff, #e6e6e6);
+           
+            background-color: #f1e9e952;
             text-align: center;
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             margin-top: 20px;
-        }
-
-        .art-details:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
         .art-details h2 {
@@ -98,25 +94,34 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(to right, #fff, #e6e6e6);
+            background: #fff;
         }
 
-        .terms-conditions h2 {
-            color: #e8491d;
-            margin-bottom: 10px;
-        }
-
-        .terms-conditions p {
-            color: #555;
-            margin-bottom: 15px;
-        }
         .auction_image {
             height: 300px;
             width: 300px;
             border-radius: 10px;
             margin-top: 10px;
         }
+        .terms_heading{
+            background-color: #f1e9e952;
+            margin-top: 40px;
+            padding-left: 400px;
+            padding: 7px 40px;
+            border: 1px solid black;
         
+        }
+        .terms_details{
+            
+            padding-left: 50px;
+            border: 1px solid black;
+            border-top: none;
+            margin-top: -20px;
+            padding-top: 30px;
+        }
+        li{
+            list-style-image: url("../images/thumb.jpg");
+        }
     </style>
 </head>
 <body>
@@ -145,10 +150,10 @@
             <img src="{{notification.auction_item.image.url}}" alt="" class="auction_image"><br><br>
             <h5>Winning Bid: {{ notification.latest_price }}</h5>
             <h5>Seller: {{ notification.seller.username }}</h5>
-            <input type="submit" value="Pay {{ notification.latest_price }}">
+            <input type="submit" class="btn" id="pay-btn" value="Pay {{ notification.latest_price }}">
         </div>
-        <div class="terms-conditions">
-            <h2>Terms and Conditions</h2>
+        <div class="terms_heading"><h2>Terms and Conditions</h2></div>
+        <div class="terms_details">
             <p><li>All artworks listed in the auction are subject to a competitive bidding process.</p>
             <p><li>The highest bid at the end of the auction period will be considered the winning bid.</li></p>
             <p><li>The winning bidder is required to make the full payment within three days of the auction's conclusion.</li></p>
@@ -160,5 +165,36 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+	var options = {
+	
+	// Enter the Key ID generated from the Dashboard
+	key: "{{ razorpay_merchant_key }}", 
+	
+	// Amount is in currency subunits.
+	// Default currency is INR. Hence, 
+	// 50000 refers to 50000 paise
+	amount: "{{ razorpay_amount }}", 
+	currency: "{{ currency }}",
+	
+	// Your/store name.
+	name: "Dj Razorpay", 
+	
+	// Pass the `id` obtained in the response of Step 1
+	order_id: "{{ razorpay_order_id }}", 
+	callback_url: "{{ callback_url }}",
+	};
+	
+	// initialise razorpay with the options.
+	var rzp1 = new Razorpay(options);
+	
+	// add event listener to the payment button.
+	document.getElementById("pay-btn").onclick = function (e) {
+	rzp1.open();
+	e.preventDefault();
+	};
+</script>
 </body>
 </html>

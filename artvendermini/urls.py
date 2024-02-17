@@ -9,7 +9,7 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('login',views.login, name='login'),
+    path('',views.login, name='login'),
     path('signup',views.signup, name='signup'),
     path('Artist_view/',views.Artist_view,name='Artist_view'),
     path('logout_view/', views.logout_view, name='logout_view'),
@@ -66,8 +66,12 @@ urlpatterns = [
 
     path('update_auction/',views.update_auction, name='update_auction'),
     path('delete_auction/', views.delete_auction, name='delete_auction'),
-    path('approve_bid/<int:art_id>/', views.approve_bid, name='approve_bid'),
+    # path('approve_bid/<int:art_id>/', views.approve_bid, name='approve_bid'),
 
+
+    path('AuctionPayment/', views.AuctionPayment, name='AuctionPayment'),
+    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
+   
 
     path('invoice', views.invoice, name='invoice'),
     

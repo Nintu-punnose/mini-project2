@@ -140,12 +140,6 @@ th {
                             <td>{{ bid.seller.username }}</td>
                             <td>{{ bid.bid_price }}</td>
                             <td>{{ bid.auction_item.end_date }}</td>
-                            {% if current_date_ist > bid.auction_item.end_date %}
-                            <!-- Add an id to the button -->
-                            <td><a href="{% url 'approve_bid' art_id=bid.auction_item.id %}" id="approve-btn" data-art-id="{{ bid.auction_item.id }}" class="approve-btn">Approve</a></td>
-                            {% else %}
-                            <td><button  disabled class="disable-btn" >time not meet</button></td>
-                            {% endif %}
                             
                         </tr>
                         <p style="text-align: right;"><a href="{% url 'artist_auction_view_all' bid_id=bid.auction_item.id %}" style="text-decoration:none";>View all</a></p>
