@@ -140,7 +140,7 @@ th {
                             <td>{{ bid.seller.username }}</td>
                             <td>{{ bid.bid_price }}</td>
                             <td>{{ bid.auction_item.end_date }}</td>
-                            
+                            <td>{{ current_date_ist }}</td>
                         </tr>
                         <p style="text-align: right;"><a href="{% url 'artist_auction_view_all' bid_id=bid.auction_item.id %}" style="text-decoration:none";>View all</a></p>
                     {% endfor %}

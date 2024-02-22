@@ -54,11 +54,14 @@
             margin-top: 20px;
             
         }
-
+        .container h1{
+            text-align: center;
+        }
         .art-details {
             padding: 20px;
             border-radius: 15px;
-           
+            margin-left: 80px;
+            margin-right: 80px;
             background-color: #f1e9e952;
             text-align: center;
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -68,6 +71,7 @@
         .art-details h2 {
             color: #e8491d;
             margin-bottom: 10px;
+            
         }
 
         .art-details p {
@@ -109,18 +113,18 @@
             padding-left: 400px;
             padding: 7px 40px;
             border: 1px solid black;
+            margin-left: 80px;
+            margin-right: 80px;
         
         }
         .terms_details{
-            
             padding-left: 50px;
             border: 1px solid black;
             border-top: none;
             margin-top: -20px;
             padding-top: 30px;
-        }
-        li{
-            list-style-image: url("../images/thumb.jpg");
+            margin-left: 80px;
+            margin-right: 80px;
         }
     </style>
 </head>
@@ -150,7 +154,7 @@
             <img src="{{notification.auction_item.image.url}}" alt="" class="auction_image"><br><br>
             <h5>Winning Bid: {{ notification.latest_price }}</h5>
             <h5>Seller: {{ notification.seller.username }}</h5>
-            <input type="submit" class="btn" id="pay-btn" value="Pay {{ notification.latest_price }}">
+            <a href="{% url 'AuctionPayment' notification.id %}"><input type="submit" class="btn" id="pay-btn" value="Pay {{ notification.latest_price }}"></a>
         </div>
         <div class="terms_heading"><h2>Terms and Conditions</h2></div>
         <div class="terms_details">
@@ -165,36 +169,5 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-	var options = {
-	
-	// Enter the Key ID generated from the Dashboard
-	key: "{{ razorpay_merchant_key }}", 
-	
-	// Amount is in currency subunits.
-	// Default currency is INR. Hence, 
-	// 50000 refers to 50000 paise
-	amount: "{{ razorpay_amount }}", 
-	currency: "{{ currency }}",
-	
-	// Your/store name.
-	name: "Dj Razorpay", 
-	
-	// Pass the `id` obtained in the response of Step 1
-	order_id: "{{ razorpay_order_id }}", 
-	callback_url: "{{ callback_url }}",
-	};
-	
-	// initialise razorpay with the options.
-	var rzp1 = new Razorpay(options);
-	
-	// add event listener to the payment button.
-	document.getElementById("pay-btn").onclick = function (e) {
-	rzp1.open();
-	e.preventDefault();
-	};
-</script>
 </body>
 </html>

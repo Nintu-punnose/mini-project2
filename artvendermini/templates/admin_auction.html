@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css\admin.css' %}">
+    <title>auction_artvendor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        table {
+           
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            
+            width: 1000px;
+            
+        }
+    
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+    
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .status-button {
+            background-color: #eb1010;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .status-button:hover {
+            background-color: #e75a5aec;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+          
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+          }
+          
+          /* Style for the modal content */
+          .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80%;
+          }
+          
+          /* Style for the close button */
+          .close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            color: #fff;
+            cursor: pointer;
+          }
+          
+          /* Animation for the modal */
+          .modal-content {
+            animation: zoomIn 0.6s;
+          }
+          
+          @keyframes zoomIn {
+            from {
+              transform: scale(0.1);
+            }
+            to {
+              transform: scale(1);
+            }
+          }
+
+
+          .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+    
+        .modal-content {
+            max-width: 400px;
+            width: 80%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            margin-left:550px;
+            margin-top:150px;
+        }
+    
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #333;
+        }
+    
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    
+        textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+        }
+    
+        .reject-button, .cancel-button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            color: white;
+            width:300px;
+        }
+    
+        .reject-button {
+            background-color: #e74c3c;
+        }
+    
+        .reject-button:hover {
+            background-color: #c0392b;
+        }
+    
+        .cancel-button {
+            background-color: #3498db;
+        }
+    
+        .cancel-button:hover {
+            background-color: #2980b9;
+        }
+
+        .auction_details{
+            margin-top: 30px;
+            margin-left: 260px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Listen for changes in the search input
+        $('#search').on('input', function() {
+            var searchText = $(this).val().toLowerCase(); // Get the entered text
+
+            // Loop through each auction details row and hide/show based on the search
+            $('.auction_details table tr:gt(0)').each(function() {
+                var name = $(this).find('td:eq(0)').text().toLowerCase(); // Get auction name
+                var sellerName = $(this).find('td:eq(2)').text().toLowerCase(); // Get seller name
+                var price = $(this).find('td:eq(3)').text().toLowerCase();
+                var startingBid = $(this).find('td:eq(4)').text().toLowerCase();
+                var endingBid = $(this).find('td:eq(5)').text().toLowerCase();
+
+                // Check if any of the fields contain the search text
+                if (name.includes(searchText) || sellerName.includes(searchText) || price.includes(searchText) || startingBid.includes(searchText) || endingBid.includes(searchText)) {
+                    $(this).show(); // Show if it matches
+                } else {
+                    $(this).hide(); // Hide if it doesn't match
+                }
+            });
+        });
+    });
+
+</script>
+</head>
+<body>
+    <div class="body">
+
+        <!-- side-pannel -->
+
+        <div id="sidebar">
+            <img src="{% static 'images\gallery_logo.png' %}" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
+            <h2 style="margin-left: 40px;">admin1</h2>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
+            <div class="sidebar-item" data-target="products">Auction View</div>
+            <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
+            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
+        </div>
+        <div class="auction_details">
+            <input type="search" id="search" height="30px" width="300px" placeholder="Search..." style="border-radius: 3px; padding:8px;border:none;">
+            <table>
+                <tr>
+                 
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>Seller Name</th>
+                    <th>Price</th>
+                    <th>Starting Bid</th>
+                    <th>Ending Bid</th>
+                    <th>Status</th>
+                    
+                </tr>
+                {% for auction in admin_auction %}
+                    {% if auction.status == True %}
+                    <tr>
+                
+                        <td>{{auction.name}}</td>
+                        <td><img src="{{auction.image.url}}" alt="" height='100px' width="100px" onclick="openModal('{{auction.image.url}}')"></td>
+                        <td>{{auction.user.username}}</td>
+                        <td>{{auction.price_range_min}}</td>
+                        <td>{{auction.start_date}}</td>
+                        <td>{{auction.end_date}}</td>
+                        {% if current_date <= auction.end_date %}
+                        <td><button type="button" class="status-button" onclick="openRejectModal('{{ auction.id }}')">
+                            Reject
+                        </button></td>
+                        {% else %}
+                        <td><a href="{% url 'admin_auction_details' id=auction.id%}"><button type="button" class="status-button" style="background:green">
+                            Auction completed
+                        </button></a></td>
+                        {% endif %}
+                        
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                
+                
+            </table>
+        </div>
+        
+        <!-- Modal for displaying the image -->
+        <div id="imageModal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" class="modal-content" alt="Modal Image" height="500px" width="500px" style="margin-top: 60px;">
+          </div>
+        <!-- Modal for displaying the rejection reason -->
+          <div id="rejectModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeRejectModal()">&times;</span>
+                <h2>Reject Art</h2>
+                <form id="rejectForm" method="POST" action="{% url 'admin_rejection' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="art_id" value="{{auction.id}}" id="rejectArtId">
+                    <!-- <input type="text" name="art_id" value="{{auction.user_id}}" id="rejectArtId"> -->
+                    <label for="rejectionReason">Reason for Rejection:</label>
+                    <textarea name="rejection_reason" id="rejectionReason" required></textarea>
+                    <button type="submit" class="reject-button">Reject</button>
+                </form>
+                <button type="button" class="cancel-button" onclick="closeRejectModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Function to open the modal with the clicked image
+        function openModal(imageUrl) {
+          var modal = document.getElementById("imageModal");
+          var modalImage = document.getElementById("modalImage");
+      
+          modal.style.display = "block";
+          modalImage.src = imageUrl;
+        }
+      
+        // Function to close the modal
+        function closeModal() {
+          var modal = document.getElementById("imageModal");
+          modal.style.display = "none";
+        }
+      </script>
+      <script>
+    function openRejectModal(artId) {
+        var modal = document.getElementById("rejectModal");
+        modal.style.display = "block";
+        document.getElementById("rejectArtId").value = artId;
+    }
+
+    function closeRejectModal() {
+        var modal = document.getElementById("rejectModal");
+        modal.style.display = "none";
+    }
+</script>
+</body>
+</html>
+
+
+

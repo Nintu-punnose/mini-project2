@@ -174,13 +174,24 @@ margin-left: 250px;
                 <p>End Date: {{ i.end_date }}</p>
             </div>
             <div class="auction-actions">
-                {% if current_date < i.start_date %} 
+                {% if  i.status == False%}
+                  <p style="color: red;">Auction is rejected by admin</p>
+                  {% for reason in reason %}
+                    {% if reason.art_id_id == i.id %}
+                      <p style="color: red;">Reason:{{reason.reason}}</p>
+                    {% endif %}
+                    
+                  {% endfor %}
+                  
+                
+                {% elif current_date < i.start_date %} 
+
                     <button class="edit-btn" style="background-color:rgba(0, 0, 255, 0.63)" onclick="openEditModal('{{ i.id }}', '{{ i.name }}', '{{ i.end_date }}')">Edit</button>
                     <button class="delete-btn" style="background-color:rgba(255, 0, 0, 0.644)" onclick="openDeleteModal('{{ i.id }}', '{{ i.name }}')">Delete</button>
                 {% elif current_date < i.end_date %}  
                     <a href="{% url 'artist_auction_view' art_id=i.id %}" class="view-bid-btn">View Bid</a>
                 {% else %}  
-                    <p style="color: red;">Auction Completed</p>
+                    <p style="color: green;">Auction Completed</p>
                     <a href="{% url 'artist_auction_view' art_id=i.id %}" class="view-bid-btn">View Bid</a>
                 {% endif %}
             </div>

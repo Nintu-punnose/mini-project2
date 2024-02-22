@@ -3,7 +3,7 @@ from urllib import request
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from .models import User_Bid, UserData, artOrder,AuctionItem
+from .models import AuctionRejectAdmin, User_Bid, UserData, artOrder,AuctionItem
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -645,7 +645,7 @@ def auction(request):
             auction_item.save() 
 
     # Get the remaining active auction items
-    updated_auction_items = AuctionItem.objects.filter(is_active=True)
+    updated_auction_items = AuctionItem.objects.filter(is_active=True,status=True)
 
     return render(request, 'auction.html', {'auction_items': updated_auction_items})
 
@@ -663,6 +663,7 @@ def auction_bid(request, auction_id):
     buyer = None
     current_utc_date = timezone.now()
     current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
+    print(current_date_ist)
 
     if request.method == 'POST':
         # Get the bid_price from the form
@@ -685,7 +686,9 @@ def auction_bid(request, auction_id):
 
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         highest_bid = User_Bid.objects.filter(auction_item=auction_details).aggregate(Max('bid_price'))['bid_price__max']
-        
+        data = {
+            'highest_bid': highest_bid,
+        }
         return JsonResponse(data)
     
     highest_bid = User_Bid.objects.filter(auction_item=auction_details).aggregate(Max('bid_price'))['bid_price__max']
@@ -702,18 +705,22 @@ def artist_uploaded_auction(request):
     current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
     auction_details = AuctionItem.objects.filter(user_id=request.user.id)
     img = SellerProfile.objects.filter(user_id=request.user.id)
-    return render(request, 'artist_uploaded_auction.html', {'auction_details': auction_details, 'current_date': current_date_ist,'img':img})
+    reason = AuctionRejectAdmin.objects.filter(seller=request.user.id)
+    return render(request, 'artist_uploaded_auction.html', {'auction_details': auction_details, 'current_date': current_date_ist,'img':img,'reason':reason})
 
-@login_required
+
+from django.db import IntegrityError
+
 def artist_auction_view(request, art_id):
     current_utc_date = timezone.now()
     current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
     admin_buyer_shown = User_Bid.objects.filter(auction_item_id=art_id).order_by('-bid_price')[:1]
     img = SellerProfile.objects.filter(user_id=request.user.id)
-    
-    auction_item = get_object_or_404(AuctionItem, pk=art_id)
+    print(current_date_ist)
+
+    auction_item = get_object_or_404(AuctionItem, pk=art_id,is_active=True)
     end_date = auction_item.end_date
-    
+
     # Check if the current time is greater than or equal to the end date
     if current_date_ist >= end_date:
         bid = User_Bid.objects.get(auction_item__id=art_id)
@@ -725,8 +732,9 @@ def artist_auction_view(request, art_id):
             end_date=bid.auction_item.end_date,
         )
         auction_listing.save()
-    
+
     return render(request, 'artist_auction_view.html', {'admin_buyer_shown': admin_buyer_shown, 'art_id': art_id,'current_date_ist':current_date_ist,'img':img})
+
 
 
 def artist_auction_view_all(request,bid_id):
@@ -836,28 +844,31 @@ razorpay_client = razorpay.Client(
 	auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
 
-def AuctionPayment(request):
-	currency = 'INR'
-	amount = 20000 # Rs. 200
+def AuctionPayment(request,id):
+    price = AuctionListing.objects.get(id=id)
+    print(price.latest_price)
+    currency = 'INR'
+    amount = int(price.latest_price*100)  # Assuming latest_price is a Decimal object
+    print(amount)
 
 	# Create a Razorpay Order
-	razorpay_order = razorpay_client.order.create(dict(amount=amount,
+    razorpay_order = razorpay_client.order.create(dict(amount=amount,
 													currency=currency,
 													payment_capture='0'))
 
 	# order id of newly created order.
-	razorpay_order_id = razorpay_order['id']
-	callback_url = 'paymenthandler/'
+    razorpay_order_id = razorpay_order['id']
+    callback_url = 'paymenthandler/'
 
 	# we need to pass these details to frontend.
-	context = {}
-	context['razorpay_order_id'] = razorpay_order_id
-	context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
-	context['razorpay_amount'] = amount
-	context['currency'] = currency
-	context['callback_url'] = callback_url
+    context = {}
+    context['razorpay_order_id'] = razorpay_order_id
+    context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
+    context['razorpay_amount'] = amount
+    context['currency'] = currency
+    context['callback_url'] = callback_url
 
-	return render(request, 'AuctionPayment.html', context=context)
+    return render(request, 'AuctionPayment.html', context=context)
 
 
 # we need to csrf_exempt this url as
@@ -910,8 +921,52 @@ def paymenthandler(request):
 
 
 
+def admin_auction(request):
+    admin_auction = AuctionItem.objects.all()
+    current_utc_date = timezone.now()
+    current_date_ist = current_utc_date + timezone.timedelta(hours=5, minutes=30)
+    return render(request,'admin_auction.html',{'admin_auction':admin_auction,'current_date':current_date_ist})
 
+def admin_auction_details(request,id):
+    details = AuctionListing.objects.filter(auction_item_id=id)
+    return render(request,'admin_auction_details.html',{'details':details})
 
+from django.shortcuts import render, redirect
+from .models import AuctionRejectAdmin, AuctionListing
+
+def admin_rejection(request):
+
+    if request.method == "POST":
+        art_id = request.POST.get("art_id")
+        reason = request.POST.get("rejection_reason")
+
+        auction_art = AuctionItem.objects.get(id=art_id)
+        Auction_seller_id = auction_art.user_id
+
+        auction_art.status =False
+        auction_art.save()
+        
+        seller = User.objects.get(id = Auction_seller_id)
+        
+        rejection = AuctionRejectAdmin(
+            art_id=auction_art,
+            seller=seller,
+            reason=reason,
+        )
+
+        rejection.save()
+
+        return redirect('admin_auction')
+
+    return render(request, 'admin_auction.html')
 
 def invoice(request):
     return render(request,'invoice.html')
+
+
+
+
+#Delivary Agent
+
+def delivary_agent_registration(request):
+    return render(request,'delivary_agent_registration.html')

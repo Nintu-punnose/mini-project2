@@ -180,6 +180,14 @@
             background-color: #2980b9;
         }
         
+        @keyframes zoomIn {
+            from {
+              transform: scale(0.1);
+            }
+            to {
+              transform: scale(1);
+            }
+          }
     </style>
     
 </head>
@@ -194,6 +202,7 @@
             <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
             <div class="sidebar-item" data-target="users" id="artapprove">Art Approval</div>
             <div class="sidebar-item" data-target="products">Add Type/Size</div>
+            <a href="{% url 'admin_auction' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Auction View</div></a>
             <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item">Users</div></a>
             <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
 

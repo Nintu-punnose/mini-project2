@@ -110,7 +110,7 @@ class AuctionItem(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
-
+    status = models.BooleanField(default=True)
     def __str__(self):
         return self.name
     
@@ -147,3 +147,9 @@ class AuctionOrder(models.Model):
 
     def __str__(self):
         return f"Auction Order for {self.auction_listing.auction_item.name}"
+    
+
+class AuctionRejectAdmin(models.Model):
+    art_id = models.ForeignKey(AuctionItem, on_delete=models.CASCADE)
+    seller = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    reason = models.TextField()

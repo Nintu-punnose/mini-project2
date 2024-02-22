@@ -69,12 +69,19 @@ urlpatterns = [
     # path('approve_bid/<int:art_id>/', views.approve_bid, name='approve_bid'),
 
 
-    path('AuctionPayment/', views.AuctionPayment, name='AuctionPayment'),
+    path('AuctionPayment/<int:id>', views.AuctionPayment, name='AuctionPayment'),
     path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
-   
+    path('admin_auction/',views.admin_auction,name='admin_auction'),
+    path('admin_auction_details/<int:id>',views.admin_auction_details,name='admin_auction_details'),
+
+    path('admin_rejection/',views.admin_rejection,name='admin_rejection'),
 
     path('invoice', views.invoice, name='invoice'),
     
+
+    #delivary Agent
+
+    path('delivary_agent_registration',views.delivary_agent_registration,name="delivary_agent_registration"),
 
 
    
@@ -89,3 +96,9 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+
+
+   

@@ -1,103 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>GFG</title>
-	<style>
-	
-	* {
-		box-sizing: border-box;
-		padding: 0px;
-		margin: 0px;
-		font-family: cursive;
-	}
-	html,
-	body {
-		height: 100%;
-	}
-	body {
-		background-color: #f1f5f8;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	.card {
-		background-color: white;
-		padding: 25px;
-		border: 1px solid #bbbbbb;
-		border-radius: 5px;
-		box-shadow: 1px 1px 10px 0px rgb(0 0 0 / 25%);
-	}
-	.title {
-		text-align: center;
-		letter-spacing: 1px;
-	}
-	.muted {
-		color: #8e7f7f;
-		display: block;
-		margin-bottom: 10px;
-		text-align: center;
-	}
-	.btn_container {
-		padding: 20px;
-		text-align: center;
-	}
-	.btn {
-		border-radius: 4px;
-		cursor: pointer;
-		padding: 4px 8px;
-		background-color: #ffaaa7;
-		color: white;
-		font-size: 1.2em;
-		font-weight: 600;
-		letter-spacing: 1px;
-	}
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Details</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #container {
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      margin-left: 40px;
+      margin-right: 40px;
+      width: 100%;
+    }
+
+    #left-side, #right-side {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #left-side {
+      background-color: #f0f0f0;
+      width: 700px;
+      flex-direction: column;
+    }
+
+
+    label {
+      margin-bottom: 8px;
+      font-weight: bold;
+      display: block;
+    }
+
+    input {
+      width: 300px;
+      padding: 10px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea{
+      width: 650px;
+      padding: 10px;
+      height: 70px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #right-side {
+      background-color: #4050e2;
+      color: #fff;
+      text-align: center;
+     
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #45a049;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #4CAF50;
+    }
+    .delivery-details{
+        display: flex;
+        justify-content: space-around;
+    }
+    .details2{
+      height: 330px;
+      margin-left: -300px;
+    }
+  </style>
 </head>
 <body>
-	<div class="card">
-	<h1 class="title">Buy Me a Chai </h1>
-	<small class="muted"
-		>If you like my work, you can support me by donating ₹200</small
-	>
-	<div class="btn_container">
-		<!-- Payment Button -->
-		<button class="btn" id="pay-btn">Donate</button>
-	</div>
-	</div>
-</body>
+  <div id="container">
+    <div id="left-side">
+      <h2>Delivery Details</h2>
+      <form action=""></form>
+      <div class="delivery-details"> 
+        
+           <div class="details1">
+             <label for="name">Name:</label>
+             <input type="text" id="name" name="name" required>
 
-<!-- Razorpay's Javascript code. -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-	var options = {
-	
-	// Enter the Key ID generated from the Dashboard
-	key: "{{ razorpay_merchant_key }}", 
-	
-	// Amount is in currency subunits.
-	// Default currency is INR. Hence, 
-	// 50000 refers to 50000 paise
-	amount: "{{ razorpay_amount }}", 
-	currency: "{{ currency }}",
-	
-	// Your/store name.
-	name: "Dj Razorpay", 
-	
-	// Pass the `id` obtained in the response of Step 1
-	order_id: "{{ razorpay_order_id }}", 
-	callback_url: "{{ callback_url }}",
-	};
-	
-	// initialise razorpay with the options.
-	var rzp1 = new Razorpay(options);
-	
-	// add event listener to the payment button.
-	document.getElementById("pay-btn").onclick = function (e) {
-	rzp1.open();
-	e.preventDefault();
-	};
-</script>
+            <label for="pincode">Pincode:</label>
+            <input type="text" id="pincode" name="pincode" required>
+
+            <label for="State">State</label>
+            <input type="text" id="State" name="State" required>
+
+            <label for="City/District/Town">City/District/Town:</label>
+            <input type="tel" id="City" name="City" required>
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" pattern= required></textarea>
+        </div>
+        <div class="details2">
+            <label for="Phone">Phone Number:</label>
+            <input type="text" id="Phone" name="Phone" required>
+
+           <label for="locality">Locality:</label>
+           <input type="text" id="locality" name="locality" required>
+
+           <label for="pin">PIN Code:</label>
+           <input type="text" id="pin" name="pin" required>
+
+           <label for="landmark">Landmark(Optional):</label>
+           <input type="tel" id="landmark" name="landmark">
+       </div>
+        
+        
+      </div>
+    </form>
+    </div>
+
+    <div id="right-side">
+      <h2>Order Summary</h2>
+      <p>Total Cost: $50.00</p>
+      <p>Shipping Charge: $5.00</p>
+      <p>Sum: $55.00</p>
+      <button class="btn" id="pay-btn">Proceed to Payment</button>
+    </div>
+  </div>
+
+     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+       
+      // Enter the Key ID generated from the Dashboard
+      key: "{{ razorpay_merchant_key }}", 
+       
+      // Amount is in currency subunits.
+      // Default currency is INR. Hence, 
+      // 50000 refers to 50000 paise
+      amount: "{{ razorpay_amount }}", 
+      currency: "{{ currency }}",
+       
+      // Your/store name.
+      name: "Dj Razorpay", 
+       
+      // Pass the `id` obtained in the response of Step 1
+      order_id: "{{ razorpay_order_id }}", 
+      callback_url: "{{ callback_url }}",
+    };
+     
+    // initialise razorpay with the options.
+    var rzp1 = new Razorpay(options);
+     
+    // add event listener to the payment button.
+    document.getElementById("pay-btn").onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
+
+</body>
 </html>

@@ -20,6 +20,6 @@ from django.conf.urls.static import static
 from artvendor import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/',admin.site.urls),
     path('',include('artvendermini.urls')),
 ]
