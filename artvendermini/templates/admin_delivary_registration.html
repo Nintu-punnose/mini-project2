@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css\admin.css' %}">
+    <title>auction_artvendor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        #main-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type=submit] {
+            background-color: #1da10c;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 400px;
+            margin-top: 20px;
+            
+        }
+        .submit{
+            display: flex;
+            justify-content: center;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <div id="sidebar">
+            <img src="{% static 'images\gallery_logo.png' %}" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
+            <h2 style="margin-left: 40px;">admin1</h2>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
+            <div class="sidebar-item" data-target="products">Auction View</div>
+            <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
+            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
+        </div>
+        <h1 style="margin-left: 270px; margin-top:30px">Delivery Agent Registration</h1>
+        <div id="main-container">
+            <form method="post" action="">
+                {% csrf_token %}
+                {% for delivary in delivary %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{delivary.name}}" required>
+    
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{delivary.email}}" required>
+    
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" value="{{delivary.phone}}" required>
+
+                <label for="password">Phone Number:</label>
+                <input type="password" id="password" name="password" placeholder="Passowrd" required>
+
+                <label for="confirmpassword">Phone Number:</label>
+                <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Confirm Passowrd" required>
+
+
+                <div class="submit">    
+                    <input type="submit" value="register">
+                </div>
+                {% endfor %}
+            </form>        
+        </div>
+    </div>
+</body>
+</html>

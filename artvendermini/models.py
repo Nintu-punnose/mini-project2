@@ -153,3 +153,23 @@ class AuctionRejectAdmin(models.Model):
     art_id = models.ForeignKey(AuctionItem, on_delete=models.CASCADE)
     seller = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     reason = models.TextField()
+
+
+
+class DeliveryProfile(models.Model):
+    name = models.CharField(max_length=255,null=True)
+    email = models.EmailField(null=True)
+    phone = models.CharField(max_length=15,null=True)
+    pin = models.CharField(max_length=10,null=True)
+    address = models.CharField(max_length=255,null=True)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
+    state = models.CharField(max_length=50,null=True)
+    district = models.CharField(max_length=50,null=True)
+    max_delivery_km = models.FloatField(null=True)
+
+    def __str__(self):
+        return self.name
+
+
+

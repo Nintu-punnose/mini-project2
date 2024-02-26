@@ -72,7 +72,7 @@ urlpatterns = [
     path('AuctionPayment/<int:id>', views.AuctionPayment, name='AuctionPayment'),
     path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
     path('admin_auction/',views.admin_auction,name='admin_auction'),
-    path('admin_auction_details/<int:id>',views.admin_auction_details,name='admin_auction_details'),
+    path('admin_auction_details/<int:id>/',views.admin_auction_details,name='admin_auction_details'),
 
     path('admin_rejection/',views.admin_rejection,name='admin_rejection'),
 
@@ -82,13 +82,11 @@ urlpatterns = [
     #delivary Agent
 
     path('delivary_agent_registration',views.delivary_agent_registration,name="delivary_agent_registration"),
-
-
-   
-
-    
-
-    
+    path('admin_delivary_view/',views.admin_delivary_view,name="admin_delivary_view"),
+    path('admin_delivary_registration/<int:delivary_id>/',views.admin_delivary_registration,name="admin_delivary_registration"),
+    path('delivary_profile/',views.delivary_profile,name="delivary_profile"),
+    path('admin_delivary_approval/',views.admin_delivary_approval,name="admin_delivary_approval"),
+  
 
 
 

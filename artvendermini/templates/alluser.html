@@ -126,10 +126,9 @@
         <table>
             <tr>
                 <th>Name</th>
-                <th>Role</th>
                 <th>Number</th>
                 <th>Mail ID</th>
-                
+                <th>Date Joined</th>
                 <th>Action</th>
             </tr>
             <!-- Replace the following rows with dynamic data -->
@@ -137,9 +136,9 @@
             {% if a.userdata.role == "customer" %}
             <tr>
                 <td>{{a.username}}</td>
-                <td>{{a.userdata.role}}</td>
                 <td>{{a.userdata.number}}</td>
                 <td>{{a.email}}</td>
+                <td>{{a.date_joined}}</td>
                 <td><a href="mailto:{{a.email}}"><button class="message-button">Message</button></a></td>   
             </tr>
             {% endif %}
@@ -152,9 +151,9 @@
         <table>
     <tr>
         <th>Name</th>
-        <th>Role</th>
         <th>Number</th>
         <th>Mail ID</th>
+        <th>Date Joined</th>
         <th>Art Uploaded</th>
         <th>Action</th>
     </tr>
@@ -163,11 +162,12 @@
     {% if a.userdata.role == "Artist" %}
     <tr>
         <td>{{ a.username }}</td>
-        <td>{{ a.userdata.role }}</td>
         <td>{{ a.userdata.number }}</td>
         <td>{{ a.email }}</td>
+        <td>{{a.date_joined}}</td>
         <td>{{ a.uploadartdetail_set.all.count }}</td>
-        <td><a href="mailto:{{ a.email }}"><button class="message-button">Message</button></a></td>    
+        <td><a href="mailto:{{ a.email }}"><button class="message-button">Message</button></a>
+        </td>    
     </tr>
     {% endif %}
     {% endfor %}

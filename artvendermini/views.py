@@ -3,7 +3,7 @@ from urllib import request
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from .models import AuctionRejectAdmin, User_Bid, UserData, artOrder,AuctionItem
+from .models import AuctionRejectAdmin, DeliveryProfile, User_Bid, UserData, artOrder,AuctionItem
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -64,8 +64,8 @@ def login(request):
                     return redirect('Artist_view')
                 elif to_role.role=='customer':
                     return redirect('index')
-                elif to_role.role=='shipping':
-                    return redirect('shipping')
+                elif to_role.role=='Delivary':
+                    return redirect('admin_delivary_approval')
                 else:
                     return redirect('admin_pannel')
             else:
@@ -968,5 +968,108 @@ def invoice(request):
 
 #Delivary Agent
 
+
 def delivary_agent_registration(request):
-    return render(request,'delivary_agent_registration.html')
+    if request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        address = request.POST['address']
+       
+        try:
+
+            profile = DeliveryProfile(
+                name=name,
+                email=email,
+                phone = phone,
+                address=address
+            )
+            profile.save()
+            
+            email_subject = 'Application recieved  Successfully'
+            email_body = f'Thank you for expressing your intrest in working with  ArtVendor as a delivery agent.\n\n'
+            email_body += f'We will send updates on your application soon. Please wait for the next steps.'
+
+            send_mail(
+                email_subject,
+                email_body,
+                email,  # Use the provided email address as the sender
+                [email],
+                fail_silently=False,
+            )
+            return redirect('delivary_agent_registration')
+        except Exception as e:
+            return JsonResponse({'error_message': str(e)}, status=400)
+    return render(request, 'delivary_agent_registration.html')
+
+
+def admin_delivary_view(request):
+    delivary_agent=DeliveryProfile.objects.all()
+    return render (request,"admin_delivary_view.html",{"delivary":delivary_agent})
+
+import string
+import secrets
+def generate_random_password():
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    while True:
+        password = ''.join(secrets.choice(alphabet) for i in range(8))
+        if (any(c.islower() for c in password) and
+            any(c.isupper() for c in password) and
+            any(c.isdigit() for c in password) and
+            any(c in string.punctuation for c in password)):
+            return password
+
+from django.contrib.auth.hashers import make_password
+
+def admin_delivary_registration(request,delivary_id):
+    delivary = DeliveryProfile.objects.filter(id=delivary_id)
+
+    if request.method == 'POST':
+       username=request.POST['name']
+       email=request.POST['email'] 
+       password=request.POST['password'] 
+       phone=request.POST['phone']
+
+       print(password)
+
+       hashed_password = make_password(password)  
+
+       delivary_registration = User(   
+           username=username,
+           email=email,
+           password=hashed_password,
+           is_active=False
+       )
+       delivary_registration.save()
+
+       delivary_userdata=UserData(
+           user=delivary_registration,
+            number=phone,
+            role="Delivary"
+        )
+       delivary_userdata.save()
+
+       email_subject = 'Admin Registered  Successfully'
+       email_body = f'Username:{username}.\n\n'
+       email_body = f'Password:{password}.\n\n'
+       email_body += f'Please loggin and complete profile for furthur process.'
+
+       send_mail(
+                email_subject,
+                email_body,
+                email,  # Use the provided email address as the sender
+                [email],
+                fail_silently=False,
+            )
+
+    return render(request,"admin_delivary_registration.html",{"delivary":delivary})
+
+def delivary_profile(request):  
+    return render(request,"delivary_profile.html")
+
+
+def admin_delivary_approval(request):  
+    return render(request,"admin_delivary_approval.html")
+
+
+

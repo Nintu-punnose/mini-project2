@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css\admin.css' %}">
+    <title>auction_artvendor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .registration_details {
+            display: grid;
+            gap: 10px;
+            max-width: 300px; /* Adjust the max-width as needed */
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color:white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .delivary_registration {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 items in one row */
+            margin-left: 280px;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .button-parent{
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <div id="sidebar">
+            <img src="{% static 'images\gallery_logo.png' %}" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
+            <h2 style="margin-left: 40px;">admin1</h2>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
+            <div class="sidebar-item" data-target="products">Auction View</div>
+            <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
+            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
+        </div>
+        <h1 style="margin-left: 270px; margin-top:30px">Approve Agent</h1>
+        <div class="delivary_registration">
+            {% for delivary in delivary %}
+                    <div class="registration_details">
+                        <p> <strong>name:</strong> {{delivary.name}}</p>
+                        <p><strong>email:</strong> {{delivary.email}}</p>
+                        <div class="button-parent">
+                            <a href="{% url 'admin_delivary_registration' delivary_id=delivary.id %}">
+                                <input type="submit" value="View">
+                            </a>
+                        </div>
+                    </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

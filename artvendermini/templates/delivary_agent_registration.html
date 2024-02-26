@@ -70,7 +70,16 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
+        .textarea{
+            max-width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .submit-button{
+            display:flex;
+            justify-content: center;
+            max-width: 100%;
+        }
         button {
             background-color: #1da10c;
             color: #fff;
@@ -80,7 +89,7 @@
             cursor: pointer;
             width: 400px;
             margin-top: 20px;
-            margin-left: 200px;
+            
         }
         h2{
             text-align: center;
@@ -109,7 +118,8 @@
 
     <div id="main-container">
         <h2>Delivery Agent Registration</h2>
-        <form>
+        <form method="post" action="">
+            {% csrf_token %}
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
 
@@ -120,10 +130,15 @@
             <input type="tel" id="phone" name="phone" required>
 
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" required>
-
-            <button type="submit">Submit</button>
-        </form>
+            <div class="textarea">
+                <textarea id="address" name="address" cols="30" rows="10" style="width:800px"></textarea>
+            </div>
+           
+            <div class="submit-button">
+                <button type="submit">Submit</button>
+            </div>
+            
+        </form>        
     </div>
 </body>
 </html>
