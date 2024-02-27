@@ -154,19 +154,25 @@ class AuctionRejectAdmin(models.Model):
     seller = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     reason = models.TextField()
 
+class DeliveryRegistration(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    address = models.TextField()
 
+    def __str__(self):
+        return self.name
 
 class DeliveryProfile(models.Model):
-    name = models.CharField(max_length=255,null=True)
-    email = models.EmailField(null=True)
-    phone = models.CharField(max_length=15,null=True)
-    pin = models.CharField(max_length=10,null=True)
-    address = models.CharField(max_length=255,null=True)
-    latitude = models.FloatField(null=True)
-    longitude = models.FloatField(null=True)
-    state = models.CharField(max_length=50,null=True)
-    district = models.CharField(max_length=50,null=True)
-    max_delivery_km = models.FloatField(null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    pin = models.CharField(max_length=50)
+    address = models.CharField(max_length=255)
+    latitude = models.CharField(max_length=255)
+    longitude = models.CharField(max_length=255)
+    state = models.CharField(max_length=50)
+    district = models.CharField(max_length=50)
+    max_delivery_km = models.IntegerField(null=True)
+    approval_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
 
     def __str__(self):
         return self.name

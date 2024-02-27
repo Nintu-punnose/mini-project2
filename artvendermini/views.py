@@ -3,7 +3,7 @@ from urllib import request
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from .models import AuctionRejectAdmin, DeliveryProfile, User_Bid, UserData, artOrder,AuctionItem
+from .models import AuctionRejectAdmin, DeliveryProfile, DeliveryRegistration, User_Bid, UserData, artOrder,AuctionItem
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -64,10 +64,10 @@ def login(request):
                     return redirect('Artist_view')
                 elif to_role.role=='customer':
                     return redirect('index')
-                elif to_role.role=='Delivary':
-                    return redirect('admin_delivary_approval')
-                else:
+                elif to_role.role=='Admin':
                     return redirect('admin_pannel')
+                else:
+                    return redirect('delivary_profile')    
             else:
                 # Display error message using messages framework
                 messages.info(request, "Invalid credentials. Please try again.")
@@ -978,13 +978,13 @@ def delivary_agent_registration(request):
        
         try:
 
-            profile = DeliveryProfile(
+            delivary_registration = DeliveryRegistration(
                 name=name,
                 email=email,
                 phone = phone,
                 address=address
             )
-            profile.save()
+            delivary_registration.save()
             
             email_subject = 'Application recieved  Successfully'
             email_body = f'Thank you for expressing your intrest in working with  ArtVendor as a delivery agent.\n\n'
@@ -1004,7 +1004,7 @@ def delivary_agent_registration(request):
 
 
 def admin_delivary_view(request):
-    delivary_agent=DeliveryProfile.objects.all()
+    delivary_agent=DeliveryRegistration.objects.all()
     return render (request,"admin_delivary_view.html",{"delivary":delivary_agent})
 
 import string
@@ -1022,12 +1022,12 @@ def generate_random_password():
 from django.contrib.auth.hashers import make_password
 
 def admin_delivary_registration(request,delivary_id):
-    delivary = DeliveryProfile.objects.filter(id=delivary_id)
+    delivary = DeliveryRegistration.objects.filter(id=delivary_id)
 
     if request.method == 'POST':
        username=request.POST['name']
        email=request.POST['email'] 
-       password=request.POST['password'] 
+       password=generate_random_password() 
        phone=request.POST['phone']
 
        print(password)
@@ -1037,8 +1037,7 @@ def admin_delivary_registration(request,delivary_id):
        delivary_registration = User(   
            username=username,
            email=email,
-           password=hashed_password,
-           is_active=False
+           password=hashed_password
        )
        delivary_registration.save()
 
@@ -1051,7 +1050,7 @@ def admin_delivary_registration(request,delivary_id):
 
        email_subject = 'Admin Registered  Successfully'
        email_body = f'Username:{username}.\n\n'
-       email_body = f'Password:{password}.\n\n'
+       email_body += f'Password:{password}.\n\n'
        email_body += f'Please loggin and complete profile for furthur process.'
 
        send_mail(
@@ -1064,8 +1063,51 @@ def admin_delivary_registration(request,delivary_id):
 
     return render(request,"admin_delivary_registration.html",{"delivary":delivary})
 
-def delivary_profile(request):  
-    return render(request,"delivary_profile.html")
+def delivary_profile(request):
+    profile_user = User.objects.filter(id=request.user.id)
+    profile_userdata = UserData.objects.filter(user=request.user.id)
+    profile_delivary = DeliveryProfile.objects.filter(user=request.user.id).exists()
+
+    if profile_delivary:
+        profile_delivary = DeliveryProfile.objects.filter(user=request.user.id)
+
+    else:
+        profile_delivary = None
+
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        userdata1 = UserData.objects.get(user_id=request.user.id)
+        userdata1.number = phone
+        userdata1.save()
+
+        if profile_delivary:
+            profile = DeliveryProfile.objects.get(user_id=request.user.id)
+            profile.pin = request.POST.get('pin')
+            profile.address = request.POST.get('address')
+            profile.latitude = request.POST.get('latitude')
+            profile.longitude = request.POST.get('longitude')
+            profile.state = request.POST.get('state')
+            profile.district = request.POST.get('district')
+            profile.max_delivery_km = request.POST.get('max-delivery-km')
+            profile.save()
+            return redirect('delivary_profile')
+
+        else:
+            profile_save = DeliveryProfile(
+                pin=request.POST.get('pin'),
+                address=request.POST.get('address'),
+                latitude=request.POST.get('latitude'),
+                longitude=request.POST.get('longitude'),
+                state=request.POST.get('state'),
+                district=request.POST.get('district'),
+                max_delivery_km=request.POST.get('max-delivery-km'),
+                user_id=request.user.id,
+                approval_status="Pending"
+            )
+            profile_save.save()
+            return redirect('delivary_profile')
+
+    return render(request,"delivary_profile.html",{"profile":profile_user,"profile_userdata":profile_userdata,"profile_delivary":profile_delivary})
 
 
 def admin_delivary_approval(request):  

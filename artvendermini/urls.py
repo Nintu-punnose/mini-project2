@@ -87,9 +87,6 @@ urlpatterns = [
     path('delivary_profile/',views.delivary_profile,name="delivary_profile"),
     path('admin_delivary_approval/',views.admin_delivary_approval,name="admin_delivary_approval"),
   
-
-
-
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
