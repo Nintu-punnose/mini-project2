@@ -111,7 +111,7 @@
         
            <div class="details1">
              <label for="name">Name:</label>
-             <input type="text" id="name" name="name" required>
+             <input type="text" id="name" name="name" value="{{request.user.username}}" required>
 
             <label for="pincode">Pincode:</label>
             <input type="text" id="pincode" name="pincode" required>
@@ -127,7 +127,7 @@
         </div>
         <div class="details2">
             <label for="Phone">Phone Number:</label>
-            <input type="text" id="Phone" name="Phone" required>
+            <input type="text" id="Phone" name="Phone" value="{{userdata.number}}" required>
 
            <label for="locality">Locality:</label>
            <input type="text" id="locality" name="locality" required>
@@ -137,10 +137,12 @@
 
            <label for="landmark">Landmark(Optional):</label>
            <input type="tel" id="landmark" name="landmark">
+           
        </div>
         
         
       </div>
+      <input type="submit" value="Save" style="background-color: #45a049;">
     </form>
     </div>
 

@@ -78,6 +78,8 @@ urlpatterns = [
 
     path('invoice', views.invoice, name='invoice'),
     
+    path('products', views.products, name='products'),
+    
 
     #delivary Agent
 
@@ -86,6 +88,7 @@ urlpatterns = [
     path('admin_delivary_registration/<int:delivary_id>/',views.admin_delivary_registration,name="admin_delivary_registration"),
     path('delivary_profile/',views.delivary_profile,name="delivary_profile"),
     path('admin_delivary_approval/',views.admin_delivary_approval,name="admin_delivary_approval"),
+    path('admin_delivary_approved/<int:delivary_id>/',views.admin_delivary_approved,name="admin_delivary_approved"),
   
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

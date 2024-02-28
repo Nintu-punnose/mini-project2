@@ -138,6 +138,7 @@ class AuctionListing(models.Model):
     
 
 class AuctionOrder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     auction_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer_orders')
     order_date = models.DateTimeField(auto_now_add=True)
@@ -175,7 +176,7 @@ class DeliveryProfile(models.Model):
     approval_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
 
     def __str__(self):
-        return self.name
+        return self.user.username
 
 
 

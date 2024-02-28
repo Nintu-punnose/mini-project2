@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from .models import UploadArtDetail,SellerProfile
 from django.views.decorators.cache import cache_control
 from django.views.decorators.cache import never_cache
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -67,7 +69,15 @@ def login(request):
                 elif to_role.role=='Admin':
                     return redirect('admin_pannel')
                 else:
-                    return redirect('delivary_profile')    
+                    try:
+                        delivary_profile=DeliveryProfile.objects.get(user_id=request.user.id)
+                        if delivary_profile.approval_status == 'approved':
+                            return redirect('admin_delivary_approval')
+                        elif delivary_profile.approval_status == 'Pending':
+                            messages.info(request, "Not Approved by admin..please wait.")
+                    except ObjectDoesNotExist:
+                            return redirect('delivary_profile')
+                            
             else:
                 # Display error message using messages framework
                 messages.info(request, "Invalid credentials. Please try again.")
@@ -851,11 +861,13 @@ def AuctionPayment(request,id):
     amount = int(price.latest_price*100)  # Assuming latest_price is a Decimal object
     print(amount)
 
+    user = User.objects.filter(id=request.user.id)
+   
 	# Create a Razorpay Order
     razorpay_order = razorpay_client.order.create(dict(amount=amount,
 													currency=currency,
 													payment_capture='0'))
-
+    
 	# order id of newly created order.
     razorpay_order_id = razorpay_order['id']
     callback_url = 'paymenthandler/'
@@ -868,7 +880,7 @@ def AuctionPayment(request,id):
     context['currency'] = currency
     context['callback_url'] = callback_url
 
-    return render(request, 'AuctionPayment.html', context=context)
+    return render(request, 'AuctionPayment.html', context=context,)
 
 
 # we need to csrf_exempt this url as
@@ -1110,8 +1122,20 @@ def delivary_profile(request):
     return render(request,"delivary_profile.html",{"profile":profile_user,"profile_userdata":profile_userdata,"profile_delivary":profile_delivary})
 
 
-def admin_delivary_approval(request):  
+def admin_delivary_approval(request): 
+    delivary=DeliveryProfile.objects.all()
+    return render(request,"admin_delivary_approval.html",{"delivary":delivary})
+
+def admin_delivary_approved(request,delivary_id): 
+    admin_delivary_approved=DeliveryProfile.objects.get(id=delivary_id)
+    admin_delivary_approved.approval_status = 'approved'
+    admin_delivary_approved.save() 
     return render(request,"admin_delivary_approval.html")
+
+
+
+def products(request): 
+    return render(request,"products.html")
 
 
 
