@@ -80,7 +80,9 @@
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
-            <div class="sidebar-item" data-target="products">Auction View</div>
+            <a href="{% url 'admin_auction' %}" style="text-decoration: none;"><div class="sidebar-item">Auction View</div></a>
+            <a href="{% url 'admin_delivary_view' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent</div></a>
+            <a href="{% url 'admin_delivary_approval' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent Approval</div></a>
             <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
             <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
         </div>
@@ -95,7 +97,7 @@
                     <p><strong>Pin:</strong> {{delivery_profile.pin}}</p>
                     <p> <strong>Address:</strong> {{delivery_profile.address}}</p>
                     <p><strong>Latitude:</strong> {{delivery_profile.latitude}}</p>
-                    <p> <strong>Lognitude:</strong> {{delivery_profile.Lognitude}}</p>
+                    <p> <strong>Lognitude:</strong> {{delivery_profile.longitude}}</p>
                     <div class="button-parent">
                         {% if delivery_profile.approval_status == 'Pending' %}
                         <a href="{% url 'admin_delivary_approved' delivary_id=delivery_profile.id %}">
@@ -103,15 +105,12 @@
                         </a>
                         <a><input type="submit" value="Reject" style="background:rgb(231, 74, 35)"></a>
                         {% else %}
+                        <a><input type="submit" value="Assignment" style="background:rgb(55, 52, 231)"></a>
                         <a><input type="submit" value="Reject" style="background:rgb(231, 74, 35)"></a>
-                        {% endif %}
+                        {% endif %} 
                     </div>
                     </div>
-                   
-                {% endfor %}
-           
-             
-                        
+                {% endfor %}                
         </div>
     </div>
 </body>

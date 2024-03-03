@@ -77,6 +77,7 @@ urlpatterns = [
     path('admin_rejection/',views.admin_rejection,name='admin_rejection'),
 
     path('invoice', views.invoice, name='invoice'),
+    path('auction_orderdetails/<int:id>', views.auction_orderdetails, name='auction_orderdetails'),
     
     path('products', views.products, name='products'),
     

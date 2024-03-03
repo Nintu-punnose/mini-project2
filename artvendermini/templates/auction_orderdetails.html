@@ -106,15 +106,16 @@
   <div id="container">
     <div id="left-side">
       <h2>Delivery Details</h2>
-      <form action="">
+      <form action="" method="POST">
+        {% csrf_token %}
       <div class="delivery-details"> 
         
            <div class="details1">
              <label for="name">Name:</label>
-             <input type="text" id="name" name="name" value="{{request.user.username}}" required>
+             <input type="text" id="name" name="name" value="{{request.user.username}}" disabled>
 
-            <label for="pincode">Pincode:</label>
-            <input type="text" id="pincode" name="pincode" required>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" value="{{request.user.email}}" required>
 
             <label for="State">State</label>
             <input type="text" id="State" name="State" required>
@@ -123,71 +124,36 @@
             <input type="tel" id="City" name="City" required>
 
             <label for="address">Address:</label>
-            <textarea id="address" name="address" pattern= required></textarea>
+            <textarea id="address" name="address"  required></textarea>
         </div>
         <div class="details2">
             <label for="Phone">Phone Number:</label>
+            <input type="text" id="Phone" name="Phone" value="{{request.user.userdata.number}}" required>
            
-              <input type="text" id="Phone" name="Phone" value="{{userdata.number}}" required>
-           
-            
+            <label for="locality">Locality:</label>
+            <input type="text" id="locality" name="locality" required>
 
-           <label for="locality">Locality:</label>
-           <input type="text" id="locality" name="locality" required>
+            <label for="pin">PIN Code:</label>
+            <input type="text" id="pin" name="pin" required>
 
-           <label for="pin">PIN Code:</label>
-           <input type="text" id="pin" name="pin" required>
-
-           <label for="landmark">Landmark(Optional):</label>
-           <input type="tel" id="landmark" name="landmark">
+            <label for="landmark">Landmark(Optional):</label>
+            <input type="tel" id="landmark" name="landmark">
            
        </div>
         
         
       </div>
       <input type="submit" value="Save" style="background-color: #45a049;">
+      
     </form>
     </div>
 
     <div id="right-side">
       <h2>Order Summary</h2>
-      <p>Total Cost: $50.00</p>
-      <p>Shipping Charge: $5.00</p>
-      <p>Sum: $55.00</p>
-      <button class="btn" id="pay-btn">Proceed to Payment</button>
+      <p>Total Cost:  {{price.latest_price}}</p>
+     
+      <button>Proceed to Payment</button>
     </div>
   </div>
-
-     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script>
-    var options = {
-       
-      // Enter the Key ID generated from the Dashboard
-      key: "{{ razorpay_merchant_key }}", 
-       
-      // Amount is in currency subunits.
-      // Default currency is INR. Hence, 
-      // 50000 refers to 50000 paise
-      amount: "{{ razorpay_amount }}", 
-      currency: "{{ currency }}",
-       
-      // Your/store name.
-      name: "Dj Razorpay", 
-       
-      // Pass the `id` obtained in the response of Step 1
-      order_id: "{{ razorpay_order_id }}", 
-      callback_url: "{{ callback_url }}",
-    };
-     
-    // initialise razorpay with the options.
-    var rzp1 = new Razorpay(options);
-     
-    // add event listener to the payment button.
-    document.getElementById("pay-btn").onclick = function (e) {
-      rzp1.open();
-      e.preventDefault();
-    };
-  </script>
-
 </body>
 </html>

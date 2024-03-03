@@ -3,7 +3,7 @@ from urllib import request
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from .models import AuctionRejectAdmin, DeliveryProfile, DeliveryRegistration, User_Bid, UserData, artOrder,AuctionItem
+from .models import AuctionOrder, AuctionRejectAdmin, DeliveryProfile, DeliveryRegistration, User_Bid, UserData, artOrder,AuctionItem
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -861,8 +861,8 @@ def AuctionPayment(request,id):
     amount = int(price.latest_price*100)  # Assuming latest_price is a Decimal object
     print(amount)
 
-    user = User.objects.filter(id=request.user.id)
-   
+    
+
 	# Create a Razorpay Order
     razorpay_order = razorpay_client.order.create(dict(amount=amount,
 													currency=currency,
@@ -932,6 +932,47 @@ def paymenthandler(request):
 		return HttpResponseBadRequest()
 
 
+def auction_orderdetails(request,id):
+    price = AuctionListing.objects.get(id=id)
+    user=request.user.id
+    buyer=User.objects.get(id=user)
+    
+    if request.method == "POST":
+        number = request.POST.get("Phone")
+        email = request.POST.get("email")
+        locality = request.POST.get("locality")
+        state = request.POST.get("State")
+        pincode = request.POST.get("pin")
+        city = request.POST.get("City")
+        landmark = request.POST.get("landmark")
+        address = request.POST.get("address")
+
+        print(number)
+        print(email)
+        print(locality)
+        print(state)
+        print(pincode)
+        print(city)
+        print(landmark)
+        print(address)
+
+        details=AuctionOrder(
+            user = buyer,
+            auctionlisting=price,
+            buyer_email = email,
+            buyer_phone = number,
+            buyer_pincode = pincode,
+            buyer_state = state,
+            buyer_city = city,
+            buyer_address = address,
+            buyer_locality = locality,
+            buyer_landmark = landmark
+        )
+
+        details.save()
+        
+
+    return render(request,'auction_orderdetails.html',{"price":price})
 
 def admin_auction(request):
     admin_auction = AuctionItem.objects.all()

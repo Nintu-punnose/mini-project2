@@ -154,7 +154,7 @@
             <img src="{{notification.auction_item.image.url}}" alt="" class="auction_image"><br><br>
             <h5>Winning Bid: {{ notification.latest_price }}</h5>
             <h5>Seller: {{ notification.seller.username }}</h5>
-            <a href="{% url 'AuctionPayment' notification.id %}"><input type="submit" class="btn" id="pay-btn" value="Pay {{ notification.latest_price }}"></a>
+            <a href="{% url 'auction_orderdetails' notification.id %}"><input type="submit" class="btn" id="pay-btn" value="Pay {{ notification.latest_price }}"></a>
         </div>
         <div class="terms_heading"><h2>Terms and Conditions</h2></div>
         <div class="terms_details">

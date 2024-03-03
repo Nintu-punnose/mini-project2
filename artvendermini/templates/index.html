@@ -21,6 +21,7 @@
                 <a href="{% url 'index' %}">Home</a>
                 <a href="{% url 'images' %}" id="art">Art</a>
                 <a href="{% url 'Artist' %}">Artist</a>
+                <a href="{% url 'auction' %}" id="auction">Auction</a>
                 <a href="{% url 'orders' %}">Orders</a>
                 <a href="{% url 'cart' %}" id="cart">Cart</a>
                 {% if request.user.is_authenticated %}

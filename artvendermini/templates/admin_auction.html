@@ -218,11 +218,13 @@
 
         <div id="sidebar">
             <img src="{% static 'images\gallery_logo.png' %}" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
-            <h2 style="margin-left: 40px;">admin1</h2>
+            <h2 style="margin-left: 40px;">{{request.user.username}}</h2>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
-            <div class="sidebar-item" data-target="products">Auction View</div>
+            <a href="{% url 'admin_auction' %}" style="text-decoration: none;"><div class="sidebar-item">Auction View</div></a>
+            <a href="{% url 'admin_delivary_view' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent</div></a>
+            <a href="{% url 'admin_delivary_approval' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent Approval</div></a>
             <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
             <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
         </div>

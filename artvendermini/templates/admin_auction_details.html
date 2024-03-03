@@ -87,7 +87,9 @@
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
             <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
-            <div class="sidebar-item" data-target="products">Auction View</div>
+            <a href="{% url 'admin_auction' %}" style="text-decoration: none;"><div class="sidebar-item">Auction View</div></a>
+            <a href="{% url 'admin_delivary_view' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent</div></a>
+            <a href="{% url 'admin_delivary_approval' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent Approval</div></a>
             <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
             <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
         </div>
@@ -99,7 +101,6 @@
                     <img src="{{details.auction_item.image.url}}" alt="" id="img">
                 </div>
                 <div id="Artist_details"><br>
-                  
                     <h1>Name:{{details.auction_item.name}}</h1>
                     <p id="details"><strong>Seller:</strong>  {{details.seller.username}}</p>
                     <p id="details"><strong>Buyer:</strong>  {{details.buyer.username}}</p>

@@ -139,12 +139,15 @@ class AuctionListing(models.Model):
 
 class AuctionOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    auction_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer_orders')
-    order_date = models.DateTimeField(auto_now_add=True)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    buyer_address = models.TextField()
+    auctionlisting = models.ForeignKey(AuctionListing, on_delete=models.CASCADE,null=True)
     buyer_pincode = models.CharField(max_length=10)
+    buyer_email = models.EmailField()
+    buyer_phone = models.CharField(max_length=15)
+    buyer_state = models.CharField(max_length=255)
+    buyer_city = models.CharField(max_length=255)
+    buyer_address = models.TextField()
+    buyer_locality = models.CharField(max_length=255)
+    buyer_landmark = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"Auction Order for {self.auction_listing.auction_item.name}"
