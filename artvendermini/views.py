@@ -3,7 +3,7 @@ from urllib import request
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from .models import AuctionOrder, AuctionRejectAdmin, DeliveryProfile, DeliveryRegistration, User_Bid, UserData, artOrder,AuctionItem
+from .models import AuctionOrder, AuctionRejectAdmin, DeliveryProfile, DeliveryRegistration, ProductDetails, User_Bid, UserData, artOrder,AuctionItem
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -70,11 +70,13 @@ def login(request):
                     return redirect('admin_pannel')
                 else:
                     try:
-                        delivary_profile=DeliveryProfile.objects.get(user_id=request.user.id)
-                        if delivary_profile.approval_status == 'approved':
-                            return redirect('admin_delivary_approval')
-                        elif delivary_profile.approval_status == 'Pending':
+                        delivary_registration=DeliveryRegistration.objects.get(user_id=request.user.id)
+                        if delivary_registration.approval_status == 'Approved':
+                            return redirect('delivary_dashboard')
+                        elif delivary_registration.approval_status == 'Pending':
                             messages.info(request, "Not Approved by admin..please wait.")
+                        else:
+                            messages.info(request, "Rejected by admin.")
                     except ObjectDoesNotExist:
                             return redirect('delivary_profile')
                             
@@ -842,6 +844,41 @@ def notification_view(request, art_id):
     notification = get_object_or_404(AuctionListing, auction_item_id=art_id)
     return render(request, 'notification_view.html', {'notification': notification})
 
+
+def auction_orderdetails(request,id):
+    price = AuctionListing.objects.get(id=id)
+    user=request.user.id
+    buyer=User.objects.get(id=user)
+    
+    if request.method == "POST":
+        number = request.POST.get("Phone")
+        email = request.POST.get("email")
+        locality = request.POST.get("locality")
+        state = request.POST.get("State")
+        pincode = request.POST.get("pin")
+        city = request.POST.get("City")
+        landmark = request.POST.get("landmark")
+        address = request.POST.get("address")
+
+        details=AuctionOrder(
+            user = buyer,
+            auctionlisting=price,
+            buyer_email = email,
+            buyer_phone = number,
+            buyer_pincode = pincode,
+            buyer_state = state,
+            buyer_city = city,
+            buyer_address = address,
+            buyer_locality = locality,
+            buyer_landmark = landmark
+        )
+
+        details.save()
+        return redirect('AuctionPayment',id=details.id)
+        
+
+    return render(request,'auction_orderdetails.html',{"price":price})
+
 from django.shortcuts import render
 import razorpay
 from django.conf import settings
@@ -932,47 +969,7 @@ def paymenthandler(request):
 		return HttpResponseBadRequest()
 
 
-def auction_orderdetails(request,id):
-    price = AuctionListing.objects.get(id=id)
-    user=request.user.id
-    buyer=User.objects.get(id=user)
-    
-    if request.method == "POST":
-        number = request.POST.get("Phone")
-        email = request.POST.get("email")
-        locality = request.POST.get("locality")
-        state = request.POST.get("State")
-        pincode = request.POST.get("pin")
-        city = request.POST.get("City")
-        landmark = request.POST.get("landmark")
-        address = request.POST.get("address")
 
-        print(number)
-        print(email)
-        print(locality)
-        print(state)
-        print(pincode)
-        print(city)
-        print(landmark)
-        print(address)
-
-        details=AuctionOrder(
-            user = buyer,
-            auctionlisting=price,
-            buyer_email = email,
-            buyer_phone = number,
-            buyer_pincode = pincode,
-            buyer_state = state,
-            buyer_city = city,
-            buyer_address = address,
-            buyer_locality = locality,
-            buyer_landmark = landmark
-        )
-
-        details.save()
-        
-
-    return render(request,'auction_orderdetails.html',{"price":price})
 
 def admin_auction(request):
     admin_auction = AuctionItem.objects.all()
@@ -1027,6 +1024,13 @@ def delivary_agent_registration(request):
         name = request.POST['name']
         email = request.POST['email']
         phone = request.POST['phone']
+        pin = request.POST['pin']
+        longitude = request.POST['longitude']
+        latitude = request.POST['latitude']
+        district = request.POST['district']
+        state = request.POST['state']
+        landmark = request.POST['landmark']
+        max_delivery_distance = request.POST['max_delivery_distance']
         address = request.POST['address']
        
         try:
@@ -1035,6 +1039,13 @@ def delivary_agent_registration(request):
                 name=name,
                 email=email,
                 phone = phone,
+                pin=pin,
+                longitude=longitude,
+                latitude=latitude,
+                district=district,
+                state=state,
+                landmark=landmark,
+                max_delivery_distance=max_delivery_distance,
                 address=address
             )
             delivary_registration.save()
@@ -1050,7 +1061,7 @@ def delivary_agent_registration(request):
                 [email],
                 fail_silently=False,
             )
-            return redirect('delivary_agent_registration')
+            return redirect('login')
         except Exception as e:
             return JsonResponse({'error_message': str(e)}, status=400)
     return render(request, 'delivary_agent_registration.html')
@@ -1082,6 +1093,7 @@ def admin_delivary_registration(request,delivary_id):
        email=request.POST['email'] 
        password=generate_random_password() 
        phone=request.POST['phone']
+       
 
        print(password)
 
@@ -1101,6 +1113,11 @@ def admin_delivary_registration(request,delivary_id):
         )
        delivary_userdata.save()
 
+       status=DeliveryRegistration.objects.get(id=delivary_id)
+       status.approval_status="Approved"
+       status.user=delivary_registration
+       status.save()
+
        email_subject = 'Admin Registered  Successfully'
        email_body = f'Username:{username}.\n\n'
        email_body += f'Password:{password}.\n\n'
@@ -1115,6 +1132,30 @@ def admin_delivary_registration(request,delivary_id):
             )
 
     return render(request,"admin_delivary_registration.html",{"delivary":delivary})
+
+def admin_delivary_approval(request): 
+    delivary_agent=DeliveryRegistration.objects.all()
+    return render(request,"admin_delivary_approval.html",{"delivary_agent":delivary_agent})
+
+def admin_delivary_details(request,id): 
+    delivary_details=DeliveryRegistration.objects.get(id=id)
+    product_buyer_details=ProductDetails.objects.get(user=delivary_details.user)
+    return render(request,"admin_delivary_details.html",{"delivary_details":delivary_details,"product_buyer_details":product_buyer_details})
+
+def admin_delivary_rejection(request,reject_id): 
+    try:
+        admin_delivary_rejection=DeliveryRegistration.objects.get(id=reject_id)
+        admin_delivary_rejection.approval_status="Rejected"
+        admin_delivary_rejection.save() 
+        return redirect('admin_delivary_approval')
+    except:
+        return render(request,"admin_delivary_details.html")
+
+def admin_delivary_approve(request,approve_id): 
+    admin_delivary_rejection=DeliveryRegistration.objects.get(id=approve_id)
+    admin_delivary_rejection.approval_status="Approved"
+    admin_delivary_rejection.save() 
+    return redirect('admin_delivary_approval')
 
 def delivary_profile(request):
     profile_user = User.objects.filter(id=request.user.id)
@@ -1163,18 +1204,116 @@ def delivary_profile(request):
     return render(request,"delivary_profile.html",{"profile":profile_user,"profile_userdata":profile_userdata,"profile_delivary":profile_delivary})
 
 
-def admin_delivary_approval(request): 
-    delivary=DeliveryProfile.objects.all()
-    return render(request,"admin_delivary_approval.html",{"delivary":delivary})
+def delivary_dashboard(request):
+    assign_count=AuctionOrder.objects.all().count()
+    return render(request,'delivary_dashboard.html',{"assign_count":assign_count})
 
-def admin_delivary_approved(request,delivary_id): 
-    admin_delivary_approved=DeliveryProfile.objects.get(id=delivary_id)
-    admin_delivary_approved.approval_status = 'approved'
-    admin_delivary_approved.save() 
-    return render(request,"admin_delivary_approval.html")
+def delivary_product_view(request):
+    orders = AuctionOrder.objects.filter(approval_status="pending")
+    return render(request, 'delivary_product_view.html', {"orders": orders})
 
 
+def delivary_product_approval(request,id):
+    order=AuctionOrder.objects.get(id=id)
+    order.approval_status = "approved"
+    order.save()
+    details = ProductDetails(
+        auction_order=order,
+        user=request.user
+    )
+    details.save()
+    return redirect('accepted_product')
+    return render(request,'delivary_product_view.html')
 
+def accepted_product(request):
+    product_details=ProductDetails.objects.filter(user=request.user,)
+    return render(request,'accepted_product.html',{"product_details":product_details})
+
+def accepted_product_detail(request,product_detail_id):
+    product_details=ProductDetails.objects.filter(id=product_detail_id)
+    return render(request,'accepted_product_detail.html',{"product_details":product_details})
+
+import random
+def generate_otp(request):
+    otp_value = str(random.randint(100000, 999999))
+    print(otp_value)
+    return otp_value
+
+def otp_update(request,otp_id):
+    product_details=ProductDetails.objects.get(id=otp_id)
+    original_request = request.GET.get('request', None)
+    product_details.otp_value=generate_otp(original_request)
+    product_details.save()
+
+def delivery_update(request,id):
+    product_details=ProductDetails.objects.get(id=id)
+    product_details.status="approved"
+    product_details.otp_value=generate_otp(request)
+    product_details.save()
+
+    return redirect('accepted_product')
+    
+
+def delivary_profile2(request):
+    profile_user = User.objects.filter(id=request.user.id)
+    profile_userdata = UserData.objects.filter(user=request.user.id)
+    profile_delivary = DeliveryProfile.objects.filter(user=request.user.id).exists()
+
+    if profile_delivary:
+        profile_delivary = DeliveryProfile.objects.filter(user=request.user.id)
+
+    else:
+        profile_delivary = None
+
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        userdata1 = UserData.objects.get(user_id=request.user.id)
+        userdata1.number = phone
+        userdata1.save()
+
+        if profile_delivary:
+            profile = DeliveryProfile.objects.get(user_id=request.user.id)
+            profile.pin = request.POST.get('pin')
+            profile.address = request.POST.get('address')
+            profile.latitude = request.POST.get('latitude')
+            profile.longitude = request.POST.get('longitude')
+            profile.state = request.POST.get('state')
+            profile.district = request.POST.get('district')
+            profile.max_delivery_km = request.POST.get('max-delivery-km')
+            profile.save()
+            return redirect('delivary_profile2')
+
+        else:
+            profile_save = DeliveryProfile(
+                pin=request.POST.get('pin'),
+                address=request.POST.get('address'),
+                latitude=request.POST.get('latitude'),
+                longitude=request.POST.get('longitude'),
+                state=request.POST.get('state'),
+                district=request.POST.get('district'),
+                max_delivery_km=request.POST.get('max-delivery-km'),
+                user_id=request.user.id,
+                approval_status="Pending"
+            )
+            profile_save.save()
+            return redirect('delivary_profile2')
+
+    return render(request,"delivary_profile2.html",{"profile":profile_user,"profile_userdata":profile_userdata,"profile_delivary":profile_delivary})
+
+def delivary_password_update(request):
+    if request.method=='POST':
+        user=User.objects.get(username=request.user.username)
+        password=request.POST.get('password')
+        hashed_password = make_password(password)
+        user.password=hashed_password
+        user.save()
+        return redirect('delivary_password_update')
+    return render(request,'delivary_password_update.html')
+
+
+
+    
+    
 def products(request): 
     return render(request,"products.html")
 

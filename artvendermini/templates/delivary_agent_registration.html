@@ -95,6 +95,7 @@
             text-align: center;
         }
     </style>
+    
 </head>
 <body>
     <div id="head_details">
@@ -110,22 +111,44 @@
             {% csrf_token %}
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
-
+    
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
-
+    
             <label for="phone">Phone Number:</label>
             <input type="tel" id="phone" name="phone" required>
+    
+            
+    
+            <label for="pin">PIN:</label>
+            <input type="text" id="pin" name="pin" required>
+    
+            <label for="latitude">Latitude:</label>
+            <input type="text" id="latitude" name="latitude" required>
+    
+            <label for="longitude">Longitude:</label>
+            <input type="text" id="longitude" name="longitude" required>
+    
+            <label for="district">District:</label>
+            <input type="text" id="district" name="district" required>
+    
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" required>
+    
+            <label for="landmark">Landmark:</label>
+            <input type="text" id="landmark" name="landmark" required>
+    
+            <label for="max_delivery_distance">Max Delivery Distance (in km):</label>
+            <input type="text" id="max_delivery_distance" name="max_delivery_distance" required>
 
             <label for="address">Address:</label>
             <div class="textarea">
                 <textarea id="address" name="address" cols="30" rows="10" style="width:800px"></textarea>
             </div>
-           
+    
             <div class="submit-button">
                 <button type="submit">Submit</button>
             </div>
-            
         </form>        
     </div>
 </body>

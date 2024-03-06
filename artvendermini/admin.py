@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import UploadArtDetail,SellerProfile,UserData,Cart,CartItem,ProductSize,ProductType,Order
-# Register your models here.
+from .models import UploadArtDetail,SellerProfile,UserData,Cart,CartItem,ProductSize,ProductType,Order,AuctionItem,User_Bid,AuctionListing,AuctionOrder,artOrder,ProductDetails,AuctionRejectAdmin,DeliveryRegistration,DeliveryProfile# Register your models here.
 
 admin.site.register(UploadArtDetail)
 admin.site.register(UserData)
@@ -10,3 +9,12 @@ admin.site.register(CartItem)
 admin.site.register(ProductSize)
 admin.site.register(ProductType)
 admin.site.register(Order)
+admin.site.register(artOrder)
+admin.site.register(AuctionItem)
+admin.site.register(User_Bid)
+admin.site.register(AuctionListing)
+admin.site.register(AuctionOrder)
+admin.site.register(ProductDetails)
+admin.site.register(AuctionRejectAdmin)
+admin.site.register(DeliveryRegistration)
+admin.site.register(DeliveryProfile)

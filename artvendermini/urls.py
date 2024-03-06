@@ -89,7 +89,19 @@ urlpatterns = [
     path('admin_delivary_registration/<int:delivary_id>/',views.admin_delivary_registration,name="admin_delivary_registration"),
     path('delivary_profile/',views.delivary_profile,name="delivary_profile"),
     path('admin_delivary_approval/',views.admin_delivary_approval,name="admin_delivary_approval"),
-    path('admin_delivary_approved/<int:delivary_id>/',views.admin_delivary_approved,name="admin_delivary_approved"),
+    path('admin_delivary_details/<int:id>',views.admin_delivary_details,name="admin_delivary_details"),
+    path('admin_delivary_rejection/<int:reject_id>/',views.admin_delivary_rejection,name="admin_delivary_rejection"),
+    path('admin_delivary_approve/<int:approve_id>/',views.admin_delivary_approve,name="admin_delivary_approve"),
+    path('delivary_dashboard/',views.delivary_dashboard,name="delivary_dashboard"),
+    path('delivary_product_view/',views.delivary_product_view,name="delivary_product_view"),
+    path('delivary_product_approval/<int:id>',views.delivary_product_approval,name="delivary_product_approval"),
+    path('accepted_product',views.accepted_product,name="accepted_product"),
+    path('accepted_product_detail/<int:product_detail_id>',views.accepted_product_detail,name="accepted_product_detail"),
+    path('delivery_update/<int:id>',views.delivery_update,name="delivery_update"),
+    path('delivary_password_update/',views.delivary_password_update,name="delivary_password_update"),
+    path('delivary_profile2/',views.delivary_profile2,name="delivary_profile2"),
+    path('generate_otp/', views.generate_otp, name='generate_otp'),
+    path('otp_update/<int:otp_id>', views.otp_update, name='otp_update'),
   
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -86,28 +86,15 @@
             <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
             <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
         </div>
-        <h1 style="margin-left: 270px; margin-top:30px">Approve Agent</h1>
+        <h1 style="margin-left: 270px; margin-top:30px">Delivery Agent View</h1>
         <div class="delivary_approval">
-                {% for delivery_profile  in delivary %}
-                
+                {% for delivary_agent  in delivary_agent %}
                     <div class="registration_details">
-                    <p> <strong>Name:</strong> {{delivery_profile.user.username}}</p>
-                    <p><strong>Email:</strong> {{delivery_profile.user.email}}</p>
-                    <p> <strong>Number:</strong> {{delivery_profile.user.userdata.number}}</p>
-                    <p><strong>Pin:</strong> {{delivery_profile.pin}}</p>
-                    <p> <strong>Address:</strong> {{delivery_profile.address}}</p>
-                    <p><strong>Latitude:</strong> {{delivery_profile.latitude}}</p>
-                    <p> <strong>Lognitude:</strong> {{delivery_profile.longitude}}</p>
+                    <p> <strong>Name:</strong> {{delivary_agent.user.username}}</p>
+                    <p><strong>Pin:</strong> {{delivary_agent.pin}}</p>
+                    <p> <strong>Address:</strong> {{delivary_agent.address}}</p>
                     <div class="button-parent">
-                        {% if delivery_profile.approval_status == 'Pending' %}
-                        <a href="{% url 'admin_delivary_approved' delivary_id=delivery_profile.id %}">
-                            <input type="submit" value="Approve" style="background:green">
-                        </a>
-                        <a><input type="submit" value="Reject" style="background:rgb(231, 74, 35)"></a>
-                        {% else %}
-                        <a><input type="submit" value="Assignment" style="background:rgb(55, 52, 231)"></a>
-                        <a><input type="submit" value="Reject" style="background:rgb(231, 74, 35)"></a>
-                        {% endif %} 
+                        <a href="{% url 'admin_delivary_details' id=delivary_agent.id %}"><input type="submit" value="View" style="background:rgb(39, 231, 97)"></a>
                     </div>
                     </div>
                 {% endfor %}                

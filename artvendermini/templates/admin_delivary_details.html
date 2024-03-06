@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css\admin.css' %}">
+    <title>artvendor_delivarydetails</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .delivary_approval {
+            margin: 20px;
+            margin-left:280px;
+            padding: 10px;
+            width: 700px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .registration_details {
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            
+        }
+    
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border:none;
+        }
+    
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        
+        
+        input[type="submit"] {
+            
+            color: #fff;
+            padding: 10px 15px;
+            margin-left: 170px;
+            width: 200px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #e7deded8;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            animation: zoomIn 0.3s ease-in-out;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+        }
+
+        button{
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .delivary_details {
+            margin: 20px;
+            margin-left:280px;
+            padding: 10px;
+            width: 890px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+       
+        #delivery_details {
+            margin: 20px;
+            margin-left: 280px;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+    
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #f2f2f2;
+        }
+    
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+      
+    </style>
+</head>
+<body>
+    <div class="body">
+        <div id="sidebar">
+            <img src="{% static 'images\gallery_logo.png' %}" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
+            <h2 style="margin-left: 40px;">admin1</h2>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
+            <a href="{% url 'admin_auction' %}" style="text-decoration: none;"><div class="sidebar-item">Auction View</div></a>
+            <a href="{% url 'admin_delivary_view' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent</div></a>
+            <a href="{% url 'admin_delivary_approval' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent Approval</div></a>
+            <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
+            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
+        </div>
+        <h1 style="margin-left: 270px; margin-top:30px">Delivery Agent details</h1>
+        <div class="delivary_approval">
+               
+                <table>
+                    
+                   
+                        <h2 style="color:blue">{{delivary_details.user.username}}</h2>
+                  
+                    <tr>
+                        <td><strong>Email</strong></td>
+                        <td>{{delivary_details.user.email}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone</strong></td>
+                        <td>{{delivary_details.user.userdata.number}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Address</strong></td>
+                        <td>{{delivary_details.address}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pin</strong></td>
+                        <td>{{delivary_details.pin}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Latitude</strong></td>
+                        <td>{{delivary_details.latitude}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Longitude</strong></td>
+                        <td>{{delivary_details.longitude}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>District</strong></td>
+                        <td>{{delivary_details.district}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>State</strong></td>
+                        <td>{{delivary_details.state}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Landmark</strong></td>
+                        <td>{{delivary_details.landmark}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Maximum Distance</strong></td>
+                        <td>{{delivary_details.max_delivery_distance}} km</td>
+                    </tr>
+                </table>
+                    
+                    <div class="button-parent">
+                        {% if delivary_details.approval_status == "Approved" %}
+                            <b><p style="color: green;">Status:{{delivary_details.approval_status}}</p></b>
+                          <a onclick="showRejectModal()"><input type="submit" value="Reject" style="background:rgb(233, 9, 9)"></a>
+                        {% else %}
+                            <b><p style="color: rgb(207, 21, 21);">Status:{{delivary_details.approval_status}}</p></b>
+                          <a href="{% url 'admin_delivary_approve' approve_id=delivary_details.id %}"><input type="submit" value="Approve" style="background:rgb(46, 233, 9)"></a>
+                        {% endif %}
+                        
+                    </div>
+                    </div>
+                    <div id="delivery_details">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Locality</th>
+                                    <th>District</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product_buyer_details in product_buyer_details %}
+                                    <tr>
+                                        <td>{{ product_buyer_details.auction_order.user.username }}</td>
+                                        <td>{{ product_buyer_details.auction_order.buyer_address }}</td>
+                                        <td>{{ product_buyer_details.auction_order.buyer_locality }}</td>
+                                        <td>{{ product_buyer_details.auction_order.buyer_city }}</td>
+                                        {% if product_buyer_details.status == "pending" %}
+                                          <td style="color: red;">{{ product_buyer_details.status }}</td>
+                                        {% else %}
+                                        <td style="color: rgb(15, 231, 51);">Delivered</td>
+                                        {% endif %}
+                                        
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal" id="rejectModal">
+                        <div class="modal-content">
+                            <p>Are you sure you want to reject?</p>
+                            <div class="modal-buttons">
+                                <a href="{% url 'admin_delivary_rejection' reject_id=delivary_details.id %}"><button style="background-color: red;" onclick="rejectDelivery()">Reject</button></a>
+                                <button style="background-color: blue;" onclick="cancelReject()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                            
+        </div>
+    </div>
+    <script>
+        function showRejectModal() {
+            var modal = document.getElementById('rejectModal');
+            modal.style.display = 'flex';
+        }
+
+        function rejectDelivery() {
+            // Perform your reject logic here
+            // You can make an AJAX request to update the status on the server
+            // ...
+
+            // Close the modal
+            document.getElementById('rejectModal').style.display = 'none';
+        }
+
+        function cancelReject() {
+            // Close the modal
+            document.getElementById('rejectModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -136,10 +136,9 @@ class AuctionListing(models.Model):
     def __str__(self):
         return f"Auction Listing for {self.auction_item.name}"
     
-
 class AuctionOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    auctionlisting = models.ForeignKey(AuctionListing, on_delete=models.CASCADE,null=True)
+    auctionlisting = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, null=True)
     buyer_pincode = models.CharField(max_length=10)
     buyer_email = models.EmailField()
     buyer_phone = models.CharField(max_length=15)
@@ -148,9 +147,19 @@ class AuctionOrder(models.Model):
     buyer_address = models.TextField()
     buyer_locality = models.CharField(max_length=255)
     buyer_landmark = models.CharField(max_length=255, blank=True, null=True)
+    razorpay_id = models.CharField(max_length=255, blank=True, null=True)
+    payment_date = models.DateTimeField(blank=True, null=True)
+    payment_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('paid', 'Paid')], default='Pending')
+    approval_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
 
     def __str__(self):
-        return f"Auction Order for {self.auction_listing.auction_item.name}"
+        return f"Auction Order for {self.auctionlisting.auction_item.name}"
+    
+class ProductDetails(models.Model):
+    auction_order = models.ForeignKey(AuctionOrder, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp_value = models.CharField(max_length=6, null=True, default=None)
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')], default='pending')
     
 
 class AuctionRejectAdmin(models.Model):
@@ -158,14 +167,26 @@ class AuctionRejectAdmin(models.Model):
     seller = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     reason = models.TextField()
 
+from django.db import models
+
 class DeliveryRegistration(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     address = models.TextField()
+    pin = models.CharField(max_length=10)  # PIN code
+    latitude = models.FloatField()  # Latitude
+    longitude = models.FloatField()  # Longitude
+    district = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    landmark = models.CharField(max_length=255)
+    max_delivery_distance = models.FloatField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    approval_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
 
     def __str__(self):
         return self.name
+
 
 class DeliveryProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -180,6 +201,7 @@ class DeliveryProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
 
 
 

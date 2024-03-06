@@ -66,16 +66,20 @@
             <a href="{% url 'alluser' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">User</div></a>
             <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
         </div>
-        <h1 style="margin-left: 270px; margin-top:30px">Delivery Agent</h1>
+        <h1 style="margin-left: 270px; margin-top:30px">Delivery Agent Approval</h1>
         <div class="delivary_registration">
             {% for delivary in delivary %}
                     <div class="registration_details">
                         <p> <strong>name:</strong> {{delivary.name}}</p>
                         <p><strong>email:</strong> {{delivary.email}}</p>
                         <div class="button-parent">
+                            {% if delivary.approval_status == "Approved" %}
+                              <p style="color: #45a049;">Approved by admin</p>
+                            {% else %}
                             <a href="{% url 'admin_delivary_registration' delivary_id=delivary.id %}">
                                 <input type="submit" value="View">
                             </a>
+                            {% endif %}
                         </div>
                     </div>
             {% endfor %}
