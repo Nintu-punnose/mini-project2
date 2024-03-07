@@ -44,9 +44,22 @@
                 border-radius: 4px;
                 cursor: pointer;
             }
-        
+            
             input[type="submit"]:hover {
                 background-color: #45a049;
+            }
+
+            input[type="number"] {
+                width: 50%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            .otpverification {
+                display: none; /* Initially hide the OTP verification div */
+                margin-top: 20px;
+                transition: opacity 0.5s, visibility 0.5s;
             }
         </style>
 </head>
@@ -59,7 +72,7 @@
             <div class="sidebar-item">View Product</div>
             <a  href="{% url 'delivary_profile2' %}" style="text-decoration: none;" ><div class="sidebar-item">Profile</div></a>
             <a href="{% url 'delivary_password_update' %}" style="text-decoration: none;" ><div class="sidebar-item">Update Password</div></a>
-            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
+            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item">Logout</div></a>
         </div>
         <h1 style="margin-left: 270px; margin-top:30px">Assigned Products Details</h1>
         <div class="delivary_approval">
@@ -73,10 +86,39 @@
                 <p><strong>District:</strong>  {{product_details.auction_order.buyer_city}}</p>
                 <p><strong>State: </strong> {{product_details.auction_order.buyer_state}}</p>
                 <p style="color:red">Status:  {{product_details.status}}</p>
-                <a href="{% url 'otp_update' otp_id=product_details.id%}?request={{ request }}">Generate Otp</a>
-                <a href="{% url 'delivery_update' id=product_details.id %}"><input type="submit" value="Update as Delivered"></a>
+                {% if product_details.otp_status == "failed" %}
+                    <a onclick="toggleOtpVerification()" href="{% url 'otp_update' otp_id=product_details.id%}" ><input type="submit" id="generate_otp" value="Generate OTP"></a><br><br>
+                    <div id="otpVerificationDiv" class="otpverification">
+                        <form action="{% url 'otp_verification' otp_verification_id=product_details.id%}" method="post">
+                        {% csrf_token %}
+                            <input type="number" placeholder="Enter OTP" name="otp_value" style="width:15%">
+                            <a href=""><input type="submit" value="Submit" style="background-color: blue;"></a>
+                        </form>  
+                        <a href="{% url 'otp_update' otp_id=product_details.id%}"><input type="submit" value="Resend" style="background-color: rgb(224, 27, 27);"></a><br><br>
+                    </div>
+                {% else %}
+                <a href="{% url 'delivery_update' id=product_details.id %}"><input type="submit" value="Update as Delivered" id="updatedelivery"></a>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
+    <script>
+        function toggleOtpVerification() {
+            var otpVerificationDiv = document.getElementById("otpVerificationDiv");
+            var generateotp = document.getElementById("generate_otp");
+        
+            if (otpVerificationDiv.style.display === "block") {
+                // If otpVerificationDiv is currently displayed, hide it and show generateotp
+                otpVerificationDiv.style.display = "none";
+                generateotp.style.display = "block";
+            } else {
+                // If otpVerificationDiv is currently hidden, show it and hide generateotp
+                otpVerificationDiv.style.display = "block";
+                generateotp.style.display = "none";
+            }
+        }
+        
+        
+    </script>
 </body>
 </html>

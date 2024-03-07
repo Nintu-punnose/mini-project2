@@ -15,6 +15,7 @@ from .models import UploadArtDetail,SellerProfile
 from django.views.decorators.cache import cache_control
 from django.views.decorators.cache import never_cache
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import logout
 
 
 
@@ -101,7 +102,8 @@ from django.contrib.auth.decorators import login_required
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logout_view(request):
-    auth.logout(request)
+    print(123)
+    logout(request)
     return redirect('login')
 
 
@@ -1139,7 +1141,9 @@ def admin_delivary_approval(request):
 
 def admin_delivary_details(request,id): 
     delivary_details=DeliveryRegistration.objects.get(id=id)
-    product_buyer_details=ProductDetails.objects.get(user=delivary_details.user)
+    print(delivary_details)
+    product_buyer_details=ProductDetails.objects.filter(user=delivary_details.user)
+    print(product_buyer_details)
     return render(request,"admin_delivary_details.html",{"delivary_details":delivary_details,"product_buyer_details":product_buyer_details})
 
 def admin_delivary_rejection(request,reject_id): 
@@ -1202,17 +1206,19 @@ def delivary_profile(request):
             return redirect('delivary_profile')
 
     return render(request,"delivary_profile.html",{"profile":profile_user,"profile_userdata":profile_userdata,"profile_delivary":profile_delivary})
-
-
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delivary_dashboard(request):
     assign_count=AuctionOrder.objects.all().count()
     return render(request,'delivary_dashboard.html',{"assign_count":assign_count})
 
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delivary_product_view(request):
     orders = AuctionOrder.objects.filter(approval_status="pending")
     return render(request, 'delivary_product_view.html', {"orders": orders})
-
-
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delivary_product_approval(request,id):
     order=AuctionOrder.objects.get(id=id)
     order.approval_status = "approved"
@@ -1224,31 +1230,46 @@ def delivary_product_approval(request,id):
     details.save()
     return redirect('accepted_product')
     return render(request,'delivary_product_view.html')
-
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def accepted_product(request):
     product_details=ProductDetails.objects.filter(user=request.user,)
     return render(request,'accepted_product.html',{"product_details":product_details})
-
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def accepted_product_detail(request,product_detail_id):
     product_details=ProductDetails.objects.filter(id=product_detail_id)
     return render(request,'accepted_product_detail.html',{"product_details":product_details})
 
 import random
+
 def generate_otp(request):
     otp_value = str(random.randint(100000, 999999))
-    print(otp_value)
     return otp_value
 
-def otp_update(request,otp_id):
-    product_details=ProductDetails.objects.get(id=otp_id)
+def otp_update(request, otp_id):
+    product_details = ProductDetails.objects.get(id=otp_id)
     original_request = request.GET.get('request', None)
-    product_details.otp_value=generate_otp(original_request)
+    product_details.otp_value = generate_otp(original_request)
     product_details.save()
+    return HttpResponse(status=204)
 
+def otp_verification(request,otp_verification_id):
+    if request.method=="POST":
+        entered_value = request.POST.get("otp_value")
+        product_details = ProductDetails.objects.get(id=otp_verification_id)
+        if product_details.otp_value == entered_value:
+            product_details.otp_status="sucess"
+            product_details.save()
+            return redirect('accepted_product_detail',product_detail_id=product_details.id)
+        else:
+            print("failed")
+        return HttpResponse(status=204)
+@login_required   
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delivery_update(request,id):
     product_details=ProductDetails.objects.get(id=id)
-    product_details.status="approved"
-    product_details.otp_value=generate_otp(request)
+    product_details.status="delivered"
     product_details.save()
 
     return redirect('accepted_product')
@@ -1311,9 +1332,6 @@ def delivary_password_update(request):
     return render(request,'delivary_password_update.html')
 
 
-
-    
-    
 def products(request): 
     return render(request,"products.html")
 

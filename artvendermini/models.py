@@ -158,8 +158,9 @@ class AuctionOrder(models.Model):
 class ProductDetails(models.Model):
     auction_order = models.ForeignKey(AuctionOrder, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    otp_value = models.CharField(max_length=6, null=True, default=None)
-    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved')], default='pending')
+    otp_value = models.CharField(max_length=10, null=True, default=None)
+    otp_status = models.CharField(max_length=10, choices=[('failed', 'Failed'), ('sucess', 'Sucess')], default='failed')
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('delivered', 'Delivered')], default='pending')
     
 
 class AuctionRejectAdmin(models.Model):

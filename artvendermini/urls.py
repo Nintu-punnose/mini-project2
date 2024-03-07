@@ -102,6 +102,7 @@ urlpatterns = [
     path('delivary_profile2/',views.delivary_profile2,name="delivary_profile2"),
     path('generate_otp/', views.generate_otp, name='generate_otp'),
     path('otp_update/<int:otp_id>', views.otp_update, name='otp_update'),
+    path('otp_verification/<int:otp_verification_id>', views.otp_verification, name='otp_verification'),
   
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
