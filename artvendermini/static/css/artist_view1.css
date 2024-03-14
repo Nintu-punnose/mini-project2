@@ -165,9 +165,9 @@ h1
 
     @media (max-width: 768px) {
             #sidebar {
-                display: none;
+               
                 position: fixed;
-                width: 100%;
+                width: 50%;
                 height: 100vh;
                 background-color: black;
                 color: #fff;
@@ -179,7 +179,7 @@ h1
                 position: fixed;
                 top: 10px;
                 left: 10px;
-                color: white;
+                color: rgb(172, 11, 11);
                 font-size: 24px;
                 cursor: pointer;
                 z-index: 1001; /* Ensure the toggle button appears above the sidebar */

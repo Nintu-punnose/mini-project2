@@ -16,7 +16,6 @@
         .delivary_approval {
             margin: 20px;
             padding: 20px;
-            background-color: #f0f0f0;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-left:280px;
@@ -61,6 +60,27 @@
                 margin-top: 20px;
                 transition: opacity 0.5s, visibility 0.5s;
             }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                
+            }
+        
+            th, td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+        
+            th {
+                background-color: #f2f2f2;
+            }
+        
+            tr:hover {
+                background-color: #f5f5f5;
+            }
+    
         </style>
 </head>
 <body>
@@ -76,16 +96,47 @@
         </div>
         <h1 style="margin-left: 270px; margin-top:30px">Assigned Products Details</h1>
         <div class="delivary_approval">
-            {% for product_details in product_details %}
-                <p><strong>Name:</strong>  {{product_details.auction_order.user.username}}</p>
-                <p><strong>Email:</strong>  {{product_details.auction_order.user.email}}</p>
-                <p><strong>Phone:</strong>  {{product_details.auction_order.user.userdata.number}}</p>
-                <p><strong>Address:</strong>  {{product_details.auction_order.buyer_address}}</p>
-                <p><strong>Locality:</strong>  {{product_details.auction_order.buyer_locality}}</p>
-                <p><strong>Pin:</strong>  {{product_details.auction_order.buyer_pincode}}</p>
-                <p><strong>District:</strong>  {{product_details.auction_order.buyer_city}}</p>
-                <p><strong>State: </strong> {{product_details.auction_order.buyer_state}}</p>
-                <p style="color:red">Status:  {{product_details.status}}</p>
+            
+            <table>
+                <tr>
+                    <th style="width:150px">Field</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>{{product_details.auction_order.user.username}}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>{{product_details.auction_order.user.email}}</td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td>{{product_details.auction_order.user.userdata.number}}</td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td>{{product_details.auction_order.buyer_address}}</td>
+                </tr>
+                <tr>
+                    <td>Locality</td>
+                    <td>{{product_details.auction_order.buyer_locality}}</td>
+                </tr>
+                <tr>
+                    <td>Pin</td>
+                    <td>{{product_details.auction_order.buyer_pincode}}</td>
+                </tr>
+                <tr>
+                    <td>District</td>
+                    <td>{{product_details.auction_order.buyer_city}}</td>
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td>{{product_details.auction_order.buyer_state}}</td>
+                </tr>
+            </table>
+            <p class="status">Status: {{product_details.status}}</p>
+           
                 {% if product_details.otp_status == "failed" %}
                     <a onclick="toggleOtpVerification()" href="{% url 'otp_update' otp_id=product_details.id%}" ><input type="submit" id="generate_otp" value="Generate OTP"></a><br><br>
                     <div id="otpVerificationDiv" class="otpverification">
@@ -99,7 +150,10 @@
                 {% else %}
                 <a href="{% url 'delivery_update' id=product_details.id %}"><input type="submit" value="Update as Delivered" id="updatedelivery"></a>
                 {% endif %}
-            {% endfor %}
+           
+        </div>
+        <div class="" style="margin-left:280px;margin-bottom:30px">
+            <div class="map" id="myMap" style="width: 98%; height: 500px; "></div>
         </div>
     </div>
     <script>
@@ -116,9 +170,36 @@
                 otpVerificationDiv.style.display = "block";
                 generateotp.style.display = "none";
             }
-        }
-        
-        
+        }  
     </script>
+    <!-- Include Bing Maps API script -->
+<script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol?key=Agyr0UQGWTFzP3Fwb3PDJ_ahP24jx9jRgpUWwBD_37B8MXu1oql6WCs6J-vgU1YT"></script>
+
+<script>
+    var map;
+    var searchManager;
+
+    function initMap() {
+        map = new Microsoft.Maps.Map("#myMap", {
+            credentials: "Agyr0UQGWTFzP3Fwb3PDJ_ahP24jx9jRgpUWwBD_37B8MXu1oql6WCs6J-vgU1YT",
+            zoom: 10,
+        });
+
+        // Retrieve data from Django view and loop through it
+        
+
+        // Create markers for each location
+        for (var i = 0; i < locations.length; i++) {
+            var location = locations[i];
+            var marker = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(location.latitude, location.longitude), {
+                title: location.stname,
+                subTitle: location.place
+            });
+            map.entities.push(marker);
+        }
+    }
+    // Call the initMap function once the page is loaded
+    window.onload = initMap;
+</script>
 </body>
 </html>

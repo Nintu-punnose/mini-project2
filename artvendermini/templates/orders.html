@@ -7,8 +7,15 @@
     <link rel="stylesheet" href="{% static 'css\order.css'%}">
     <title>Order Details</title>
     <style>
-       
+        
+         
     </style>
+    <script>
+        // Simulate completion after a delay (you can replace this with your actual completion logic)
+        setTimeout(function() {
+          document.getElementById('completedBar').classList.add('active');
+        }, 2000); // 2000 milliseconds (2 seconds) for demonstration purposes
+      </script>
 </head>
 <body>
     <div id="head_details">
@@ -29,18 +36,23 @@
             {% endif %}
         </div>
     </div><br><br><br>
+    <div class="order-grid">
     {% for order in orders %}
     <div class="order-container">
         <div class="order-details">
             <h2>Order Details</h2><br>
-            
-                        <p><b>Order Date:</b>{{ order.order_date }}</p>
-                        <p><b>Product Names:</b>{{ order.product_names }}</p>
-                        <p><b>Total Cost:</b>{{ order.total_cost }}</p>
-                        <p><b>Shipping Charge:</b>{{ order.shipping_charge }}</p>
-                        <p><b>Total Amount:</b>{{ order.total_amount }}</p>      
+                        <p><b>Product Names:</b>{{ order.auctionlisting.auction_item.name }}</p>
+                        <p><b>Total Cost:</b>{{ order.auctionlisting.latest_price }}</p>
+                        <p><b>Order Date:</b>{{ order.buyer_locality }}</p>
+                        <p><b>Payment Status:</b>{{ order.payment_status }}</p>      
+                        <p><b>Delivery Status:</b></p>      
+                        <div class="progress-bar">
+                            <div class="completed-bar" id="completedBar"></div>
+                            <div class="completed-text" id="completedText">Completed!</div>
+                          </div>
         </div>
         <button class="cancel-button">Cancel Order</button>
     </div>{% endfor %}
+    <div class="order-grid">
 </body>
 </html>

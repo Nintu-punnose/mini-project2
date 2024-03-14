@@ -94,6 +94,8 @@
                         <th>Buyer name</th>
                         <th>Number</th>
                         <th>Address</th>
+                        <th>District</th>
+                        <th>Locality</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -106,11 +108,13 @@
                             <td>{{order.user.username}}</td>
                             <td>{{order.buyer_phone}}</td>
                             <td>{{order.buyer_address}}</td>
+                            <td>{{order.buyer_city}}</td>
+                            <td>{{order.buyer_locality}}</td>
                             <td class="action-buttons">
                         <a href="{% url 'delivary_product_approval' id=order.id %}">
                             <button class="accept-button">Accept</button>
                         </a>
-                            <button class="decline-button">Decline</button>
+                            
                             </td>
                         </tr>
                     {% endfor %}

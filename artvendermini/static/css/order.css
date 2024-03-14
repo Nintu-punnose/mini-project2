@@ -46,7 +46,7 @@ a {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     max-width: 400px;
-    margin: 0 auto;
+    margin:8px;
 }
 
 .order-details {
@@ -74,4 +74,30 @@ a {
 
 .cancel-button:hover {
     background-color: #e40808; /* Darker red on hover */
+}
+
+.progress-bar {
+    width: 200px;
+    height: 5px;
+    background-color: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .completed-bar {
+    height: 100%;
+    width: 0;
+    background-color: #4CAF50;
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+  }
+
+  .completed-bar.active {
+    width: 100%;
+  }
+  .order-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px; /* Adjust the gap as needed */
 }

@@ -212,9 +212,12 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>email</th>
                                     <th>Address</th>
-                                    <th>Locality</th>
                                     <th>District</th>
+                                    <th>Locality</th>
+                                    <th>Delivered Date</th>
+                                    <th>Actual Date</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -222,11 +225,15 @@
                                 {% for product_buyer_details in product_buyer_details %}
                                     <tr>
                                         <td>{{ product_buyer_details.auction_order.user.username }}</td>
+                                        <td>{{ product_buyer_details.auction_order.user.email }}</td>
                                         <td>{{ product_buyer_details.auction_order.buyer_address }}</td>
-                                        <td>{{ product_buyer_details.auction_order.buyer_locality }}</td>
                                         <td>{{ product_buyer_details.auction_order.buyer_city }}</td>
+                                        <td>{{ product_buyer_details.auction_order.buyer_locality }}</td>
+                                        <td>{{ product_buyer_details.date }}</td>
+                                        <td></td>
+                                        
                                         {% if product_buyer_details.status == "pending" %}
-                                          <td style="color: red;">{{ product_buyer_details.status }}</td>
+                                          <td style="color: rgb(17, 0, 255);">{{ product_buyer_details.status }}</td>
                                         {% else %}
                                         <td style="color: rgb(15, 231, 51);">Delivered</td>
                                         {% endif %}
@@ -240,8 +247,12 @@
                         <div class="modal-content">
                             <p>Are you sure you want to reject?</p>
                             <div class="modal-buttons">
-                                <a href="{% url 'admin_delivary_rejection' reject_id=delivary_details.id %}"><button style="background-color: red;" onclick="rejectDelivery()">Reject</button></a>
-                                <button style="background-color: blue;" onclick="cancelReject()">Cancel</button>
+                                <form action="{% url 'admin_delivary_rejection' reject_id=delivary_details.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="text" name="rejection_details" placeholder="Reason" style="width:300px"><br><br>
+                                    <a href=""><button style="background-color: red;width:300px;margin:5px" onclick="rejectDelivery()">Reject</button></a>
+                                </form>
+                                <button style="background-color: blue;width:300px;" onclick="cancelReject()">Cancel</button>
                             </div>
                         </div>
                     </div>
