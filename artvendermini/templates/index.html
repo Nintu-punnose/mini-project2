@@ -50,34 +50,6 @@
             <img src="{% static 'images/art_background.jpg' %}" alt="" id="aboutus_img">
         </div>
     </div><br><br>
-    
-
-    <!--services provided-->
-
-    <!-- <div id="Service_section">
-        <h2>
-            <center>--------------- OUR SERVICES ---------------</center>
-        </h2><br><br>
-        <div id="services">
-            <div id="service1" class="service">
-                <img src="semiar_hall.jpg" alt="" id="img"><br><br>
-                <h4>SEMINAR HALL</h4>
-            </div>
-            <div id="service2" class="service">
-                <img src="wedding_hall.jpg" alt="" id="img"><br><br>
-                <h4>WEDDING HALL</h4>
-            </div>
-            <div id="service3" class="service">
-                <img src="ground.jpg" alt="" id="img"><br><br>
-                <h4>OPEN GROUND HALL</h4>
-            </div>
-        </div>
-    </div><br><br>
-    <hr><br><br> -->
-
-
-    <!--wedding section-->
-
     <h2>
         <center>--------------- ARTS ---------------</center>
     </h2><br><br>
@@ -103,8 +75,7 @@
     <br><br>
     <hr><br><br>
 
-    <!--confrence section-->
-
+    
     
 
     <!--working section-->
@@ -172,22 +143,30 @@
     <center>2022 All Rights Reserved Art Vendor</center><br>
 </div>
 </footer>
-
 <div class="alan-btn"></div>
 
+<script src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
 <script type="text/javascript"
  src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
 <script>
   var alanBtnInstance = alanBtn({
-    key: "e5ea807384d7092bc491689d842f4fb82e956eca572e1d8b807a3e2338fdd0dc/stage",
+    key: "c193fd31808c4d93997563a2ac07b58f2e956eca572e1d8b807a3e2338fdd0dc/stage",
     onCommand: function (commandData) {
-      if (commandData.command === "go:back") {
-        //call client code that will react on the received command
-      }
+       if (commandData.command === "Order") {
+            window.location.href = "http://127.0.0.1:8000/orders";
+        } else if (commandData.command === "Art") {
+            window.location.href = "http://127.0.0.1:8000/images/";
+        } else if (commandData.command === "Artist") {
+            window.location.href = "http://127.0.0.1:8000/Artist/";
+        } else if (commandData.command === "cart") {
+            window.location.href = "http://127.0.0.1:8000/cart/";
+        }else if (commandData.command === "home") {
+            window.location.href = "http://127.0.0.1:8000/index/";
+        }
+      
     },
     rootEl: document.getElementById("alan-btn"),
   });
-</script>
 </script>
 </body>
 </html>

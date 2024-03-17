@@ -33,9 +33,10 @@
             padding: 20px;
         }
         table {
-            width: 100%;
+            width: 70%;
             border-collapse: collapse;
             margin-top: 20px;
+            margin-left: 40px;
             border: solid 1px;
         }
 
@@ -79,17 +80,6 @@
         .print-btn:hover {
             background-color: #45a049;
         }
-        @media print{
-            .print-btn {
-               display: none;
-            }
-            header {
-                background-color: #2e11ce;
-                color: white;
-                text-align: center;
-                padding: 1em;
-            }
-        }
     </style>
     <title>Bill Page</title>
 </head>
@@ -100,18 +90,27 @@
 
     <div class="container">
         <div class="invoice_header">
-            <h2>Bill To:</h2><br>
-            <p>Customer Name</p>
-            <p>Address Line 1</p>
+            <h2>delivery1</h2><br>
+            <p>qwerty</p>
+            <p>qwerty Line 1</p>
             <p>City, Country</p>
         </div>
-        
+    </div>
+
+    <div class="container">
+            <div class="invoice_header">
+                <h2>Bill To:</h2><br>
+                <p>Customer Name</p>
+                <p>Address Line 1</p>
+                <p>City, Country</p>
+    </div>
+    </div> 
 
         <h2>Invoice Details:</h2>
         <table>
             <thead>
                 <tr>
-                    <th style="">Item</th>
+                    <th>Item</th>
                     <th>Description</th>
                     <th>Quantity</th>
                     <th>Price</th>
@@ -139,13 +138,8 @@
 
         <div class="total">
             <p>Total Amount: <span>$35.00</span></p>
-            <button type="button" class="print-btn" onclick="printInvoice()">Print</button>
+            <button type="button" class="print-btn">Print</button>
         </div>
     </div>
-    <script>
-        function printInvoice() {
-            print();
-        }
-    </script>
 </body>
 </html> 

@@ -1230,13 +1230,15 @@ def delivary_profile(request):
 
     return render(request,"delivary_profile.html",{"profile":profile_user,"profile_userdata":profile_userdata,"profile_delivary":profile_delivary})
 
-
+from django.db.models import Q
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def delivary_dashboard(request):
-    assign_count=AuctionOrder.objects.filter(approval_status = "pending").count()
-    assign_count=AuctionOrder.objects.filter(approval_status = "approved").count()
-    return render(request,'delivary_dashboard.html',{"assign_count":assign_count})
+    total_assign_count = ProductDetails.objects.filter(Q(user=request.user.id, status="pending") | Q(user=request.user.id, status="delivered")).count()
+    assign_count = ProductDetails.objects.filter(user=request.user.id, status="pending").count()
+    assign_completed_count = ProductDetails.objects.filter(user=request.user.id, status="delivered").count()
+    return render(request,'delivary_dashboard.html',{"assign_count":assign_count,"assign_completed_count":assign_completed_count,"total_assign_count":total_assign_count})
 
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -1316,7 +1318,27 @@ def otp_verification(request,otp_verification_id):
         else:
             messages.error(request, "OTP doesn't match")
             return HttpResponse(status=204)
-    
+        
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
+def deliveryagent_generate_pdf(request,download_id):
+    # Query ProductDetails data
+    product_details = ProductDetails.objects.get(id=download_id)  # Example query, you can adjust it as needed
+
+    # Render template
+    template = 'delivery_download.html'
+    context = {'product_details': product_details}  # Pass data to the context
+    html = render_to_string(template, context)
+
+    # Create PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF: {}'.format(pisa_status.err))
+    return response
+
 
 from django.utils import timezone
 @login_required   

@@ -103,6 +103,7 @@ urlpatterns = [
     path('generate_otp/', views.generate_otp, name='generate_otp'),
     path('otp_update/<int:otp_id>', views.otp_update, name='otp_update'),
     path('otp_verification/<int:otp_verification_id>', views.otp_verification, name='otp_verification'),
+    path('deliveryagent_generate_pdf/<int:download_id>', views.deliveryagent_generate_pdf, name='deliveryagent_generate_pdf'),
   
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

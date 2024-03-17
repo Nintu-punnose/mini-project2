@@ -27,13 +27,10 @@
     </div><br><br><br>
     <div id="detail_img_body">
         <div id="select_image">
-            
             <img src="{{profile.image.url}}" alt="" id="img">
-           
         </div>
         <div id="Artist_details"><br>
-          
-            <h1 style="margin-left:35px;">{{profile.user.username}}</h1>
+            <h1 style="margin-left:35px; color:blue">{{profile.user.username}}</h1>
             <p id="details"><strong>Phone number:</strong> {{profile.user.userdata.number}}</p>
             <p id="details"><strong>Email:</strong><a href="mailto:{{profile.user.email}}" style="color: black;"><u>{{profile.user.email}}</u></a></p>
             <p id="details"><strong>Address:</strong> {{profile.address}}</p>
@@ -41,6 +38,19 @@
             <p id="details"><strong>City:</strong> {{profile.district}}</p>
             <p id="details"><strong>State:</strong> {{profile.state}}</p>
             <p id="details"><strong>country:</strong> {{profile.country}}</p><br>
+            <div class="rating">
+                <input value="5" name="rating" id="star5" type="radio">
+                <label for="star5"></label>
+                <input value="4" name="rating" id="star4" type="radio">
+                <label for="star4"></label>
+                <input value="3" name="rating" id="star3" type="radio">
+                <label for="star3"></label>
+                <input value="2" name="rating" id="star2" type="radio">
+                <label for="star2"></label>
+                <input value="1" name="rating" id="star1" type="radio">
+                <label for="star1"></label>
+            </div>
+                    
     </div>
 </div><br><br>
 <div>

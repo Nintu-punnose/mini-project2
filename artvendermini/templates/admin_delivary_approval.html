@@ -70,7 +70,10 @@
             margin-right: 30px;
             text-decoration: none;
         }
+       
+        
     </style>
+    
 </head>
 <body>
     <div class="body">
@@ -93,6 +96,12 @@
                     <p> <strong>Name:</strong> {{delivary_agent.user.username}}</p>
                     <p><strong>Pin:</strong> {{delivary_agent.pin}}</p>
                     <p> <strong>Address:</strong> {{delivary_agent.address}}</p>
+                    {% if delivary_agent.approval_status == "Approved" %}
+                        <p style="color:green"> <strong>status:</strong> {{delivary_agent.approval_status}}</p>
+                    {% else %}
+                        <p style="color:red"> <strong>status:</strong> {{delivary_agent.approval_status}}</p>
+                    {% endif %}
+                    
                     <div class="button-parent">
                         <a href="{% url 'admin_delivary_details' id=delivary_agent.id %}"><input type="submit" value="View" style="background:rgb(39, 231, 97)"></a>
                     </div>

@@ -129,7 +129,48 @@
         tr:hover {
             background-color: #f5f5f5;
         }
-      
+        .Btn {
+            display: inline-block;
+            background-color: #007bff; /* Adjust color as needed */
+            color: #fff; /* Text color */
+            border: none;
+            padding: 10px 20px; /* Adjust padding as needed */
+            font-size: 16px; /* Adjust font size as needed */
+            border-radius: 5px; /* Adjust border radius as needed */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        
+        .Btn:hover {
+            background-color: #0056b3; /* Adjust hover color as needed */
+        }
+        
+        .svgIcon {
+            vertical-align: middle; /* Align the SVG vertically */
+            margin-right: 5px; /* Add some space between the SVG and text */
+        }
+        .nothing_download {
+            display: inline-block;
+            background-color: #007bff; /* Adjust color as needed */
+            color: transparent; /* Transparent text */
+            border: none;
+            padding: 10px; /* Adjust padding as needed */
+            font-size: 0; /* Hide text */
+            border-radius: 5px; /* Adjust border radius as needed */
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        
+        .nothing_download:hover {
+            background-color: #0056b3; /* Adjust hover color as needed */
+        }
+        
+        .nothing_download_icon {
+            vertical-align: middle; /* Align the SVG vertically */
+            fill: #fff; /* Color of the SVG icon */
+        }
+       
+        
     </style>
 </head>
 <body>
@@ -206,7 +247,8 @@
                         {% endif %}
                         
                     </div>
-                    </div>
+        </div>
+      
                     <div id="delivery_details">
                         <table>
                             <thead>
@@ -219,26 +261,41 @@
                                     <th>Delivered Date</th>
                                     <th>Actual Date</th>
                                     <th>Status</th>
+                                    <th>Download</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for product_buyer_details in product_buyer_details %}
-                                    <tr>
-                                        <td>{{ product_buyer_details.auction_order.user.username }}</td>
-                                        <td>{{ product_buyer_details.auction_order.user.email }}</td>
-                                        <td>{{ product_buyer_details.auction_order.buyer_address }}</td>
-                                        <td>{{ product_buyer_details.auction_order.buyer_city }}</td>
-                                        <td>{{ product_buyer_details.auction_order.buyer_locality }}</td>
-                                        <td>{{ product_buyer_details.date }}</td>
-                                        <td></td>
-                                        
-                                        {% if product_buyer_details.status == "pending" %}
-                                          <td style="color: rgb(17, 0, 255);">{{ product_buyer_details.status }}</td>
-                                        {% else %}
-                                        <td style="color: rgb(15, 231, 51);">Delivered</td>
-                                        {% endif %}
-                                        
-                                    </tr>
+                                <tr>
+                                    <td>{{ product_buyer_details.auction_order.user.username }}</td>
+                                    <td>{{ product_buyer_details.auction_order.user.email }}</td>
+                                    <td>{{ product_buyer_details.auction_order.buyer_address }}</td>
+                                    <td>{{ product_buyer_details.auction_order.buyer_city }}</td>
+                                    <td>{{ product_buyer_details.auction_order.buyer_locality }}</td>
+                                    <td>{{ product_buyer_details.date }}</td>
+                                    <td></td>
+                                    
+                                    {% if product_buyer_details.status == "pending" %}
+                                      <td style="color: rgb(17, 0, 255);">{{ product_buyer_details.status }}</td>
+                                      <td>
+                                        <button class="nothing_download" aria-label="Download">
+                                            <svg class="nothing_download_icon" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"></path>
+                                            </svg>
+                                        </button>
+                                                                                   
+                                      </td>
+                                    {% else %}
+                                    <td style="color: rgb(15, 231, 51);">Delivered</td>
+                                    <td>
+                                        <a href="{% url 'deliveryagent_generate_pdf' download_id=product_buyer_details.id %}">
+                                            <button class="Btn">
+                                                <svg class="svgIcon" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"></path></svg>
+                                             </button>
+                                        </a>
+                                    </td>
+                                    {% endif %}  
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>

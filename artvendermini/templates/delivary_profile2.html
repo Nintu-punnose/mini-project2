@@ -19,12 +19,25 @@
             width: 900px;
             background-color: #f0f0f0;
             border-radius: 8px;
-            height:600px;
+            margin-bottom:30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        input{
-            height:20px;
-            width:50%;
+        input[type="number"]{
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button{
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: green;
+            cursor: pointer;
+            color: #f0f0f0;
         }
     </style>
 </head>
@@ -43,17 +56,16 @@
         <div class="delivary_approval">
             <form class="profile-form" method="post">
                 {% csrf_token %}
-    
                 {% for profile in profile %}
                 <label for="name">Name</label>
                 <input type="text" value="{{profile.username}}" id="name" name="name" disabled><br><br>
     
                 <label for="email">Email</label>
-                <input type="input" id="email" name="email" placeholder="Enter Email" value="{{profile.email}}"><br><br>
+                <input type="text" id="email" name="email" placeholder="Enter Email" value="{{profile.email}}" disabled><br><br>
                 {% endfor %}
                 {% for profile_userdata in profile_userdata %}
                   <label for="phone">Phone</label>
-                <input type="input" id="phone" name="phone" placeholder="Enter Phone" value="{{profile_userdata.number}}"><br><br>
+                <input type="text" id="phone" name="phone" placeholder="Enter Phone" value="{{profile_userdata.number}}" disabled><br><br>
                 {% endfor %}
                 
                 {% for profile_delivary in profile_delivary %}
@@ -77,31 +89,31 @@
                     <input type="text" id="district" name="district" placeholder="Enter District" value="{{profile_delivary.district}}"><br><br>
     
                     <label for="max-delivery-km">Max Delivery Kilometer</label>
-                    <input type="input" id="max-delivery-km" placeholder="Enter Max Delivery Kilometer" name="max-delivery-km" value="{{profile_delivary.max_delivery_km}}"><br><br>
+                    <input type="number" id="max-delivery-km" placeholder="Enter Max Delivery Kilometer" name="max-delivery-km" value="{{profile_delivary.max_delivery_km}}"><br><br>
                 {% endfor %}
                 
                 {% if profile_delivary is None %}
                 <label for="pin">PIN</label>
-                <input type="text" id="pin" name="pin" placeholder="Enter PIN">
+                <input type="text" id="pin" name="pin" placeholder="Enter PIN"><br><br>
     
                 <label for="address">Address</label>
-                <input type="text" id="address" name="address" placeholder="Enter Address" value="{{profile.address}}">
+                <input type="text" id="address" name="address" placeholder="Enter Address" value="{{profile.address}}"><br><br>
            
                
                     <label for="latitude">Latitude</label>
-                    <input type="text" id="latitude" name="latitude" placeholder="Enter Latitude">
+                    <input type="text" id="latitude" name="latitude" placeholder="Enter Latitude"><br><br>
     
                     <label for="longitude">Longitude</label>
-                    <input type="text" id="longitude" name="longitude" placeholder="Enter Longitude">
+                    <input type="text" id="longitude" name="longitude" placeholder="Enter Longitude"><br><br>
     
                     <label for="state">State</label>
-                    <input type="text" id="state" name="state" placeholder="Enter State">
+                    <input type="text" id="state" name="state" placeholder="Enter State"><br><br>
     
                     <label for="district">District</label>
-                    <input type="text" id="district" name="district" placeholder="Enter District">
+                    <input type="text" id="district" name="district" placeholder="Enter District"><br><br>
     
                     <label for="max-delivery-km">Max Delivery Kilometer</label>
-                    <input type="number" id="max-delivery-km" placeholder="Enter Max Delivery Kilometer" name="max-delivery-km">
+                    <input type="number" id="max-delivery-km" placeholder="Enter Max Delivery Kilometer" name="max-delivery-km"><br><br>
                 {% endif %}
                     
                 <button type="submit">Update Profile</button>  
