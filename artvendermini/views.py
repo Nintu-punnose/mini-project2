@@ -3,7 +3,7 @@ from urllib import request
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from .models import AuctionOrder, AuctionRejectAdmin, DeliveryProfile, DeliveryRegistration, ProductDetails, User_Bid, UserData, artOrder,AuctionItem
+from .models import AuctionOrder, AuctionRejectAdmin, DeliveryProfile, DeliveryRegistration, ProductDetails, Rating, User_Bid, UserData, artOrder,AuctionItem
 from django.contrib import auth
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
@@ -185,11 +185,9 @@ def admin_pannel(request):
     if request.method == 'POST':
         art_id = request.POST.get('art_id')
         approval_status = request.POST.get('approval_status')
-        
-
+    
         try:
             art = UploadArtDetail.objects.get(id=art_id)
-            
             art.approval_status = approval_status
             art.is_approved = (approval_status == 'approved')
             art.save()
@@ -211,6 +209,14 @@ def admin_pannel(request):
     
     # Count the total number of Artist
     total_Artist = UserData.objects.filter(role='Artist').count()
+    print(total_Artist)
+    total_Customer = UserData.objects.filter(role='customer').count()
+    print(total_Customer)
+    total_Delivery = UserData.objects.filter(role='Delivary').count()
+    print(total_Delivery)
+    
+
+    aggregated_data = UploadArtDetail.objects.values('art_type').annotate(art_count=Count('art_type'))
 
     arttype=ProductType.objects.all()
     artsize=ProductSize.objects.all()
@@ -223,6 +229,9 @@ def admin_pannel(request):
         'arttype':arttype,
         'artsize':artsize,
         'totalArtist':total_Artist,
+        'total_Delivery':total_Delivery,
+        'total_Customer':total_Customer,
+        'aggregated_data': aggregated_data,
     })
 
 # from django.shortcuts import render, redirect, HttpResponse
@@ -471,7 +480,6 @@ from .models import ProductSize  # Import your ProductType model
 def addsize(request):
     if request.method == 'POST':
         namesize = request.POST.get('namesize')
-
         product_size=ProductSize(namesize=namesize)
         product_size.save()
         return redirect('admin_pannel')  # Redirect to the admin dashboard or any other page
@@ -1412,3 +1420,24 @@ def delivary_password_update(request):
 
 def products(request): 
     return render(request,"products.html")
+
+from django.db.models import Avg
+def submit_rating(request,id):
+    if request.method == 'POST':
+        user_rating=SellerProfile.objects.get(user=id)
+        rating_value = request.POST.get('rating')
+
+        customer=request.user
+        artist=user_rating.user
+        exist_review = Rating.objects.filter(customer=customer,artist=artist).exists()
+        if exist_review:
+            messages.warning(request, 'You have already  rated  this artist')
+            return redirect('Artist_detail', id=user_rating.user.id)
+
+        rating = Rating(
+            customer=customer,
+            artist=artist,
+            rating=rating_value
+        )
+        rating.save()
+        return redirect('Artist_detail',id=user_rating.user.id)

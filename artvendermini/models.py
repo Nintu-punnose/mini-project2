@@ -203,6 +203,14 @@ class DeliveryProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class Rating(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer_ratings')
+    artist = models.ForeignKey(User, on_delete=models.CASCADE, related_name='artist_ratings')
+    rating = models.IntegerField()
+    def __str__(self):
+        return f"Rating from {self.buyer.username} to {self.artist.username}: {self.rating}"
+
 
 
 

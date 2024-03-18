@@ -104,7 +104,8 @@ urlpatterns = [
     path('otp_update/<int:otp_id>', views.otp_update, name='otp_update'),
     path('otp_verification/<int:otp_verification_id>', views.otp_verification, name='otp_verification'),
     path('deliveryagent_generate_pdf/<int:download_id>', views.deliveryagent_generate_pdf, name='deliveryagent_generate_pdf'),
-  
+    path('submit_rating/<int:id>', views.submit_rating, name='submit_rating'),
+
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

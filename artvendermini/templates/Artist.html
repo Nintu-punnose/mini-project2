@@ -36,7 +36,6 @@
                 <img src="{{a.image.url}}" alt="" class="img-artist">
                 <p><b>Name: </b>{{a.user.username}}</p>
                 <p><b>PhNo: </b>{{a.user.userdata.number}}</p><br>
-                
                 <a href="{% url 'Artist_detail' a.user.id %}"><button type="submit" class="artist-moreinfo">More</button></a>
             </div>
         {% endfor %}
@@ -50,7 +49,7 @@
         key: "c193fd31808c4d93997563a2ac07b58f2e956eca572e1d8b807a3e2338fdd0dc/stage",
         onCommand: function (commandData) {
            if (commandData.command === "Order") {
-                win dow.location.href = "http://127.0.0.1:8000/orders";
+                window.location.href = "http://127.0.0.1:8000/orders";
             } else if (commandData.command === "Art") {
                 window.location.href = "http://127.0.0.1:8000/images/";
             } else if (commandData.command === "Artist") {
