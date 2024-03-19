@@ -1439,5 +1439,6 @@ def submit_rating(request,id):
             artist=artist,
             rating=rating_value
         )
+        
         rating.save()
         return redirect('Artist_detail',id=user_rating.user.id)
