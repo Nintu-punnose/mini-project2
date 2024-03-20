@@ -10,7 +10,8 @@ class UserData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userdata')
     role = models.CharField(max_length=20)
     number = models.CharField(max_length=20,null=True)
-
+    certificate = models.FileField(upload_to='admin_certificates/', validators=[FileExtensionValidator(allowed_extensions=['pdf'])], blank=True)
+    certificate_status = models.CharField(max_length=10,choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='approved')
     def __str__(self):
         return self.user.username
 

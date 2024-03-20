@@ -88,7 +88,18 @@
             }
         }
     </script>
-    
+    <script>
+        function showFileInput() {
+            var roleSelect = document.getElementById("user_role");
+            var fileInputContainer = document.getElementById("fileInputContainer");
+        
+            if (roleSelect.value === "Artist") {
+                fileInputContainer.style.display = "block";
+            } else {
+                fileInputContainer.style.display = "none";
+            }
+        }
+        </script>
     
 </head>
 <body>
@@ -102,7 +113,7 @@
         <div class="login_body">
             <fieldset id="login_fieldset">
                
-                <form action="{% url 'signup' %}" method="post" onsubmit="return register_submit();">
+                <form action="{% url 'signup' %}" method="post" onsubmit="return register_submit();" enctype="multipart/form-data">
                     {% csrf_token %}
                     <center><h1>Register</h1></center>
                     <p id="report_register"></p>
@@ -117,14 +128,17 @@
                     <input type="text" placeholder="Name" class="input_txt_name" id="user_name" name="username" onkeyup="register_name()"><br>
                     <input type="number" placeholder="Phone Number" class="input_txt_number" id="user_number" name="number" onkeyup="register_number()"><br>
                     <input type="email" placeholder="Email id" class="input_txt_email" id="user_email" name="email" onkeyup="register_email()"><br>
-                    <select  class="input_txt_role" aria-placeholder="select role" id="user_role" name="role">
+                    <select  class="input_txt_role" aria-placeholder="select role" id="user_role" name="role" onchange="showFileInput()">
                         <option value="select role">Select role</option>
                         <option value="Artist">Artist</option>
                         <option value="customer">Customer</option>
                     </select><br>
-                    
                     <input type="password" placeholder="Password" class="input_txt_password" id="user_password" name="password1" onkeyup="register_password()"><br>
                     <input type="password" placeholder="Confirm Password" class="input_txt_cpassword" id="user_cpassword" name="password2" onkeyup="register_cpassword()"><br>
+                    <div id="fileInputContainer" style="display: none;">
+                        <label for="fileInput">Upload File:</label>
+                        <input type="file" id="fileInput" name="fileInput"><br>
+                    </div></br>
                     <Button type="submit" id="submit">Register</button><br><br>
                     <button id="login_with_google"><img src="{% static 'images\Google-icon.png'%}" alt="" height="20px" width="20px">&emsp; Register With Google</button><br><br><br>
                     <a href="{% url 'login'%}" id="user_register">already have an account?</a>

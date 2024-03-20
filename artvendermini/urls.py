@@ -16,6 +16,7 @@ urlpatterns = [
     path('upload_art/', views.upload_art, name='upload_art'),
     path('index/', views.index, name='index'),
     path('admin_pannel/', views.admin_pannel, name='admin_pannel'),
+    path('Artist_approve/<int:id>/', views.Artist_approve, name='Artist_approve'),
     path('update_art/<int:art_id>/',views.update_art,name='update_art'),
     path('delete_art/<int:art_id>/', views.delete_art, name='delete_art'),
     path('seller_profile/',views.seller_profile,name="seller_profile"),
@@ -45,6 +46,8 @@ urlpatterns = [
 
     #alluser
     path('alluser/', views.alluser, name='alluser'),
+    path('artist_reject/<int:id>', views.artist_reject, name='artist_reject'),
+    path('artist_approve/<int:id>', views.artist_approve, name='artist_approve'),
 
     #payment
     path('payment/', views.payment, name='payment'),

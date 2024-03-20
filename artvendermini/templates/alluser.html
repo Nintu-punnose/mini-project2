@@ -40,7 +40,7 @@
         th {
             background-color: #f2f2f2;
         }
-        .message-button {
+        .button {
             background-color: #007bff;
             color: #fff;
             border: none;
@@ -131,7 +131,7 @@
                 <th>Number</th>
                 <th>Mail ID</th>
                 <th>Date Joined</th>
-                <th>Action</th>
+                <th>Contact</th>
             </tr>
             <!-- Replace the following rows with dynamic data -->
             {% for a in user %}
@@ -141,7 +141,7 @@
                 <td>{{a.userdata.number}}</td>
                 <td>{{a.email}}</td>
                 <td>{{a.date_joined}}</td>
-                <td><a href="mailto:{{a.email}}"><button class="message-button">Message</button></a></td>   
+                <td><a href="mailto:{{a.email}}"><button class="button">Message</button></a></td>   
             </tr>
             {% endif %}
             {% endfor %}
@@ -157,7 +157,9 @@
         <th>Mail ID</th>
         <th>Date Joined</th>
         <th>Art Uploaded</th>
-        <th>Action</th>
+        <th>Contact</th>
+        <th>Status</th>
+
     </tr>
     <!-- Replace the following rows with dynamic data -->
     {% for a in user %}
@@ -168,7 +170,14 @@
         <td>{{ a.email }}</td>
         <td>{{a.date_joined}}</td>
         <td>{{ a.uploadartdetail_set.all.count }}</td>
-        <td><a href="mailto:{{ a.email }}"><button class="message-button">Message</button></a>
+        <td><a href="mailto:{{ a.email }}"><button class="button">Message</button></a>
+        <td>
+            {% if a.userdata.certificate_status == "approved" %}
+                <a href="{% url 'artist_reject' id=a.id%}"><button class="button" style="background-color:red">Delete</button></a>
+            {% elif a.userdata.certificate_status == "rejected"%}
+                <a href="{% url 'artist_approve' id=a.id%}"><button class="button" style="background-color:green">Approve</button></a>
+            {% endif %}
+           
         </td>    
     </tr>
     {% endif %}

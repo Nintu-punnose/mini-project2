@@ -213,6 +213,7 @@
             <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
             <h1>{{ user.username }}</h1>
             <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
+            <div class="sidebar-item" data-target="Artist" id="artapprove">Artist Approval</div>
             <div class="sidebar-item" data-target="users" id="artapprove">Art Approval</div>
             <div class="sidebar-item" data-target="products">Add Type/Size</div>
             <a href="{% url 'admin_auction' %}" style="text-decoration: none;" ><div class="sidebar-item" >Auction View</div></a>
@@ -323,6 +324,59 @@
                 </div>
             </div>
             
+            <!-- artist-approval -->
+
+            <div class="section Artist">
+                <div class="table-container"> 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>email</th>
+                            <th>Phone</th>
+                            <th>Certificate</th>
+                            <th>Status</th>
+                            <th>Approve/Reject</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in user %}
+                        {% if user.userdata.certificate_status == "pending" %}
+                          <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.userdata.number }}</td>
+                            <td class="certificate" ><a href="{{ user.userdata.certificate.url }}">{{ user.username }} Certificate</a></td>
+                            <td>{{ user.userdata.certificate_status }}</td>
+                            <td>
+                                {% if user.userdata.certificate_status == "pending" %}
+                                    <a href="{% url 'Artist_approve' user.id%}"><input type="submit" value="Approve"></a>
+                                    <input type="submit" value="Reject">
+                                {% endif %}
+                        </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+            </div>
+    
+            <div id="ArtistrejectModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeRejectModal()">&times;</span>
+                    <h2>Reject Art</h2>
+                    <form id="rejectForm" method="POST" action="{% url 'admin_pannel' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="art_id" value="" id="rejectArtId">
+                        <label for="rejectionReason">Reason for Rejection:</label>
+                        <textarea name="rejection_reason" id="rejectionReason" required></textarea>
+                        <button type="submit" class="reject-button">Reject</button>
+                    </form>
+                    <button type="button" class="cancel-button" onclick="closeRejectModal()">Cancel</button>
+                </div>
+            </div>
 
             <!-- art-approval -->
             

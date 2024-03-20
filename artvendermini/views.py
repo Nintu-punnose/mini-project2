@@ -26,8 +26,9 @@ def signup(request):
         number = request.POST['number']
         email = request.POST['email']
         role = request.POST['role']
+        certificate = request.FILES.get('fileInput')
         password1 = request.POST['password1']
-        password2 = request.POST['password2']
+        print(certificate)
 
         if User.objects.filter(username=username).exists():
             messages.info(request, "username already exists")
@@ -40,7 +41,7 @@ def signup(request):
         )
 
         # Create UserData associated with the user
-        userdata = UserData(user=user, role=role, number=number)
+        userdata = UserData(user=user, role=role, number=number,certificate=certificate)
         userdata.save()
 
         return redirect('login')  # Redirect to your login view
@@ -64,7 +65,12 @@ def login(request):
                 auth_login(request, user)
                 to_role=UserData.objects.get(user_id=request.user.id)
                 if to_role.role=='Artist':
-                    return redirect('Artist_view')
+                    if to_role.certificate_status == 'pending':
+                        messages.info(request, "Not Approved by admin..please wait.")
+                    elif to_role.certificate_status == 'rejected':
+                        messages.info(request, "Rejected by admin")
+                    else:
+                        return redirect('Artist_view')
                 elif to_role.role=='customer':
                     return redirect('index')
                 elif to_role.role=='Admin':
@@ -160,24 +166,6 @@ def index(request):
     return render(request, "index.html", {'artdata': artdata})
 
 
-# def admin_pannel(request):
-#     if request.method == 'POST':
-#         art_id = request.POST.get('art_id')
-#         approval_status = request.POST.get('approval_status')
-
-#         try:
-#             art = UploadArtDetail.objects.get(id=art_id)
-#             art.approval_status = approval_status
-#             art.is_approved = (approval_status == 'approved')  # Set is_approved based on approval_status
-#             art.save()
-#             return redirect('admin_pannel')
-#         except UploadArtDetail.DoesNotExist:
-#             return HttpResponse("Art not found.")
-
-#     # Retrieve all art data for display in the table
-#     art_data = UploadArtDetail.objects.all()
-#     return render(request, 'admin_pannel.html', {'art_data': art_data})
-
 
 from django.db.models import Count
 
@@ -194,6 +182,8 @@ def admin_pannel(request):
             return redirect('admin_pannel')
         except UploadArtDetail.DoesNotExist:
             return HttpResponse("Art not found.")
+        
+    user=User.objects.all()
 
     # Retrieve all art data for display in the table
     art_data = UploadArtDetail.objects.all()
@@ -222,6 +212,7 @@ def admin_pannel(request):
     artsize=ProductSize.objects.all()
   
     return render(request, 'admin_pannel.html', {
+        'user':user,
         'art_data': art_data,
         'total_arts_uploaded': total_arts_uploaded,
         'approved_arts_count': approved_arts_count,
@@ -234,52 +225,15 @@ def admin_pannel(request):
         'aggregated_data': aggregated_data,
     })
 
-# from django.shortcuts import render, redirect, HttpResponse
-# from .models import UploadArtDetail, User, UserData, ProductType, ProductSize
+def Artist_approve(request,id):
+    print(id)
+    approve=UserData.objects.get(user=id)
+    print(approve.certificate_status)
+    approve.certificate_status="approved"
+    approve.save()
+    print(approve.certificate_status)
 
-# def admin_pannel(request):
-#     if request.method == 'POST':
-#         art_id = request.POST.get('art_id')
-#         approval_status = request.POST.get('approval_status')
-        
-#         try:
-#             art = UploadArtDetail.objects.get(id=art_id)
-            
-#             art.approval_status = approval_status
-#             art.is_approved = (approval_status == 'approved')
-#             art.save()
-#             return redirect('admin_pannel')  # Redirect to the admin panel page after the update
-#         except UploadArtDetail.DoesNotExist:
-#             return HttpResponse("Art not found.")
-
-#     # Retrieve all art data for display in the table
-#     art_data = UploadArtDetail.objects.all()
-
-#     # Count the total number of arts uploaded
-#     total_arts_uploaded = art_data.count()
-
-#     # Count the number of approved arts
-#     approved_arts_count = art_data.filter(approval_status='approved').count()
-
-#     # Count the total number of users
-#     total_users = User.objects.count()
-    
-#     # Count the total number of Artist
-#     total_Artist = UserData.objects.filter(role='Artist').count()
-
-#     arttype = ProductType.objects.all()
-#     artsize = ProductSize.objects.all()
-  
-#     return render(request, 'admin_pannel.html', {
-#         'art_data': art_data,
-#         'total_arts_uploaded': total_arts_uploaded,
-#         'approved_arts_count': approved_arts_count,
-#         'total_users': total_users,
-#         'arttype': arttype,
-#         'artsize': artsize,
-#         'totalArtist': total_Artist,
-#     })
-
+    return redirect('admin_pannel')
 
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -331,7 +285,6 @@ def update_art(request, art_id):
 
 def delete_art(request, art_id):
     art = get_object_or_404(UploadArtDetail, id=art_id)
-
     # Check if the user trying to delete the art is the owner (optional)
     if request.user == art.user:
         # Delete the art object from the database
@@ -528,6 +481,18 @@ def alluser(request):
    user = User.objects.all()
    approve_count = UploadArtDetail.objects.filter(user_id=request.user.id).count()
    return render(request, 'alluser.html', {'user': user, 'approve_count': approve_count})
+
+def artist_reject(request,id):
+    reject=UserData.objects.get(user=id)
+    reject.certificate_status="rejected"
+    reject.save()
+    return redirect('alluser')
+
+def artist_approve(request,id):
+    reject=UserData.objects.get(user=id)
+    reject.certificate_status="approved"
+    reject.save()
+    return redirect('alluser')
 
 
 
@@ -1439,6 +1404,9 @@ def submit_rating(request,id):
             artist=artist,
             rating=rating_value
         )
-        
         rating.save()
         return redirect('Artist_detail',id=user_rating.user.id)
+    
+
+    
+
