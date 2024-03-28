@@ -72,7 +72,10 @@ def login(request):
                     else:
                         return redirect('Artist_view')
                 elif to_role.role=='customer':
-                    return redirect('index')
+                    if to_role.certificate_status == 'rejected':
+                        messages.info(request, "Rejected by admin")
+                    else:
+                        return redirect('index')
                 elif to_role.role=='Admin':
                     return redirect('admin_pannel')
                 else:
@@ -108,7 +111,6 @@ from django.contrib.auth.decorators import login_required
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logout_view(request):
-    print(123)
     logout(request)
     return redirect('login')
 
@@ -170,18 +172,18 @@ def index(request):
 from django.db.models import Count
 
 def admin_pannel(request):
-    if request.method == 'POST':
-        art_id = request.POST.get('art_id')
-        approval_status = request.POST.get('approval_status')
+    # if request.method == 'POST':
+    #     art_id = request.POST.get('art_id')
+    #     approval_status = request.POST.get('approval_status')
     
-        try:
-            art = UploadArtDetail.objects.get(id=art_id)
-            art.approval_status = approval_status
-            art.is_approved = (approval_status == 'approved')
-            art.save()
-            return redirect('admin_pannel')
-        except UploadArtDetail.DoesNotExist:
-            return HttpResponse("Art not found.")
+    #     try:
+    #         art = UploadArtDetail.objects.get(id=art_id)
+    #         art.approval_status = approval_status
+    #         art.is_approved = (approval_status == 'approved')
+    #         art.save()
+    #         return redirect('admin_pannel')
+    #     except UploadArtDetail.DoesNotExist:
+    #         return HttpResponse("Art not found.")
         
     user=User.objects.all()
 
@@ -192,20 +194,16 @@ def admin_pannel(request):
     total_arts_uploaded = art_data.count()
 
     # Count the number of approved arts
-    approved_arts_count = art_data.filter(approval_status='approved').count()
+    rejected_arts_count = art_data.filter(approval_status='rejected').count()
 
     # Count the total number of users
     total_users = User.objects.count()
     
     # Count the total number of Artist
     total_Artist = UserData.objects.filter(role='Artist').count()
-    print(total_Artist)
     total_Customer = UserData.objects.filter(role='customer').count()
-    print(total_Customer)
     total_Delivery = UserData.objects.filter(role='Delivary').count()
-    print(total_Delivery)
     
-
     aggregated_data = UploadArtDetail.objects.values('art_type').annotate(art_count=Count('art_type'))
 
     arttype=ProductType.objects.all()
@@ -215,7 +213,7 @@ def admin_pannel(request):
         'user':user,
         'art_data': art_data,
         'total_arts_uploaded': total_arts_uploaded,
-        'approved_arts_count': approved_arts_count,
+        'rejected_arts_count': rejected_arts_count,
         'total_users': total_users,
         'arttype':arttype,
         'artsize':artsize,
@@ -225,14 +223,64 @@ def admin_pannel(request):
         'aggregated_data': aggregated_data,
     })
 
+def reject_art(request):
+    if request.method == 'POST':
+        art_id=request.POST.get('art_id')
+        rejection_reason=request.POST.get('rejection_reason')
+        reject_art=UploadArtDetail.objects.get(id=art_id)
+        email=reject_art.user.email
+        reject_art.approval_status='rejected'
+        reject_art.save()
+        email_subject = 'Art Is Rejected'
+        email_body = f'hello {reject_art.user.username} your artwork {reject_art} is rejected'
+        email_body += f'Reason: {rejection_reason}'
+        email_body += f'for more contact: artvendor8@gmail.com'
+    
+        send_mail(
+            email_subject,
+            email_body,
+            email,  # Use the provided email address as the sender
+            [email],
+            fail_silently=False,
+    )
+        return redirect('admin_pannel')
+    
+def approve_art(request,id):
+        reject_art=UploadArtDetail.objects.get(id=id)
+        reject_art.approval_status='approved'
+        email=reject_art.user.email
+        reject_art.save()
+        email_subject = 'Art Is Rejected'
+        email_body = f'hello {reject_art.user.username} your artwork {reject_art} is approved by admin'
+        email_body += f'for more contact: artvendor8@gmail.com'
+    
+        send_mail(
+            email_subject,
+            email_body,
+            email,  # Use the provided email address as the sender
+            [email],
+            fail_silently=False,
+    )
+        return redirect('admin_pannel')
+        return redirect('admin_pannel')
+
 def Artist_approve(request,id):
-    print(id)
-    approve=UserData.objects.get(user=id)
-    print(approve.certificate_status)
+    approve = get_object_or_404(UserData, user_id=id)
     approve.certificate_status="approved"
     approve.save()
-    print(approve.certificate_status)
+    email=approve.user.email
 
+    email_subject = 'Approved Sucessfully'
+    email_body = f'you are sucessfully approved by admin.\n\n'
+    
+
+    send_mail(
+        email_subject,
+        email_body,
+        email,  # Use the provided email address as the sender
+        [email],
+        fail_silently=False,
+    )
     return redirect('admin_pannel')
 
 
@@ -483,15 +531,40 @@ def alluser(request):
    return render(request, 'alluser.html', {'user': user, 'approve_count': approve_count})
 
 def artist_reject(request,id):
-    reject=UserData.objects.get(user=id)
+    reject = get_object_or_404(UserData, user_id=id)
     reject.certificate_status="rejected"
     reject.save()
+
+    email=reject.user.email
+    email_subject = 'Artist Rejection'
+    email_body = f'you are rejected by admin.\n\n'
+    email_body += f'for more information contact:artvendor8@gmail.com.'
+
+    send_mail(
+        email_subject,
+        email_body,
+        email,  # Use the provided email address as the sender
+        [email],
+        fail_silently=False,
+    )
     return redirect('alluser')
 
 def artist_approve(request,id):
-    reject=UserData.objects.get(user=id)
-    reject.certificate_status="approved"
-    reject.save()
+    approve=get_object_or_404(UserData, user_id=id)
+    approve.certificate_status="approved"
+    approve.save()
+    
+    email=approve.user.email
+    email_subject = 'Artist Approval'
+    email_body = f'you are reapproved by admin.\n\n'
+
+    send_mail(
+        email_subject,
+        email_body,
+        email,  # Use the provided email address as the sender
+        [email],
+        fail_silently=False,
+    )
     return redirect('alluser')
 
 

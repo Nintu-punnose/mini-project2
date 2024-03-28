@@ -164,15 +164,17 @@ h1
     .type{
        
         width: 300px;
+        
     }
     .size{
         
         width: 300px;
         
+        
     }
     .type_size{
         display: flex;
-        gap: 50px;
+        gap: 170px;
     }
     #typedetails{
         padding: 20px;
@@ -181,6 +183,7 @@ h1
     #type_table{
         border: none;
         margin-top: 20px;
+        width: 450px;
     }
     #qwerty{
         background-color: none;

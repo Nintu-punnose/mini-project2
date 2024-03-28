@@ -55,18 +55,20 @@
     </h2><br><br>
     <div id="wedding_section">
         {% for artdata in artdata %}
-        {% if artdata.is_approved %}
-        <div class="card">
+        {% if artdata.approval_status == 'approved' %}
+          <div class="card">
             <img src="{{ artdata.image.url }}" alt="" style="height:350px;width:300px; ">
             <div class="card__content">
               <p class="card__title"><strong>Name:</strong> {{ artdata.name }}</p>
               <p class="card__description"><strong>Description:</strong> {{artdata.description}}</p>
             </div>
-        </div>
+          </div>
+        {% endif %}
+        
         {% if forloop.counter|divisibleby:3 and not forloop.last %}
         </div><div id="wedding_section">
         {% endif %}
-        {% endif %}
+        
           {% endfor %}
           
        </div></div><br><br><br>

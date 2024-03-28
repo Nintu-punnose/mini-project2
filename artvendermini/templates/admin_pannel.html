@@ -9,29 +9,38 @@
     <title>admin_artvendor</title>
     <style>
         /* Add these styles to your existing CSS */
-        .table-container {
-        max-height: 400px; /* Set the maximum height for the container */
-        overflow-y: auto; /* Add vertical scrollbar if content exceeds max height */
-        border: 1px solid #ddd; /* Optional: Add a border around the container */
+       
+    
+    table {
+           
+        border-collapse: collapse;
+        margin-top: 20px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        
+        width: 1000px;
+        
     }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
-            margin-top: 20px;
-        }
-    
-        th, td {
-            border: 1px solid #ddd;
-            padding: 15px;
-            text-align: left;
-            
-        }
-    
-        th {
-            background-color: #f2f2f2;
-        }
-    
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
         td.image {
             padding: 0;
         }
@@ -201,6 +210,7 @@
               transform: scale(1);
             }
           }
+        
     </style>
     
 </head>
@@ -246,8 +256,8 @@
                             <p id="Art_detail1">{{ total_arts_uploaded }}</p>
                         </div><br><br>
                         <div id="dashboard_detail1"><br>
-                            <h1>Arts Approved:</h1>
-                            <p id="Art_detail1">{{ approved_arts_count }}</p>
+                            <h1>Arts Rejected:</h1>
+                            <p id="Art_detail1">{{ rejected_arts_count }}</p>
                         </div>
                     </div>
                 </div><br><br><br><br>
@@ -260,10 +270,10 @@
                         var myChart1 = new Chart(ctx, {
                             type: 'pie',
                             data: {
-                                labels: ['Total Arts Uploaded', 'Approved Arts'],
+                                labels: ['Total Arts Uploaded', 'rejected Arts'],
                                 datasets: [{
                                     label: 'Art Count',
-                                    data: ['{{ total_arts_uploaded }}', '{{ approved_arts_count }}'],
+                                    data: ['{{ total_arts_uploaded }}', '{{ rejected_arts_count }}'],
                                     backgroundColor: [
                                         'rgba(255, 99, 132, 1)',
                                         'rgba(54, 162, 235, 1)'
@@ -363,20 +373,6 @@
 
             </div>
     
-            <div id="ArtistrejectModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeRejectModal()">&times;</span>
-                    <h2>Reject Art</h2>
-                    <form id="rejectForm" method="POST" action="{% url 'admin_pannel' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="art_id" value="" id="rejectArtId">
-                        <label for="rejectionReason">Reason for Rejection:</label>
-                        <textarea name="rejection_reason" id="rejectionReason" required></textarea>
-                        <button type="submit" class="reject-button">Reject</button>
-                    </form>
-                    <button type="button" class="cancel-button" onclick="closeRejectModal()">Cancel</button>
-                </div>
-            </div>
 
             <!-- art-approval -->
             
@@ -406,25 +402,20 @@
                         <td>{{ art.year }}</td>
                         <td class="certificate" ><a href="{{ art.certificate.url }}">View</a></td>
                         <td class="image">
-                            <img src="{{ art.image.url }}" alt="{{ art.name }}" width="100px" height="100px" onclick="openPopup('{{ art.image.url }}')">
+                            <img src="{{ art.image.url }}" alt="{{ art.name }}" style="height: 100px; width:100px;" onclick="openPopup('{{ art.image.url }}')">
                         </td>
                         <td>{{ art.approval_status }}</td>
                         <td>
-                            <form method="POST" action="{% url 'admin_pannel' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="art_id" value="{{ art.id }}">
-                                <input type="hidden" name="approval_status" value="{% if art.approval_status == 'approved' %}rejected{% else %}approved{% endif %}">
-                                <button type="submit" class="action-button {% if art.approval_status == 'approved' %}reject{% else %}approve{% endif %}">
-                                    {% if art.approval_status == 'approved' %}
-                                    Reject
-                                    {% else %}
-                                    Approve
-                                    {% endif %}
-                                </button>
-                            </form>
-                            <button type="button" class="action-button reject" onclick="openRejectModal('{{ art.id }}')">
+                            {% if art.approval_status == 'approved' %}
+                              <button type="button" class="action-button reject" onclick="openRejectModal('{{ art.id }}')">
                                 Reject
                             </button>
+                            {% else %}
+                            <a href="{% url 'approve_art' id=art.id%}"><button type="button" class="action-button approve">
+                                Approve
+                            </button></a>
+                            {% endif %}
+                            
                         </td>
                     </tr>
                     {% endfor %}
@@ -434,7 +425,7 @@
             <div class="image-popup" id="imagePopup">
                 <div class="popup-content">
                     <span class="close" onclick="closePopup()">&times;</span>
-                    <img id="popupImage" src="" alt="Popup Image">
+                    <img id="popupImage" src="" style="height: 400px; width:400px" alt="Popup Image">
                 </div>
             </div>
         </div>
@@ -443,12 +434,12 @@
             <div class="modal-content">
                 <span class="close" onclick="closeRejectModal()">&times;</span>
                 <h2>Reject Art</h2>
-                <form id="rejectForm" method="POST" action="{% url 'admin_pannel' %}">
+                <form id="rejectForm" method="POST" action="{% url 'reject_art'%}">
                     {% csrf_token %}
                     <input type="hidden" name="art_id" value="" id="rejectArtId">
                     <label for="rejectionReason">Reason for Rejection:</label>
                     <textarea name="rejection_reason" id="rejectionReason" required></textarea>
-                    <button type="submit" class="reject-button">Reject</button>
+                    <a href=""><button type="submit" id="rejectArtId" class="reject-button">Reject</button></a>
                 </form>
                 <button type="button" class="cancel-button" onclick="closeRejectModal()">Cancel</button>
             </div>
@@ -517,7 +508,8 @@
                 
             </div>
     </div>
-    
+    <div id="loader" class="loader"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sections = document.querySelectorAll('.section');

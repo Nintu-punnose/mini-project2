@@ -11,7 +11,7 @@ class UserData(models.Model):
     role = models.CharField(max_length=20)
     number = models.CharField(max_length=20,null=True)
     certificate = models.FileField(upload_to='admin_certificates/', validators=[FileExtensionValidator(allowed_extensions=['pdf'])], blank=True)
-    certificate_status = models.CharField(max_length=10,choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='approved')
+    certificate_status = models.CharField(max_length=10,choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
     def __str__(self):
         return self.user.username
 
@@ -26,10 +26,8 @@ class UploadArtDetail(models.Model):
     image = models.ImageField(upload_to='art_images/', validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg', 'gif', 'bmp'])], blank=True)
     certificate = models.FileField(upload_to='art_certificates/', validators=[FileExtensionValidator(allowed_extensions=['pdf'])], blank=True)
     description = models.TextField()
-    approval_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
-    is_approved = models.BooleanField(default=False)
+    approval_status = models.CharField(max_length=10, choices=[  ('approved', 'Approved'), ('rejected', 'Rejected')], default='approved')
     
-
     def __str__(self):
         return self.name
     
