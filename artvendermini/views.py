@@ -326,7 +326,7 @@ def update_art(request, art_id):
         return redirect('Artist_view')
     else:
         # Render the update form with the art details
-        return render(request, 'update_art.html', {'art': art, 'is_approved': art.is_approved, 'img':img, 'arttype':arttype, 'artsize':artsize})
+        return render(request, 'update_art.html', {'art': art,  'img':img, 'arttype':arttype, 'artsize':artsize})
     
 
 
@@ -882,8 +882,11 @@ from .models import AuctionListing
 
 def notification(request):
     final_winners = AuctionListing.objects.filter(buyer=request.user)
+    status=AuctionOrder.objects.get(auctionlisting=final_winners)
+    print("hello")
     print(final_winners)
-    return render(request, 'notification.html', {'final_winners': final_winners})
+    print(status)
+    return render(request, 'notification.html', {'final_winners': final_winners,'status':status})
 
 
 from django.shortcuts import get_object_or_404
@@ -895,6 +898,7 @@ def notification_view(request, art_id):
 
 def auction_orderdetails(request,id):
     price = AuctionListing.objects.get(id=id)
+    price2=AuctionListing.objects.filter(id=id)
     user=request.user.id
     buyer=User.objects.get(id=user)
     
@@ -922,10 +926,9 @@ def auction_orderdetails(request,id):
         )
 
         details.save()
-        return redirect('AuctionPayment',id=details.id)
-        
+        return redirect('AuctionPayment' ,id=id)
 
-    return render(request,'auction_orderdetails.html',{"price":price})
+    return render(request,'auction_orderdetails.html',{"price":price,"price2":price2})
 
 from django.shortcuts import render
 import razorpay
@@ -939,79 +942,93 @@ razorpay_client = razorpay.Client(
 	auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
 
-def AuctionPayment(request,id):
-    price = AuctionListing.objects.get(id=id)
-    print(price.latest_price)
-    currency = 'INR'
-    amount = int(price.latest_price*100)  # Assuming latest_price is a Decimal object
-    print(amount)
-	# Create a Razorpay Order
-    razorpay_order = razorpay_client.order.create(dict(amount=amount,
-													currency=currency,
-													payment_capture='0'))
+def AuctionPayment(request, id):
+    try:
+        price = AuctionListing.objects.get(id=id)
+        print("Price:", price.latest_price)
+        currency = 'INR'
+        amount = int(price.latest_price * 100)  # Assuming latest_price is a Decimal object
+        print("Amount:", amount)
+        
+        # Create a Razorpay Order
+        razorpay_order = razorpay_client.order.create(dict(
+            amount=amount,
+            currency=currency,
+            payment_capture='0'
+        ))
+        
+        # Order id of the newly created order
+        razorpay_order_id = razorpay_order['id']
+        print("Razorpay Order ID:", razorpay_order_id)
+        
+        callback_url = 'paymenthandler/'
+        
+        # We need to pass these details to the frontend
+        context = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+            'razorpay_amount': amount,
+            'currency': currency,
+            'callback_url': callback_url,
+            'price': price
+        }
+        
+        # Save the Razorpay ID to the AuctionOrder
+        order_id = AuctionOrder.objects.get(auctionlisting=id)
+        order_id.razorpay_id = razorpay_order_id
+        order_id.payment_status = "paid"
+        order_id.payment_date = timezone.now()
+        order_id.save()
+        
+        return render(request, 'AuctionPayment.html', context=context)
     
-	# order id of newly created order.
-    razorpay_order_id = razorpay_order['id']
-    callback_url = 'paymenthandler/'
-
-	# we need to pass these details to frontend.
-    context = {}
-    context['razorpay_order_id'] = razorpay_order_id
-    context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
-    context['razorpay_amount'] = amount
-    context['currency'] = currency
-    context['callback_url'] = callback_url
-
-    return render(request, 'AuctionPayment.html', context=context,)
+    except AuctionListing.DoesNotExist:
+        return HttpResponse("AuctionListing does not exist", status=404)
+    except Exception as e:
+        print("Exception:", e)
+        return HttpResponseBadRequest()
 
 
-# we need to csrf_exempt this url as
-# POST request will be made by Razorpay
-# and it won't have the csrf token.
+# We need to csrf_exempt this URL as POST request will be made by Razorpay
+# and it won't have the CSRF token.
 @csrf_exempt
 def paymenthandler(request):
+    if request.method == "POST":
+        try:
+            # Retrieve the parameters from the POST request
+            payment_id = request.POST.get('razorpay_payment_id', '')
+            razorpay_order_id = request.POST.get('razorpay_order_id', '')
+            signature = request.POST.get('razorpay_signature', '')
+            print("Payment ID:", payment_id)
+            print("Razorpay Order ID:", razorpay_order_id)
+            print("Signature:", signature)
+            
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
 
-	# only accept POST request.
-	if request.method == "POST":
-		try:
-		
-			# get the required parameters from post request.
-			payment_id = request.POST.get('razorpay_payment_id', '')
-			razorpay_order_id = request.POST.get('razorpay_order_id', '')
-			signature = request.POST.get('razorpay_signature', '')
-			params_dict = {
-				'razorpay_order_id': razorpay_order_id,
-				'razorpay_payment_id': payment_id,
-				'razorpay_signature': signature
-			}
+            # Verify the payment signature
+            result = razorpay_client.utility.verify_payment_signature(params_dict)
+            if result is not None:
+                order = AuctionOrder.objects.get(razorpay_id=razorpay_order_id)
+                order.payment_status = "paid"
+                order.payment_date = timezone.now()
+                order.save()
+                # Render success page on successful capture of payment
+                return render(request, 'notification.html')
+            else:
+                # If signature verification fails
+                return render(request, 'paymentfail.html')
+        except Exception as e:
+            print("Exception:", e)
+            # If required parameters are not found in POST data or any other exception occurs
+            return HttpResponseBadRequest()
+    else:
+        # If a request other than POST is made
+        return HttpResponseBadRequest()
 
-			# verify the payment signature.
-			result = razorpay_client.utility.verify_payment_signature(
-				params_dict)
-			if result is not None:
-				amount = 20000 # Rs. 200
-				try:
-
-					# capture the payemt
-					razorpay_client.payment.capture(payment_id, amount)
-
-					# render success page on successful caputre of payment
-					return render(request, 'paymentsuccess.html')
-				except:
-
-					# if there is an error while capturing payment.
-					return render(request, 'paymentfail.html')
-			else:
-
-				# if signature verification fails.
-				return render(request, 'paymentfail.html')
-		except:
-
-			# if we don't find the required parameters in POST data
-			return HttpResponseBadRequest()
-	else:
-	# if other than POST request is made.
-		return HttpResponseBadRequest()
 
 
 

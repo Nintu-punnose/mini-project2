@@ -101,10 +101,10 @@
                     <input type="number" id="uploadArt_year" placeholder="Year" name="uploadArt_year" value="{{ art.year }}" required><br><br><br>
                    
                     <label for="uploadArt_imag"  id="details">Upload Images:</label>
-                    <input type="file" id="uploadArt_image" accept="image/png" name="uploadArt_image" {% if is_approved %}disabled{% endif %} ><br><br><br><br>
+                    <input type="file" id="uploadArt_image" accept="image/png" name="uploadArt_image" {% if art.approval_status == 'approved' %}disabled{% endif %} ><br><br><br><br>
                     
                     <label for="uploadArt_certificate" id="details">Upload Certificate:</label>
-                    <input type="file" id="uploadArt_certificate" accept="application/pdf" name="uploadArt_certificate" {% if is_approved %}disabled{% endif %} ><br><br><br><br>
+                    <input type="file" id="uploadArt_certificate" accept="application/pdf" name="uploadArt_certificate" {% if art.approval_status == 'approved' %}disabled{% endif %} ><br><br><br><br>
                     <label for="" id="details">Art description:</label> <br><br>
                     <textarea name="uploadArt_description" id="uploadArt_summary" name="uploadArt_summary" required>{{ art.description }}</textarea><br>
                     <p id="error_msg" ></p><br>

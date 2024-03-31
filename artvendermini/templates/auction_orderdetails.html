@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delivery Details</title>
+  <title>auctionorderdetails</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -106,7 +106,7 @@
   <div id="container">
     <div id="left-side">
       <h2>Delivery Details</h2>
-      <form action="" method="POST">
+      <form action="" method="POST" action="">
         {% csrf_token %}
       <div class="delivery-details"> 
         
@@ -143,16 +143,23 @@
         
         
       </div>
-      <input type="submit" value="Save" style="background-color: #45a049;">
+      {% for price2 in price2 %}
+        <a href="{% url 'AuctionPayment' id=price2.id %}"><input type="submit" value="Save" style="background-color: #45a049;"></a>
+      {% endfor %}
+      
       
     </form>
     </div>
 
     <div id="right-side">
-      <h2>Order Summary</h2>
-      <p>Total Cost:  {{price.latest_price}}</p>
      
-      <button class="btn" id="pay-btn">Proceed to Payment</button>
+        <h2>Order Summary</h2>
+      <p>Total Cost:  {{price.latest_price}}</p>
+      
+     
+     
+      
+      
     </div>
   </div>
    

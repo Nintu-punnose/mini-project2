@@ -80,7 +80,13 @@
                     <h2>{{ final_winner.auction_item.name }}</h2>
                     <p>You won the auction for {{ final_winner.latest_price }}</p>
                     <p>Seller: {{ final_winner.seller.username }}</p>  <!-- Print buyer's username -->
-                    <a href="{% url 'notification_view' art_id=final_winner.auction_item.id%}" class="btn btn-primary">View Details</a>
+                    {% for status in status %}
+                        {% if status.payment_status == "Paid" %}
+                        <p style="color: green;">Status: Paid</p>
+                        {% else %}
+                        <a href="{% url 'notification_view' art_id=final_winner.auction_item.id%}" class="btn btn-primary">View Details</a>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             {% endfor %}
         </div>

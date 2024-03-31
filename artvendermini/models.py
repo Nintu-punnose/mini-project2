@@ -132,8 +132,7 @@ class AuctionListing(models.Model):
     latest_price = models.DecimalField(max_digits=10, decimal_places=2)
     end_date = models.DateTimeField()
 
-    def __str__(self):
-        return f"Auction Listing for {self.auction_item.name}"
+    
     
 class AuctionOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)

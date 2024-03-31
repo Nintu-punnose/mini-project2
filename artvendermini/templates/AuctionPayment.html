@@ -103,57 +103,11 @@
   </style>
 </head>
 <body>
-  <div id="container">
-    <div id="left-side">
-      <h2>Delivery Details</h2>
-      <form action="">
-      <div class="delivery-details"> 
-        
-           <div class="details1">
-             <label for="name">Name:</label>
-             <input type="text" id="name" name="name" value="{{request.user.username}}" required>
-
-            <label for="pincode">Pincode:</label>
-            <input type="text" id="pincode" name="pincode" required>
-
-            <label for="State">State</label>
-            <input type="text" id="State" name="State" required>
-
-            <label for="City/District/Town">City/District/Town:</label>
-            <input type="tel" id="City" name="City" required>
-
-            <label for="address">Address:</label>
-            <textarea id="address" name="address" pattern= required></textarea>
-        </div>
-        <div class="details2">
-            <label for="Phone">Phone Number:</label>
-           
-              <input type="text" id="Phone" name="Phone" value="{{userdata.number}}" required>
-           
-            
-
-           <label for="locality">Locality:</label>
-           <input type="text" id="locality" name="locality" required>
-
-           <label for="pin">PIN Code:</label>
-           <input type="text" id="pin" name="pin" required>
-
-           <label for="landmark">Landmark(Optional):</label>
-           <input type="tel" id="landmark" name="landmark">
-           
-       </div>
-        
-        
-      </div>
-      <input type="submit" value="Save" style="background-color: #45a049;">
-    </form>
-    </div>
-
     <div id="right-side">
       <h2>Order Summary</h2>
-      <p>Total Cost: $50.00</p>
-      <p>Shipping Charge: $5.00</p>
-      <p>Sum: $55.00</p>
+      <p>Total Cost: {{price.latest_price}}</p>
+      <p>Total Cost:  {{razorpay_order_id}}</p>
+     
       <button class="btn" id="pay-btn">Proceed to Payment</button>
     </div>
   </div>
