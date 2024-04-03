@@ -221,7 +221,7 @@
 
         <div id="sidebar">
             <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
-            <h1>{{ user.username }}</h1>
+            <h1>{{ request.user.username }}</h1>
             <div class="sidebar-item" data-target="dashboard" href="{% url 'Artist_view' %}">Dashboard</div>
             <div class="sidebar-item" data-target="Artist" id="artapprove">Artist Approval</div>
             <div class="sidebar-item" data-target="users" id="artapprove">Art Approval</div>

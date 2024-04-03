@@ -51,6 +51,9 @@ urlpatterns = [
     path('artist_reject/<int:id>', views.artist_reject, name='artist_reject'),
     path('artist_approve/<int:id>', views.artist_approve, name='artist_approve'),
 
+    path('admin_payment/', views.admin_payment, name='admin_payment'),
+    
+
     #payment
     path('payment/', views.payment, name='payment'),
     path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
@@ -63,6 +66,7 @@ urlpatterns = [
     path('auction_bid/<int:auction_id>/', views.auction_bid, name='auction_bid'),
     path('artist_uploaded_auction/', views.artist_uploaded_auction, name='artist_uploaded_auction'),
     path('artist_auction_view/<int:art_id>/', views.artist_auction_view, name='artist_auction_view'),
+    path('artist_payment_view/<int:art_id>/', views.artist_payment_view, name='artist_payment_view'),
     path('artist_auction_view_all/<int:bid_id>/', views.artist_auction_view_all, name='artist_auction_view_all'),
 
     
@@ -75,7 +79,7 @@ urlpatterns = [
 
 
     path('AuctionPayment/<int:id>', views.AuctionPayment, name='AuctionPayment'),
-    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
+    path('Auctionpaymenthandler/', views.Auctionpaymenthandler, name='Auctionpaymenthandler'),
     path('admin_auction/',views.admin_auction,name='admin_auction'),
     path('admin_auction_details/<int:id>/',views.admin_auction_details,name='admin_auction_details'),
 

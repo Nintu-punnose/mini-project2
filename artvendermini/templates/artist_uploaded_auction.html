@@ -192,7 +192,7 @@ margin-left: 250px;
                     <a href="{% url 'artist_auction_view' art_id=i.id %}" class="view-bid-btn">View Bid</a>
                 {% else %}  
                     <p style="color: green;">Auction Completed</p>
-                    <a href="{% url 'artist_auction_view' art_id=i.id %}" class="view-bid-btn">View Bid</a>
+                    <a href="{% url 'artist_payment_view' art_id=i.id %}" class="view-bid-btn">View Bid</a>
                 {% endif %}
             </div>
         </div>

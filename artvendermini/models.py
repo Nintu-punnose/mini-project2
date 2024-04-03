@@ -131,8 +131,8 @@ class AuctionListing(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='seller_listings')
     latest_price = models.DecimalField(max_digits=10, decimal_places=2)
     end_date = models.DateTimeField()
-
-    
+    payment_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('paid', 'Paid')], default='Pending')
+   
     
 class AuctionOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)

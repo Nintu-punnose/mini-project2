@@ -155,7 +155,7 @@ def Artist_view(request):
         return redirect('login')
     # art1 =  UploadArtDetail.objects.filter(user_id=request.user.id)
     total_arts_uploaded = UploadArtDetail.objects.filter(user_id=request.user.id).count()
-    arts_approved = UploadArtDetail.objects.filter(user_id=request.user.id,approval_status='approved').count()
+    arts_approved = UploadArtDetail.objects.filter(user_id=request.user.id,approval_status='rejected').count()
     artdata = UploadArtDetail.objects.filter(user_id=request.user.id )
     arttype = ProductType.objects.all()
     artsize = ProductSize.objects.all()
@@ -805,12 +805,8 @@ def artist_auction_view_all(request,bid_id):
     return render(request, 'artist_auction_view_all.html', {'admin_buyer_shown': admin_buyer_shown,'current_date_ist':current_date_ist,'img':img})
 
 
-# def notification(request):
-#     return render(request,'notification.html') 
-
-
-
-# views.py
+def artist_payment_view(request,art_id):
+    return render(request,'artist_payment_view.html')
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -882,11 +878,8 @@ from .models import AuctionListing
 
 def notification(request):
     final_winners = AuctionListing.objects.filter(buyer=request.user)
-    status=AuctionOrder.objects.get(auctionlisting=final_winners)
-    print("hello")
-    print(final_winners)
-    print(status)
-    return render(request, 'notification.html', {'final_winners': final_winners,'status':status})
+
+    return render(request, 'notification.html', {'final_winners': final_winners})
 
 
 from django.shortcuts import get_object_or_404
@@ -961,7 +954,7 @@ def AuctionPayment(request, id):
         razorpay_order_id = razorpay_order['id']
         print("Razorpay Order ID:", razorpay_order_id)
         
-        callback_url = 'paymenthandler/'
+        callback_url = 'Auctionpaymenthandler/'
         
         # We need to pass these details to the frontend
         context = {
@@ -975,11 +968,13 @@ def AuctionPayment(request, id):
         
         # Save the Razorpay ID to the AuctionOrder
         order_id = AuctionOrder.objects.get(auctionlisting=id)
+        payment_status=AuctionListing.objects.get(id=id)
         order_id.razorpay_id = razorpay_order_id
         order_id.payment_status = "paid"
         order_id.payment_date = timezone.now()
         order_id.save()
-        
+        payment_status.payment_status = "paid"
+        payment_status.save()
         return render(request, 'AuctionPayment.html', context=context)
     
     except AuctionListing.DoesNotExist:
@@ -992,7 +987,7 @@ def AuctionPayment(request, id):
 # We need to csrf_exempt this URL as POST request will be made by Razorpay
 # and it won't have the CSRF token.
 @csrf_exempt
-def paymenthandler(request):
+def Auctionpaymenthandler(request):
     if request.method == "POST":
         try:
             # Retrieve the parameters from the POST request
@@ -1017,7 +1012,7 @@ def paymenthandler(request):
                 order.payment_date = timezone.now()
                 order.save()
                 # Render success page on successful capture of payment
-                return render(request, 'notification.html')
+                return redirect('index')
             else:
                 # If signature verification fails
                 return render(request, 'paymentfail.html')
@@ -1497,6 +1492,11 @@ def submit_rating(request,id):
         rating.save()
         return redirect('Artist_detail',id=user_rating.user.id)
     
-
-    
+from django.db.models.functions import TruncMonth
+def admin_payment(request):
+    order=AuctionOrder.objects.all()
+    order_count=AuctionOrder.objects.all().count()
+    total_art=AuctionListing.objects.all().count()
+    art_sold_by_month = AuctionOrder.objects.annotate(month=TruncMonth('payment_date')).values('month').annotate(total=Count('id')).order_by('month')
+    return render(request,'admin_payment.html',{"order":order,"order_count":order_count,"total_art":total_art,"art_sold_by_month": art_sold_by_month})
 

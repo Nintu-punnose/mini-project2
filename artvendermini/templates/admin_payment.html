@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="{% static 'css\Artist_view.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css\admin.css' %}">
+    <title>alluser_artvendor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .message-button:hover {
+            background-color: #0056b3;
+        }
+        .canvas{
+            display: flex;
+            gap: 100px;
+            width: 400px;
+        }
+       
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Listen for changes in the search input
+            $('#search_user').on('input', function() {
+                var searchText = $(this).val().toLowerCase(); // Get the entered text
+        
+                // Loop through each user details row and hide/show based on the search
+                $('.user-details table tr:gt(0)').each(function() {
+                    var userName = $(this).find('td:eq(0)').text().toLowerCase(); // Get user name
+                    var userNumber = $(this).find('td:eq(2)').text().toLowerCase(); // Get user number
+                    var userEmail = $(this).find('td:eq(3)').text().toLowerCase();
+        
+                    // Check if the user name or number contains the search text
+                    if (userName.includes(searchText) || userNumber.includes(searchText) || userEmail.includes(searchText)) {
+                        $(this).show(); // Show if it matches
+                    } else {
+                        $(this).hide(); // Hide if it doesn't match
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Listen for changes in the search input
+                $('#search_artist').on('input', function() {
+                    var searchText = $(this).val().toLowerCase(); // Get the entered text
+            
+                    // Loop through each user details row and hide/show based on the search
+                    $('.user_artist table tr:gt(0)').each(function() {
+                        var userName = $(this).find('td:eq(0)').text().toLowerCase(); // Get user name
+                        var userNumber = $(this).find('td:eq(2)').text().toLowerCase(); // Get user number
+                        var userEmail = $(this).find('td:eq(3)').text().toLowerCase();
+            
+                        // Check if the user name or number contains the search text
+                        if (userName.includes(searchText) || userNumber.includes(searchText) || userEmail.includes(searchText)) {
+                            $(this).show(); // Show if it matches
+                        } else {
+                            $(this).hide(); // Hide if it doesn't match
+                        }
+                    });
+                });
+            });
+            
+            
+        
+    </script>
+</head>
+<body>
+    <div class="body">
+
+        <!-- side-pannel -->
+
+        <div id="sidebar">
+            <img src="{% static 'images\gallery_logo.png' %}" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
+            <h2 style="margin-left: 40px;">admin1</h2>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item">Dashboard</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="users">Art Approval</div></a>
+            <a href="{% url 'admin_pannel' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="products">Add Type/Size</div></a>
+            <a href="{% url 'admin_auction' %}" style="text-decoration: none;"><div class="sidebar-item">Auction View</div></a>
+            <a href="{% url 'admin_delivary_view' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent</div></a>
+            <a href="{% url 'admin_delivary_approval' %}" style="text-decoration: none;" ><div class="sidebar-item" >Delivary Agent Approval</div></a>
+            <div class="sidebar-item" data-target="products">Users</div>
+            <a href="{% url 'logout_view' %}" style="text-decoration: none;" ><div class="sidebar-item" data-target="settings">Logout</div></a>
+        </div>
+
+        <!-- dashboard -->
+    
+        <div id="content" class="user-details">
+            <div class="canvas">
+                <canvas class="product_canvas" id="myChart1"></canvas>
+                <canvas class="delivery_canvas" id="myChart2" height="500px" width="500px"></canvas>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        var ctx = document.getElementById('myChart1').getContext('2d');
+                        var myChart1 = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: ['Art sold','Art Uploaded'],
+                                datasets: [{
+                                    label: 'Art sold',
+                                    data: ['{{ order_count }}',"{{total_art}}"],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                    <script>
+                        var ctx = document.getElementById('myChart2').getContext('2d');
+                        var myChart2 = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: [
+                                    {% for data in art_sold_by_month %}
+                                        '{{ data.month|date:"F Y" }}',
+                                    {% endfor %}
+                                ],
+                                datasets: [{
+                                    label: 'Total Art Sold',
+                                    data: [
+                                        {% for data in art_sold_by_month %}
+                                            {{ data.total }},
+                                        {% endfor %}
+                                    ],
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true,
+                                            stepSize: 1,
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    </script>
+                    
+                 
+            </div>
+            <p>Predicted number of art sold next month: {{ predicted_art_sold }}</p>
+            <input type="search" name="" id="search_user" placeholder="Enter name,number" style="padding: 5px; width:200px">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>email</th>
+                <th>ID</th>
+                <th>Date</th>
+              
+            </tr>
+            <!-- Replace the following rows with dynamic data -->
+            {% for order in order %}
+              <tr>
+                <td>{{order.user.username}}</td>
+                <td>{{order.buyer_email}}</td>
+                <td>{{order.razorpay_id}}</td>
+                <td>{{order.payment_date}}</td>
+                
+            </tr>
+            {% endfor %}
+            
+          
+        </table>
+    </div>
+
+    </div>
+    
+</body>
+</html>
+
+
+
