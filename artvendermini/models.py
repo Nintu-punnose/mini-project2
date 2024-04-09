@@ -151,7 +151,7 @@ class AuctionOrder(models.Model):
     approval_status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')], default='pending')
 
     def __str__(self):
-        return f"Auction Order for {self.auctionlisting.auction_item.name}"
+        return f"Auction Order for {self.auctionlisting.auction_item}"
     
 class ProductDetails(models.Model):
     auction_order = models.ForeignKey(AuctionOrder, on_delete=models.CASCADE)

@@ -4,105 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css\admin.css' %}">
-    <title>artvendor_delivaryapproval</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .delivary_approval {
-            margin-left:280px;
-            padding: 50px;
-            width: 300px;
-            background-color: #f0f0f0;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+   
+    <title>paymeny_details</title>
+   <style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+    #sidebar {
+        position: fixed;
+        width: 250px;
+        top: 0%;
+        height: 100vh;
+        background-color: black;
+        color: #fff;
+        padding-top: 50px;
+    }
+    #content {
+        margin-left: 250px;
+        padding: 20px;
+    }
+    .sidebar-item {
+        padding: 10px 20px;
+        cursor: pointer;
+        color: white;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .sidebar-item:hover {
+        background-color: #ffffff;
+        color: #e74c3c;
+    }
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .section {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #ffffff;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .header{
+        background-color: #ffffff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+    }
+    h1
+    {
+        margin-left: 50px;
+    }
+    .user-menu {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        margin-right: 20px;
         }
     
-        form {
-            display: flex;
-            flex-direction: column;
-            max-width: 300px;
-            margin: 0 auto;
-        }
     
-        label {
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
     
-        input {
-            padding: 10px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+    #seller-profile{
+        flex-direction: column;
+        margin-left: 300px;
+        margin-right: 20px;
+        margin-top: 40px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #ffffff;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
     
-        button {
-            background-color: #4050e2;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    
-        button:hover {
-            background-color: #3444c7;
-        }
-        #message{
-            color:red;
-            text-align: center;
-            padding: 6px;
-        }
-    </style>
-    <script>
-        
-        function check(){
-            var password = document.getElementById("password").value
-            var confirm_password = document.getElementById("confirm_password").value
-            
-            if (password != confirm_password){
-                document.getElementById("message").innerHTML="Password not match"
-            }
-            else{
-                document.getElementById("message").innerHTML=""
-            }
-        }
-    </script>
+   
+   </style>
 </head>
 <body>
     <div class="body">
+        <!-- head_section -->
+        <div class="header">
+            <img src="{% static 'images\search.jpg' %}" alt="" height="35px" width="35px" style="margin-left: 260px; margin-top:8px; border-radius:20px; cursor:pointer">
+            <ul class="user-menu">
+               
+                    <p style="color: green;">Welcome, {{ request.user.username }}!</p>
+               
+                    <img src="{% static 'images/user.png' %}" alt="" height="30px" width="30px">
+            </ul>
+        </div>
+        <!-- side-pannel -->
+
         <div id="sidebar">
-            <img src="data:image/jpeg;base64,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" alt="" height="100px" width="100px" style="border-radius: 120px; margin-left:40px"><br>
-            <h2 style="margin-left: 40px;">{{request.user.username}}</h2>
+            {% for img in img %}
+                <img src="{{img.image.url}}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% empty %}
+                <img src="{% static 'images\gallery_logo.png' %}" alt="" height="150px" width="150px" style="border-radius: 120px; margin-left:40px">
+            {% endfor %}
+            <h1>&emsp;{{ request.user.username }}</h1>
             <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="dashboard" >Dashboard</div></a>
-                <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
-                <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
-                <a href="{% url 'auction_uploadform' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction Upload</div></a>
-                <a href="{% url 'artist_uploaded_auction' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction View</div></a>
-                <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
-                <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
-                <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
+            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="users" id="addart">Add Art</div></a>
+            <a href="{% url 'Artist_view' %}" style="text-decoration:none"><div class="sidebar-item" data-target="products" id="viewart">View Art</div></a>
+            <a href="{% url 'auction_uploadform' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction Upload</div></a>
+            <a href="{% url 'artist_uploaded_auction' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Auction View</div></a>
+            <a href="{% url 'seller_profile' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Profile</div></a>
+            <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
+            <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
         </div>
-        <h1 style="margin-left: 270px; margin-top:30px">Update Password</h1>
-        <div class="delivary_approval">
-            <form action="" method="post">
-                {% csrf_token %}
-                <div id="message"></div>
-                <label for="password">Password:</label>
-                <input type="password" id="password" onkeyup="validate()"  name="password" required>
-        
-                <label for="confirm_password">Confirm Password:</label>
-                <input type="password" id="confirm_password" name="confirm_password" onkeyup="check()" required>
-        
-                <button type="submit">Update Password</button>
-            </form>
+        <<div id="seller-profile">
+            {% if order %}
+                <h2 style="color:blue">{{ order.auctionlisting.auction_item.name }}</h2>
+                <p><b>Name:</b> {{ order.user.username }}</p>
+                <p><b>Address:</b> {{ order.buyer_address }}</p>
+                <p><b>Phone:</b> {{ order.buyer_phone }}</p>
+                <p><b>E-mail:</b> {{ order.buyer_email }}</p>
+                <p><b>Price:</b> {{ order.auctionlisting.latest_price }}</p>
+                <p><b>Payment date:</b> {{ order.payment_date }}</p>
+            {% else %}
+                <p>No bids have occurred.</p>
+            {% endif %}
         </div>
-    </div>
+        
+        <!-- Include this JavaScript code inside a <script> tag in your HTML file -->
+
 </body>
 </html>
+
+
+
+

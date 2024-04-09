@@ -805,8 +805,16 @@ def artist_auction_view_all(request,bid_id):
     return render(request, 'artist_auction_view_all.html', {'admin_buyer_shown': admin_buyer_shown,'current_date_ist':current_date_ist,'img':img})
 
 
-def artist_payment_view(request,art_id):
-    return render(request,'artist_payment_view.html')
+from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
+
+def artist_payment_view(request, art_id):
+    try:
+        order = AuctionOrder.objects.get(auctionlisting__auction_item__id=art_id)
+    except ObjectDoesNotExist:
+        order = None  # Or pass an empty context or specific message if preferred
+
+    return render(request, 'artist_payment_view.html', {"order": order})
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
