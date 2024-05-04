@@ -111,7 +111,7 @@ class Hosttest(TestCase):
         submitc.click()
         time.sleep(2)
 
-        submitc = driver.find_element(By.CSS_SELECTOR, "#artapprove")
+        submitc = driver.find_element(By.CSS_SELECTOR, "#artistapprove")
         submitc.click()
         time.sleep(2)
 
@@ -122,27 +122,19 @@ class Hosttest(TestCase):
         submitc.click()
         time.sleep(2)
 
+        submitc = driver.find_element(By.CSS_SELECTOR, "#artrejecting")
+        submitc.click()
+        time.sleep(2)
+
+        driver.execute_script("window.scrollBy(-500, 0);")
+        time.sleep(2)
+
+        submitc = driver.find_element(By.XPATH, "//button[contains(text(),'reject')]")
+        submitc.click()
+        time.sleep(2)
+
         submitc = driver.find_element(By.CSS_SELECTOR, "#lgout")
         submitc.click()
-        time.sleep(2)
-
-
-
-
-        username = driver.find_element(By.CSS_SELECTOR, "input#user_email")
-        username.send_keys("tony")
-        password = driver.find_element(By.CSS_SELECTOR, "input#user_password")
-        password.send_keys("Tony@123")
-        time.sleep(1)
-        submitc = driver.find_element(By.CSS_SELECTOR, "button#submit")
-        submitc.click()
-        time.sleep(2)
-
-        submitc = driver.find_element(By.CSS_SELECTOR, "#art")
-        submitc.click()
-        time.sleep(2)
-
-        driver.execute_script("window.scrollBy(0, 600);")
         time.sleep(2)
 
         print("Test Done")

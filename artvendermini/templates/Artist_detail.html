@@ -57,7 +57,7 @@
             {% if messages %}
             <ul class="messages" style="color:red">
                 {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"style="list-style-type: none;"{% endif %}>{{ message }}</li>
+                    <li {% if message.tags %} class="{{ message.tags }}"style="list-style-type: none;"{% endif %}>{{ message }}</li>
                 {% endfor %}
             </ul>
         {% endif %}   
@@ -66,14 +66,20 @@
 <div>
     <h1><u>Arts of {{profile.user.username}}</u></h1>
     <div id="arts_container">
+        {% if artist_images %}
         {% for artist_image in artist_images %}
-            <a href="{% url 'image_detail' artist_image.id %}">
-                <div class="art">
-                    <img src="{{ artist_image.image.url }}" alt="" height="250px" width="250px" id="img_wrapper">
-                    <p style="color: black;">{{ artist_image.name }}</p><br>
-                </div>
-            </a>
+        <a href="{% url 'image_detail' artist_image.id %}">
+            <div class="art">
+                <img src="{{ artist_image.image.url }}" alt="" height="250px" width="250px" id="img_wrapper">
+                <p style="color: black;">{{ artist_image.name }}</p><br>
+            </div>
+        </a>
         {% endfor %}
+        {% else %}
+        <h3 style="color:rgb(55, 0, 255);margin-left:30px">NO images uploaded</h3>
+        {% endif %}
+            
+        
     </div>
     
     

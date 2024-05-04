@@ -140,8 +140,9 @@
             </tr>
         </thead>
         <tbody>
-            {% for cart_item in cart_items %}
-            <tr>
+            {% if cart_items %}
+              {% for cart_item in cart_items %}
+              <tr>
                 <td><img src="{{ cart_item.art.image.url }}" alt="{{ cart_item.art.name }}"></td>
                 <td>{{ cart_item.art.name }}</td>
                 <td class="quantity">{{ cart_item.quantity }}</td>
@@ -149,8 +150,12 @@
                 <td>
                     <a class="action-link" href="{% url 'remove_from_cart' cart_item.art.id %}">Remove</a>
                 </td>
-            </tr>
-            {% endfor %}
+              </tr>
+                {% endfor %}
+            {% else %}
+              <p>No items added to cart</p>
+            {% endif %}
+            
         </tbody>
     </table>
 

@@ -78,7 +78,19 @@
         background-color: #ffffff;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
+    .notexist {
+        margin-left: 300px;
+        margin-top: 20px;
+        padding: 20px;
+        margin-right: 20px;
+        background-color: #ffcccc; /* Light red background color */
+        border: 1px solid #ff0000; /* Red border */
+        border-radius: 5px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle lift */
+        color: #ff0000; /* Red text color */
+        font-size: 18px; /* Font size */
+        text-align: center; /* Center text */
+    }
    
    </style>
 </head>
@@ -112,8 +124,9 @@
             <a href="{% url 'index' %}" style="text-decoration: none;"><div class="sidebar-item" data-target="orders">Buy </div></a>  
             <a href="{% url 'logout_view' %}"style="text-decoration: none;" ><div class="sidebar-item" data-target="settings" id="lgout">Logout</div></a>
         </div>
-        <<div id="seller-profile">
+        
             {% if order %}
+            <div id="seller-profile">
                 <h2 style="color:blue">{{ order.auctionlisting.auction_item.name }}</h2>
                 <p><b>Name:</b> {{ order.user.username }}</p>
                 <p><b>Address:</b> {{ order.buyer_address }}</p>
@@ -121,10 +134,13 @@
                 <p><b>E-mail:</b> {{ order.buyer_email }}</p>
                 <p><b>Price:</b> {{ order.auctionlisting.latest_price }}</p>
                 <p><b>Payment date:</b> {{ order.payment_date }}</p>
+            </div>
             {% else %}
-                <p>No bids have occurred.</p>
+                <div class="notexist">
+                    no bid occur
+                </div>
             {% endif %}
-        </div>
+        
         
         <!-- Include this JavaScript code inside a <script> tag in your HTML file -->
 

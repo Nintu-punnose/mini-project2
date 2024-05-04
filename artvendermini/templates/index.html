@@ -24,17 +24,18 @@
                 <a href="{% url 'Artist' %}">Artist</a>
                 <a href="{% url 'auction' %}" id="auction">Auction</a>
                 <a href="{% url 'orders' %}">Orders</a>
-                <a href="{% url 'cart' %}" id="cart">Cart</a>
+                
                 {% if request.user.is_authenticated %}
                     {% if request.user.role == "customer" %}
                         <span style="color:red">{{ request.user.username }}</span>
                         <a href="{% url 'logout_view' %}">Logout</a>
                     {% else %}
+                        <a href="{% url 'cart' %}" id="cart">Cart</a>
                         <span style="color:blue">{{ request.user.username }}</span>
                         <a href="{% url 'logout_view' %}">Logout</a>
                     {% endif %}
                 {% else %}
-                    <a href="{% url 'login_view' %}">Login</a>
+                    <a href="{% url 'login' %}">Login</a>
                 {% endif %}
 
             </div>
