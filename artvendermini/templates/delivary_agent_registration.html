@@ -32,10 +32,6 @@
             color: white;
         }
         
-        #link {
-            margin-left: -145px;
-        }
-        
         a {
             text-decoration: none;
             padding: 10px 10px 10px 10px;
@@ -70,16 +66,15 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .textarea{
-            max-width: 100%;
-            display: flex;
-            justify-content: center;
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-        .submit-button{
-            display:flex;
-            justify-content: center;
-            max-width: 100%;
-        }
+
         button {
             background-color: #1da10c;
             color: #fff;
@@ -89,25 +84,86 @@
             cursor: pointer;
             width: 400px;
             margin-top: 20px;
-            
         }
-        h2{
+
+        h2 {
             text-align: center;
         }
     </style>
     
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const pinInput = document.getElementById('pin');
+
+            
+            
+            // Name should contain only alphabets
+            nameInput.addEventListener('input', function () {
+                const regex = /^[a-z A-Z\s]*$/; // Only letters and spaces
+                if (!regex.test(nameInput.value)) {
+                    document.getElementById("error_msg").innerHTML="Name should contain albphabet only"
+                    
+                }
+                else{
+                    document.getElementById("error_msg").innerHTML=""
+                }
+            });
+
+            // Email validation
+            emailInput.addEventListener('input', function () {
+                const regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/; // Basic email format
+                if (!regex.test(emailInput.value)) {
+                    document.getElementById("error_msg").innerHTML="Enter valid email"
+                }
+                else{
+                    document.getElementById("error_msg").innerHTML=""
+                }
+            });
+
+            // Phone number should start with 7, 8, or 9 and contain only digits
+            phoneInput.addEventListener('input', function () {
+                const regex = /^[789]\d*$/; // Start with 7, 8, or 9 and contain only digits
+                if (!regex.test(phoneInput.value)) {
+                    document.getElementById("error_msg").innerHTML="Phone number should be start with 7,8,9 "
+                }
+                else if(phoneInput.value.length > 10 || phoneInput.value.length <10){
+                    document.getElementById("error_msg").innerHTML="Phone number should contain 10 letters"
+                }
+                else{
+                    document.getElementById("error_msg").innerHTML=""
+                }
+            });
+
+            // PIN should contain only numbers
+            pinInput.addEventListener('input', function () {
+                console.log(pinInput.value)
+                if (!/^\d+$/.test(pinInput.value)) {
+                    document.getElementById("error_msg").innerHTML="Pin should contain only numbers"// Remove non-numeric characters
+                }
+                else if(pinInput.value.length > 6 || pinInput.value.length < 6){
+                    document.getElementById("error_msg").innerHTML="Pin should be 6 letters"
+                }
+                else{
+                    document.getElementById("error_msg").innerHTML=""
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <div id="head_details">
         <div id="web_name">
             ArtVendor
         </div>
-      
-    </div><br><br><br>
+    </div>
 
     <div id="main-container">
         <h2>Delivery Agent Registration</h2>
         <form method="post" action="">
+            <p style="color:red" id="error_msg"></p>
             {% csrf_token %}
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -117,8 +173,6 @@
     
             <label for="phone">Phone Number:</label>
             <input type="tel" id="phone" name="phone" required>
-    
-            
     
             <label for="pin">PIN:</label>
             <input type="text" id="pin" name="pin" required>
@@ -140,17 +194,13 @@
     
             <label for="max_delivery_distance">Max Delivery Distance (in km):</label>
             <input type="text" id="max_delivery_distance" name="max_delivery_distance" required>
-
-            <label for="address">Address:</label>
-            <div class="textarea">
-                <textarea id="address" name="address" cols="30" rows="10" style="width:800px"></textarea>
-            </div>
     
-            <div class="submit-button">
-                <button type="submit">Submit</button>
-            </div><br>
-            <center><a href="{% url 'login' %}" style="color:black; font-size:15px">Already have account?</a></center>
-        </form>        
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" cols="30" rows="10"></textarea>
+    
+            <button type="submit">Submit</button>
+        </form>
+        <center><a href="{% url 'login' %}">Already have an account?</a></center>
     </div>
 </body>
 </html>

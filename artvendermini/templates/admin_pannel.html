@@ -211,7 +211,8 @@
             }
           }
         #artist_button{
-            padding:8px;
+            padding:10px 20px;
+            color:white;
             border-radius: 5px;
             border: none;
             cursor: pointer;
@@ -367,7 +368,7 @@
                             <td>
                                 {% if user.userdata.certificate_status == "pending" %}
                                     <a href="{% url 'Artist_approve' user.id%}"><input type="submit" value="Approve" style="background:green;" id="artist_button"></a>
-                                    <input type="submit" value="Reject" style="background:red;" id="artist_button" onclick="openRejectModal('{{ art.id }}')">
+                                    <input type="submit" value="Reject" style="background:red;" id="artist_button" onclick="openRejectModal('{{ user.id }}')">
                                 {% endif %}
                         </td>
                         </tr>
@@ -380,12 +381,12 @@
                     <div class="modal-content">
                         <span class="close" onclick="closeRejectModal()">&times;</span>
                         <h2>Reject Art</h2>
-                        <form id="rejectForm" method="POST" action="{% url 'reject_art'%}">
+                        <form id="rejectForm" method="POST" action="{% url 'Artist_rejection'%}">
                             {% csrf_token %}
-                            <input type="hidden" name="art_id" value="" id="rejectArtId">
+                            <input type="hidden" name="artist_id" value="{{user.id}}" id="rejectArtId">
                             <label for="rejectionReason">Reason for Rejection:</label>
                             <textarea name="rejection_reason" id="rejectionReason" required></textarea>
-                            <a href=""><button type="submit" id="rejectArtId" class="reject-button">Reject</button></a>
+                            <button type="submit" id="rejectArtId" class="reject-button">Reject</button>
                         </form>
                         <button type="button" class="cancel-button" onclick="closeRejectModal()">Cancel</button>
                     </div>
@@ -398,7 +399,9 @@
             
         <div class="section users">
             <div class="table-container"> 
+               
             <table>
+                <input type="search" name="" id="search_user" placeholder="Enter name,number" style="padding: 5px; width:200px">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -427,11 +430,11 @@
                         <td>{{ art.approval_status }}</td>
                         <td>
                             {% if art.approval_status == 'approved' %}
-                              <button type="button" class="action-button reject" onclick="openRejectModal('{{ art.id }}')">
+                              <button type="button" class="action-button reject" style="padding:10px 20px" onclick="openartRejectModal('{{ art.id }}')">
                                 Reject
                             </button>
                             {% else %}
-                            <a href="{% url 'approve_art' id=art.id%}"><button type="button" class="action-button approve">
+                            <a href="{% url 'approve_art' id=art.id%}"><button type="button" class="action-button approve" style="padding:10px 20px">
                                 Approve
                             </button></a>
                             {% endif %}
@@ -450,24 +453,23 @@
             </div>
         </div>
 
-        <div id="rejectModal" class="modal">
+        <div id="artrejectModal" class="modal">
             <div class="modal-content">
-                <span class="close" onclick="closeRejectModal()">&times;</span>
+                <span class="close" onclick="artcloseRejectModal()">&times;</span>
                 <h2>Reject Art</h2>
                 <form id="rejectForm" method="POST" action="{% url 'reject_art'%}">
                     {% csrf_token %}
-                    <input type="hidden" name="art_id" value="" id="rejectArtId">
+                    <input type="hidden" name="art_id" value="{{art.id}}" id="rejectId">
                     <label for="rejectionReason">Reason for Rejection:</label>
                     <textarea name="rejection_reason" id="rejectionReason" required></textarea>
-                    <a href=""><button type="submit" id="rejectArtId" class="reject-button">Reject</button></a>
+                    <a href=""><button type="submit" id="rejectId" class="reject-button">Reject</button></a>
                 </form>
-                <button type="button" class="cancel-button" onclick="closeRejectModal()">Cancel</button>
+                <button type="button" class="cancel-button" onclick="artcloseRejectModal()">Cancel</button>
             </div>
         </div>
         
     <!-- view art -->
 
-    
             <div class="section products">
                 
                 <form action="{% url 'addtype' %}" method="post">
@@ -605,5 +607,41 @@
         modal.style.display = "none";
     }
 </script>
+<script>
+    function openartRejectModal(artId) {
+        var modal = document.getElementById("artrejectModal");
+        modal.style.display = "block";
+        document.getElementById("rejectId").value = artId;
+    }
+
+    function artcloseRejectModal() {
+        var modal = document.getElementById("artrejectModal");
+        modal.style.display = "none";
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Listen for changes in the search input
+            $('#search_user').on('input', function() {
+                var searchText = $(this).val().toLowerCase(); // Get the entered text
+        
+                // Loop through each user details row and hide/show based on the search
+                $('.table-container table tr:gt(0)').each(function() {
+                    var userName = $(this).find('td:eq(0)').text().toLowerCase(); // Get user name
+                    var userNumber = $(this).find('td:eq(2)').text().toLowerCase(); // Get user number
+                    var userEmail = $(this).find('td:eq(3)').text().toLowerCase();
+        
+                    // Check if the user name or number contains the search text
+                    if (userName.includes(searchText) || userNumber.includes(searchText) || userEmail.includes(searchText)) {
+                        $(this).show(); // Show if it matches
+                    } else {
+                        $(this).hide(); // Hide if it doesn't match
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

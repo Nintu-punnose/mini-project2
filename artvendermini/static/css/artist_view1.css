@@ -74,6 +74,7 @@ h1
     
     input[type="text"],
     input[type="number"],
+    input[type="datetime-local"],
     select,
     textarea {
         width: 90%;
@@ -82,7 +83,15 @@ h1
         border: 1px solid #ccc;
         border-radius: 5px;
     }
-    
+
+    input[type="file"] {
+        border: 1px solid #ccc;
+        padding: 6px;
+        border-radius: 4px;
+        background: white;
+        color: #555;
+    }
+        
     #upload-art-submit{
         width: 90%;
         padding: 10px;

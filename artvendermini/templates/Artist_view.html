@@ -189,6 +189,7 @@
             <label for="uploadArt_certificate">Upload Certificate:</label>
             <input type="file" id="uploadArt_certificate" accept="application/pdf" name="uploadArt_certificate" required><br><br><br><br>
             <textarea name="uploadArt_description" placeholder="Enter a description here..." id="uploadArt_summary" name="uploadArt_summary" required></textarea><br><br>
+            <button type="button" id="generate-caption">Generate Caption</button>
             <button type="submit" id="upload-art-submit">Upload</button>
         </form>
         <p id="error_msg" style="color:red; font-size:15px"></p>
@@ -339,5 +340,29 @@
             modal.style.display = "none";
         }
     </script>
+
+    <script>
+        $("#generate-caption").click(function() {
+            var formData = new FormData($("#upload-form")[0]);
+            $.ajax({
+                url: "",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    if (data.captions && data.captions.length > 0) {
+                        $("#uploadArt_description").val(data.captions[0]);
+                    } else {
+                        alert("No caption generated");
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while generating the caption.");
+                },
+            });
+        });
+    </script>
+</div>
 </body>
 </html>

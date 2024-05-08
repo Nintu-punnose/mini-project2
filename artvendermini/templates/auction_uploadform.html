@@ -39,8 +39,25 @@
     cursor: pointer;
 }
 #upload_form{
-  margin-left: 300px;
+  margin-left: 270px;
+  margin-right:30px;
+  margin-top:30px;
+  border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
+.upload-btn{
+    padding:10px;
+    width:90%;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #27ae60;
+    color: white;
+}
+
 </style>
 <style>
   
@@ -79,28 +96,28 @@
 
         <div id="upload_form">
             <h2>Upload Auction</h2>
-          <form method="post" enctype="multipart/form-data" action=""><br><br>
+          <form method="post" enctype="multipart/form-data" action=""><br>
             {% csrf_token %}
            
-              <label for="name" >Name:</label><br>
-              <input type="text" id="name" name="name" required><br><br>
-           
-              <label for="priceRange">Price Range:</label><br>
-              <input type="number"  id="priceRangeMin" name="priceRangeMin" required><br><br>
             
-              <label for="description" >Description:</label><br>
-              <input type="text"  id="description" name="description" required><br><br>
+              <input type="text" id="name" name="name" placeholder="Name" required><br><br>
+           
+             
+              <input type="number"  id="priceRangeMin" name="priceRangeMin" placeholder="Price" required><br><br>
+            
+          
+              <input type="text"  id="description" name="description" placeholder="Description" required><br><br>
           
               <label for="image" >Image:</label>
               <input type="file"  id="image" name="image" accept="image/*" required><br><br>
             
-              <label for="startDate" >Auction Start Date and Time:</label>
-              <input type="datetime-local"  id="startDate" name="startDate" required><br><br>
+              <label for="startDate" >Auction Start Date and Time:</label><br><br>
+              <input type="datetime-local"  id="startDate" name="startDate" placeholder="Start Date" required><br><br>
             
-              <label for="endDate" >Auction End Date and Time:</label>
-              <input type="datetime-local"  id="endDate" name="endDate" required><br><br>
+              <label for="endDate" >Auction End Date and Time:</label><br><br>
+              <input type="datetime-local"  id="endDate" name="endDate" placeholder="End Date" required><br><br>
             
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="upload-btn">Upload</button>
           </form>
         </div>
         <script>

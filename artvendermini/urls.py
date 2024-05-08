@@ -14,9 +14,11 @@ urlpatterns = [
     path('Artist_view/',views.Artist_view,name='Artist_view'),
     path('logout_view/', views.logout_view, name='logout_view'),
     path('upload_art/', views.upload_art, name='upload_art'),
+
     path('index/', views.index, name='index'),
     path('admin_pannel/', views.admin_pannel, name='admin_pannel'),
     path('Artist_approve/<int:id>/', views.Artist_approve, name='Artist_approve'),
+    path('Artist_rejection', views.Artist_rejection, name='Artist_rejection'),
     path('reject_art', views.reject_art, name='reject_art'),
     path('approve_art/<int:id>', views.approve_art, name='approve_art'),
     path('update_art/<int:art_id>/',views.update_art,name='update_art'),

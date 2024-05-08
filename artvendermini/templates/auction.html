@@ -64,20 +64,7 @@
     </div>
 </nav>
 <div class="container">
-    <h1 class="text-center mb-4">Featured Auction</h1>
-
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card auction-item">
-                <img src="https://via.placeholder.com/600" class="card-img-top" alt="Featured Auction Item">
-                <div class="card-body">
-                    <h5 class="card-title">Vintage Collectible</h5>
-                    <p class="card-text">A rare vintage collectible item up for auction. Place your bid now!</p>
-                    <a href="#" class="btn btn-primary">Bid Now</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
    <!-- Upcoming Auctions -->
 <h2 class="text-center mt-5 mb-4">Upcoming Auctions</h2>
@@ -100,7 +87,30 @@
       </div>
     </div>
   {% endfor %}
-</div>
+</div><br><br>
+<h2 class="text-center mt-5 mb-4">Completed Auctions</h2>
+
+<div class="row">
+    {% for auction in completed_auction %}
+      <div class="col-md-3"> <!-- Each auction item takes 3 out of 12 columns, creating a 4-column layout -->
+        <div class="card auction-item">
+          <img src="{{auction.image.url}}" class="card-img-top" alt="{{auction.name}}" style="height:200px;width:254px">
+          <div class="card-body">
+            <h5 class="card-title">{{auction.name}}</h5>
+            <p class="card-text">{{auction.start_date}}</p>
+            <p class="card-text">{{auction.end_date}}</p>
+            <span id="countdown_{{ auction.id }}" style="color: red;"></span>
+            <br><br>
+            <a href="{% url 'auction_bid' auction.id %}">
+              <button id="auctionBtn_{{ auction.id }}" class="btn btn-primary" disabled onclick="bidNow({{ auction.id }})">View Auction</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div><br><br>
+    
+      
 <br>
 
 </div>

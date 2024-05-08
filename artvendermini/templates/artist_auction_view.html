@@ -125,10 +125,9 @@ th {
                         <th>Art-ID</th>
                         <th>Art Name</th>
                         <th>Buyer Name</th>
-                        <th>Seller Name</th>
                         <th>Higest Price</th>
-                        <th>End Date</th>
-                        <th>Action</th>
+                        <th>End Date and Time</th>
+                        <th>Bid Date and Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,7 +136,6 @@ th {
                             <td>{{ bid.id }}</td>
                             <td>{{ bid.auction_item.name }}</td>
                             <td>{{ bid.buyer.username }}</td>
-                            <td>{{ bid.seller.username }}</td>
                             <td>{{ bid.bid_price }}</td>
                             <td>{{ bid.auction_item.end_date }}</td>
                             <td>{{ current_date_ist }}</td>

@@ -68,7 +68,7 @@ def login(request):
                     if to_role.certificate_status == 'pending':
                         messages.info(request, "Not Approved by admin..please wait.")
                     elif to_role.certificate_status == 'rejected':
-                        messages.info(request, "Rejected by admin")
+                        messages.info(request, "Rejected by admin(check mail)")
                     else:
                         return redirect('Artist_view')
                 elif to_role.role=='customer':
@@ -282,6 +282,31 @@ def Artist_approve(request,id):
         fail_silently=False,
     )
     return redirect('admin_pannel')
+
+def Artist_rejection(request):
+    if request.method == "POST":
+        rejected_artist_id = request.POST.get("artist_id")
+        rejected_artist_name=User.objects.get(id=rejected_artist_id)
+        rejected_artist_status=UserData.objects.get(user_id=rejected_artist_id)
+        rejected_artist_email=rejected_artist_name.email
+        rejected_reason = request.POST.get("rejection_reason")
+
+        rejected_artist_status.certificate_status = "rejected"
+        rejected_artist_status.save()
+
+        email_subject = 'Rejected by admin'
+        email_body = f'hello {rejected_artist_name} you are rejected by admin'
+        email_body += f'Reason: {rejected_reason}'
+        email_body += f'for more contact: artvendor8@gmail.com'
+
+        send_mail(
+        email_subject,
+        email_body,
+        email,  # Use the provided email address as the sender
+        [rejected_artist_email],
+        fail_silently=False,
+        )
+        return redirect('admin_pannel')
 
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -706,8 +731,9 @@ def auction(request):
 
     # Get the remaining active auction items
     updated_auction_items = AuctionItem.objects.filter(is_active=True,status=True)
+    completed_auction_items = AuctionItem.objects.filter(is_active=False,status=True)
 
-    return render(request, 'auction.html', {'auction_items': updated_auction_items})
+    return render(request, 'auction.html', {'auction_items': updated_auction_items,'completed_auction':completed_auction_items})
 
 
 from django.http import JsonResponse
